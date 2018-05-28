@@ -1,17 +1,13 @@
-﻿using McTools.Xrm.Connection;
-using Microsoft.Crm.Sdk.Messages;
+﻿using Cinteros.Xrm.CRMWinForm;
+using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Web;
 using System.Windows.Forms;
 using System.Xml;
@@ -156,10 +152,6 @@ namespace Rappen.XTB.RRA
 
         private (EntityMetadataProxy, Guid) ParseRecordUrl(string url)
         {
-            // http://crmutv2013.cintutv.local/CEM/main.aspx?etc=10022&extraqs=formid%3d37b50bf3-a10f-41cd-9204-0ace2d9f7789&id=%7b2B8E5E09-B45D-E311-93FE-00155D5A482F%7d&pagetype=entityrecord
-            // http://crmutv2013.cintutv.local/CEM/userdefined/edit.aspx?etc=10022&id=%7b2F8D2625-398F-E311-9402-00155D5A482F%7d
-            // http://crmutv2013.cintutv.local/Utils/main.aspx?etc=8&extraqs=%3fetc%3d8%26id%3d%257b280F285B-5C62-E311-93FF-00155D5A482F%257d%26preloadcache%3d1410869578508&histKey=654341300&newWindow=true&pagetype=entityrecord#729772946
-
             EntityMetadataProxy entity = null;
             var id = Guid.Empty;
             try
@@ -360,6 +352,33 @@ namespace Rappen.XTB.RRA
             return null;
         }
 
+        private string GetAttributesSignature(XmlNode entity)
+        {
+            var result = "";
+            if (entity != null)
+            {
+                var alias = entity.Attributes["alias"] != null ? entity.Attributes["alias"].Value + "." : "";
+                var entityAttributes = entity.SelectNodes("attribute");
+                foreach (XmlNode attr in entityAttributes)
+                {
+                    if (attr.Attributes["alias"] != null)
+                    {
+                        result += alias + attr.Attributes["alias"].Value + "\n";
+                    }
+                    else if (attr.Attributes["name"] != null)
+                    {
+                        result += alias + attr.Attributes["name"].Value + "\n";
+                    }
+                }
+                var linkEntities = entity.SelectNodes("link-entity");
+                foreach (XmlNode link in linkEntities)
+                {
+                    result += GetAttributesSignature(link);
+                }
+            }
+            return result;
+        }
+
         private void LoadAttributes(EntityMetadataProxy entity, Action<string> callback, string find)
         {
             WorkAsync(new WorkAsyncInfo($"Loading Attributes for {entity}...",
@@ -440,10 +459,47 @@ namespace Rappen.XTB.RRA
                         if (completedargs.Result is EntityCollection entities)
                         {
                             crmGridView1.DataSource = entities;
+                            SortColumns(crmGridView1, qry);
                         }
                     }
                 }
             });
+        }
+
+        private void SortColumns(CRMGridView crmgrid, QueryBase qry)
+        {
+            var attsig = string.Empty;
+            if (qry is FetchExpression fex)
+            {
+                var fxdoc = new XmlDocument();
+                fxdoc.LoadXml(fex.Query);
+                var entity = fxdoc.SelectSingleNode("fetch/entity");
+                if (entity != null)
+                {
+                    attsig = GetAttributesSignature(entity);
+                }
+            }
+            else if (qry is QueryExpression qex)
+            {
+                attsig = string.Join("\n", qex.ColumnSet.Columns);
+            }
+            else if (qry is QueryByAttribute qba)
+            {
+                attsig = string.Join("\n", qba.ColumnSet.Columns);
+            }
+            if (!string.IsNullOrEmpty(attsig))
+            {
+                var pos = 2;
+                foreach (var attribute in attsig?.Split('\n').Select(a => a.Trim()).Where(a => !string.IsNullOrWhiteSpace(a)))
+                {
+                    if (crmgrid.Columns.Contains(attribute))
+                    {
+                        crmgrid.Columns[attribute].DisplayIndex = pos;
+                        pos++;
+                    }
+                }
+            }
+            crmgrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
 
         private void cmbEntities_SelectedIndexChanged(object sender, EventArgs e)
@@ -460,12 +516,12 @@ namespace Rappen.XTB.RRA
         {
             var record = crmGridView1.SelectedRowRecords.Entities[0];
             var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
-            AddRelatedChildren(record, entity, numericUpDown1.Value, numericUpDown2.Value);
+            AddRelatedChildren(record, entity);
         }
 
-        private void AddRelatedChildren(Entity parentrecord, EntityMetadataProxy entity, decimal value1, decimal value2)
+        private void AddRelatedChildren(Entity parentrecord, EntityMetadataProxy entity)
         {
-            panRelated.Controls.Clear();
+            tabControl1.TabPages.Clear();
             var relations = entity.Metadata.OneToManyRelationships.Count();
             WorkAsync(new WorkAsyncInfo
             {
@@ -494,9 +550,14 @@ namespace Rappen.XTB.RRA
                 {
                     if (args.Result is List<(EntityMetadataProxy, OneToManyRelationshipMetadata, EntityCollection)> allchildren)
                     {
-                        foreach (var children in allchildren.Where(c => c.Item1 != null && c.Item3 != null && c.Item3.Entities.Count > 0))
+                        var selectedchildren = allchildren
+                            .Where(c => c.Item1 != null && c.Item2 != null && c.Item3 != null)
+                            .Where(c => !chkShowOnlyData.Checked || c.Item3.Entities.Count > 0)
+                            .Where(c => chkShowHidden.Checked || c.Item2.AssociatedMenuConfiguration.Behavior.Value != AssociatedMenuBehavior.DoNotDisplay)
+                            .OrderBy(c => c.Item1.ToString());
+                        foreach (var children in selectedchildren)
                         {
-                            new RelatedRecordsControl(panRelated, Service, children.Item1, children.Item2, children.Item3);
+                            new RelatedRecordsControl(tabControl1, Service, children.Item1, children.Item2, children.Item3);
                         }
                     }
                 },

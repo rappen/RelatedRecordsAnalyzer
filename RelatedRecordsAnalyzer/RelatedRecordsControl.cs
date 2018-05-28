@@ -1,39 +1,41 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Rappen.XTB.RRA
 {
     public partial class RelatedRecordsControl : UserControl
     {
-        public RelatedRecordsControl(Panel parent, IOrganizationService service, EntityMetadataProxy entity, OneToManyRelationshipMetadata relationship, EntityCollection entities)
+        public RelatedRecordsControl(TabControl parent, IOrganizationService service, EntityMetadataProxy entity, OneToManyRelationshipMetadata relationship, EntityCollection entities)
         {
             InitializeComponent();
-            gb.Text = $"{entity} {relationship.SchemaName} ({parent.Controls.Count})";
+            var related = entity.Metadata.DisplayCollectionName.UserLocalizedLabel.Label;
+            switch (relationship.AssociatedMenuConfiguration.Behavior)
+            {
+                case AssociatedMenuBehavior.DoNotDisplay:
+                    related += " (hidden)";
+                    break;
+                case AssociatedMenuBehavior.UseLabel:
+                    related = relationship.AssociatedMenuConfiguration.Label.UserLocalizedLabel.Label;
+                    break;
+            }
+            txtEntity.Text = related;
+            txtRelation.Text = relationship.SchemaName;
+            txtCount.Text = entities.Entities.Count.ToString();
+            txtCascadeAssign.Text = relationship.CascadeConfiguration.Assign?.ToString();
+            txtCascadeShare.Text = relationship.CascadeConfiguration.Share?.ToString();
+            txtCascadeUnshare.Text = relationship.CascadeConfiguration.Unshare?.ToString();
+            txtCascadeReparent.Text = relationship.CascadeConfiguration.Reparent?.ToString();
+            txtCascadeDelete.Text = relationship.CascadeConfiguration.Delete?.ToString();
+            txtCascadeMerge.Text = relationship.CascadeConfiguration.Merge?.ToString();
+            txtCascadeRollup.Text = relationship.CascadeConfiguration.RollupView?.ToString();
             crmGridView1.OrganizationService = service;
             crmGridView1.DataSource = entities;
-            foreach (Control control in parent.Controls)
-            {
-                //if (control.Dock == DockStyle.Fill)
-                {
-                    control.Dock = DockStyle.Top;
-                    control.SendToBack();
-                }
-            }
-            if (parent.Controls.Count > 0)
-            {
-                var splitter = new Splitter
-                {
-                    Dock = DockStyle.Top,
-                    BackColor = Color.Red
-                };
-                parent.Controls.Add(splitter);
-                splitter.BringToFront();
-            }
-            parent.Controls.Add(this);
+            var tp = new TabPage(related);
+            tp.Name = relationship?.SchemaName;
+            tp.Controls.Add(this);
             Dock = DockStyle.Fill;
-            BringToFront();
+            parent.TabPages.Add(tp);
         }
     }
 }
