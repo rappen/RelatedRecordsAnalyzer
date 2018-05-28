@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xrm.Sdk.Metadata;
-using Microsoft.Xrm.Sdk.Query;
+using System.Collections.Generic;
 
 namespace Rappen.XTB.RRA
 {
@@ -10,6 +10,8 @@ namespace Rappen.XTB.RRA
         public EntityMetadata Metadata;
 
         public string quickfindfetch;
+
+        public List<string> layoutcolumns;
 
         #endregion Public Fields
 

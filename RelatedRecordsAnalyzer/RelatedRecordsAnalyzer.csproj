@@ -141,11 +141,7 @@
   <ItemGroup>
     <Compile Include="EntityMetadataProxy.cs" />
     <Compile Include="MetadataHelper.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <Compile Include="QueryInfo.cs" />
     <Compile Include="RelatedRecordsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -167,10 +163,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="RelatedRecordsControl.resx">
       <DependentUpon>RelatedRecordsControl.cs</DependentUpon>
     </EmbeddedResource>

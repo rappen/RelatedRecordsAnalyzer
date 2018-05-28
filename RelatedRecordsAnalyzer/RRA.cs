@@ -107,7 +107,7 @@ namespace Rappen.XTB.RRA
         public override void UpdateConnection(IOrganizationService newService, ConnectionDetail detail, string actionName, object parameter)
         {
             base.UpdateConnection(newService, detail, actionName, parameter);
-            crmGridView1.OrganizationService = newService;
+            gvRecords.OrganizationService = newService;
             LoadEntities(PopulateEntities);
 
             //mySettings.LastUsedOrganizationWebappUrl = detail.WebApplicationUrl;
@@ -334,10 +334,26 @@ namespace Rappen.XTB.RRA
                 var meta = entity.Item1.Metadata;
                 var qry = new QueryExpression(meta.LogicalName);
                 qry.Criteria.AddCondition(meta.PrimaryIdAttribute, ConditionOperator.Equal, entity.Item2);
-                qry.ColumnSet.AddColumns(meta.PrimaryIdAttribute, meta.PrimaryNameAttribute);
+                qry.ColumnSet.AddColumns(GetQuickFindQueryColumns(entity.Item1));
                 return qry;
             }
             return null;
+        }
+
+        private string[] GetQuickFindQueryColumns(EntityMetadataProxy entity)
+        {
+            if (string.IsNullOrEmpty(entity.quickfindfetch))
+            {
+                LoadQuickFind(entity, null, null);
+            }
+            var fxdoc = new XmlDocument();
+            fxdoc.LoadXml(entity.quickfindfetch);
+            var attributes = fxdoc.SelectNodes("fetch/entity/attribute");
+            var result = attributes
+                .Cast<XmlNode>()
+                .Select(a => a.Attributes["name"].Value)
+                .ToArray();
+            return result;
         }
 
         private QueryExpression GetGuidQuery(string id, EntityMetadataProxy entity)
@@ -350,33 +366,6 @@ namespace Rappen.XTB.RRA
                 return qry;
             }
             return null;
-        }
-
-        private string GetAttributesSignature(XmlNode entity)
-        {
-            var result = "";
-            if (entity != null)
-            {
-                var alias = entity.Attributes["alias"] != null ? entity.Attributes["alias"].Value + "." : "";
-                var entityAttributes = entity.SelectNodes("attribute");
-                foreach (XmlNode attr in entityAttributes)
-                {
-                    if (attr.Attributes["alias"] != null)
-                    {
-                        result += alias + attr.Attributes["alias"].Value + "\n";
-                    }
-                    else if (attr.Attributes["name"] != null)
-                    {
-                        result += alias + attr.Attributes["name"].Value + "\n";
-                    }
-                }
-                var linkEntities = entity.SelectNodes("link-entity");
-                foreach (XmlNode link in linkEntities)
-                {
-                    result += GetAttributesSignature(link);
-                }
-            }
-            return result;
         }
 
         private void LoadAttributes(EntityMetadataProxy entity, Action<string> callback, string find)
@@ -404,20 +393,15 @@ namespace Rappen.XTB.RRA
 
         private void LoadQuickFind(EntityMetadataProxy entity, Action<string> callback, string find)
         {
+            if (callback == null)
+            {
+                GetQuickFind(entity, Service);
+                return;
+            }
             WorkAsync(new WorkAsyncInfo($"Loading Quick Find query for {entity}...",
                 (eventargs) =>
                 {
-                    var fetch = string.Empty;
-                    var qry = new QueryExpression("savedquery");
-                    qry.ColumnSet.AddColumns("fetchxml");
-                    qry.Criteria.AddCondition("returnedtypecode", ConditionOperator.Equal, entity.Metadata.ObjectTypeCode);
-                    qry.Criteria.AddCondition("querytype", ConditionOperator.Equal, 4);
-                    var view = Service.RetrieveMultiple(qry).Entities.FirstOrDefault();
-                    if (view != null && view.Contains("fetchxml"))
-                    {
-                        fetch = view["fetchxml"] as string;
-                    }
-                    eventargs.Result = fetch;
+                    GetQuickFind(entity, Service);
                 })
             {
                 PostWorkCallBack = (completedargs) =>
@@ -426,18 +410,36 @@ namespace Rappen.XTB.RRA
                     {
                         MessageBox.Show(completedargs.Error.Message);
                     }
-                    else if (completedargs.Result is string fetch && !string.IsNullOrEmpty(fetch))
+                    else
                     {
-                        entity.quickfindfetch = fetch;
                         callback?.Invoke(find);
                     }
                 }
             });
         }
 
+        private static void GetQuickFind(EntityMetadataProxy entity, IOrganizationService service)
+        {
+            var qry = new QueryExpression("savedquery");
+            qry.ColumnSet.AddColumns("fetchxml", "layoutxml");
+            qry.Criteria.AddCondition("returnedtypecode", ConditionOperator.Equal, entity.Metadata.ObjectTypeCode);
+            qry.Criteria.AddCondition("querytype", ConditionOperator.Equal, 4);
+            var view = service.RetrieveMultiple(qry).Entities.FirstOrDefault();
+            if (view != null && view.Contains("fetchxml"))
+            {
+                entity.quickfindfetch = view["fetchxml"] as string;
+                var layout = new XmlDocument();
+                layout.LoadXml(view["layoutxml"] as string);
+                entity.layoutcolumns = layout.SelectNodes("grid/row/cell")
+                    .Cast<XmlNode>()
+                    .Select(c => c.Attributes["name"].Value)
+                    .ToList();
+            }
+        }
+
         private void LoadRecords(QueryBase qry)
         {
-            crmGridView1.DataSource = null;
+            gvRecords.DataSource = null;
             if (qry == null)
             {
                 return;
@@ -458,45 +460,33 @@ namespace Rappen.XTB.RRA
                     {
                         if (completedargs.Result is EntityCollection entities)
                         {
-                            crmGridView1.DataSource = entities;
-                            SortColumns(crmGridView1, qry);
+                            var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(e => e.Metadata.LogicalName == entities.EntityName);
+                            gvRecords.DataSource = entities;
+                            SortColumns(gvRecords, entity, Service);
                         }
                     }
                 }
             });
         }
 
-        private void SortColumns(CRMGridView crmgrid, QueryBase qry)
+        internal static void SortColumns(CRMGridView crmgrid, EntityMetadataProxy entity, IOrganizationService service)
         {
-            var attsig = string.Empty;
-            if (qry is FetchExpression fex)
+            if (string.IsNullOrEmpty(entity.quickfindfetch))
             {
-                var fxdoc = new XmlDocument();
-                fxdoc.LoadXml(fex.Query);
-                var entity = fxdoc.SelectSingleNode("fetch/entity");
-                if (entity != null)
+                GetQuickFind(entity, service);
+            }
+            var pos = 2;
+            foreach (var attribute in entity.layoutcolumns.Select(a => a.Trim()).Where(a => !string.IsNullOrWhiteSpace(a)))
+            {
+                if (crmgrid.Columns.Contains(attribute))
                 {
-                    attsig = GetAttributesSignature(entity);
-                }
-            }
-            else if (qry is QueryExpression qex)
-            {
-                attsig = string.Join("\n", qex.ColumnSet.Columns);
-            }
-            else if (qry is QueryByAttribute qba)
-            {
-                attsig = string.Join("\n", qba.ColumnSet.Columns);
-            }
-            if (!string.IsNullOrEmpty(attsig))
-            {
-                var pos = 2;
-                foreach (var attribute in attsig?.Split('\n').Select(a => a.Trim()).Where(a => !string.IsNullOrWhiteSpace(a)))
-                {
-                    if (crmgrid.Columns.Contains(attribute))
+                    var column = crmgrid.Columns[attribute];
+                    foreach (var movecolumn in crmgrid.Columns.Cast<DataGridViewColumn>().Where(c => c.DisplayIndex >= pos && c.DisplayIndex < column.DisplayIndex))
                     {
-                        crmgrid.Columns[attribute].DisplayIndex = pos;
-                        pos++;
+                        movecolumn.DisplayIndex++;
                     }
+                    crmgrid.Columns[attribute].DisplayIndex = pos;
+                    pos++;
                 }
             }
             crmgrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
@@ -509,12 +499,23 @@ namespace Rappen.XTB.RRA
 
         private void crmGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            btnFindRelations.Enabled = crmGridView1.SelectedRowRecords.Entities.Count == 1;
+            var record = gvRecords.SelectedRowRecords.Entities.Count == 1 ? gvRecords.SelectedRowRecords.Entities[0] : null;
+            btnFindRelations.Enabled = record != null;
+            txtRecordName.Text = string.Empty;
+            txtRecordId.Text = string.Empty;
+            if (record != null)
+            {
+                if (cmbEntities.SelectedItem is EntityMetadataProxy entity)
+                {
+                    txtRecordName.Text = record.Contains(entity.Metadata.PrimaryNameAttribute) ? record[entity.Metadata.PrimaryNameAttribute] as string : "?";
+                }
+                txtRecordId.Text = record.Id.ToString();
+            }
         }
 
         private void btnFindRelations_Click(object sender, EventArgs e)
         {
-            var record = crmGridView1.SelectedRowRecords.Entities[0];
+            var record = gvRecords.SelectedRowRecords.Entities[0];
             var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
             AddRelatedChildren(record, entity);
         }
@@ -526,14 +527,22 @@ namespace Rappen.XTB.RRA
             WorkAsync(new WorkAsyncInfo
             {
                 Message = "Loading children",
-                AsyncArgument = entity,
+                AsyncArgument = (entity, chkShowHidden.Checked),
                 Work = (worker, args) =>
                 {
-                    var asyncentity = args.Argument as EntityMetadataProxy;
-                    var allchildren = new List<(EntityMetadataProxy, OneToManyRelationshipMetadata, EntityCollection)>();
+                    if (!(args.Argument is ValueTuple<EntityMetadataProxy, bool> asyncarg))
+                    {
+                        return;
+                    }
+                    var asyncentity = asyncarg.Item1;
+                    var includehidden = asyncarg.Item2;
+                    var allchildren = new List<QueryInfo>();
                     var current = 0;
-                    var total = asyncentity.Metadata.OneToManyRelationships.Count();
-                    foreach (var rel in asyncentity.Metadata.OneToManyRelationships)
+                    var rels = asyncentity.Metadata.OneToManyRelationships
+                        .Where(r => includehidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
+                        .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
+                    var total = rels.Count();
+                    foreach (var rel in rels)
                     {
                         current++;
                         if (cmbEntities.Items
@@ -541,23 +550,21 @@ namespace Rappen.XTB.RRA
                             .FirstOrDefault(ent => ent.Metadata.LogicalName == rel.ReferencingEntity) is EntityMetadataProxy childentity)
                         {
                             worker.ReportProgress(0, $"Loading {current}/{total}\r\n{rel.SchemaName}");
-                            allchildren.Add((childentity, rel, GetRelatedChildren(parentrecord.Id, childentity.Metadata, entity, rel)));
+                            allchildren.Add(GetRelatedChildren(parentrecord.Id, childentity, entity, rel));
                         }
                     }
                     args.Result = allchildren;
                 },
                 PostWorkCallBack = (args) =>
                 {
-                    if (args.Result is List<(EntityMetadataProxy, OneToManyRelationshipMetadata, EntityCollection)> allchildren)
+                    if (args.Result is List<QueryInfo> allchildren)
                     {
                         var selectedchildren = allchildren
-                            .Where(c => c.Item1 != null && c.Item2 != null && c.Item3 != null)
-                            .Where(c => !chkShowOnlyData.Checked || c.Item3.Entities.Count > 0)
-                            .Where(c => chkShowHidden.Checked || c.Item2.AssociatedMenuConfiguration.Behavior.Value != AssociatedMenuBehavior.DoNotDisplay)
-                            .OrderBy(c => c.Item1.ToString());
+                            .Where(c => c != null && c.EntityInfo != null && c.Relationship != null && c.Results != null)
+                            .Where(c => !chkShowOnlyData.Checked || c.Results.Entities.Count > 0);
                         foreach (var children in selectedchildren)
                         {
-                            new RelatedRecordsControl(tabControl1, Service, children.Item1, children.Item2, children.Item3);
+                            new RelatedRecordsControl(tabControl1, Service, children);
                         }
                     }
                 },
@@ -568,17 +575,25 @@ namespace Rappen.XTB.RRA
             });
         }
 
-        private EntityCollection GetRelatedChildren(Guid parentid, EntityMetadata childmeta, EntityMetadataProxy parententity, OneToManyRelationshipMetadata rel)
+        private QueryInfo GetRelatedChildren(Guid parentid, EntityMetadataProxy childmeta, EntityMetadataProxy parententity, OneToManyRelationshipMetadata rel)
         {
             var lookup = rel.ReferencingAttribute;
             try
             {
-                var qry = new QueryByAttribute(childmeta.LogicalName);
-                qry.ColumnSet = new ColumnSet(childmeta.PrimaryIdAttribute, childmeta.PrimaryNameAttribute);
+                var qry = new QueryByAttribute(childmeta.Metadata.LogicalName);
+                qry.ColumnSet = new ColumnSet(GetQuickFindQueryColumns(childmeta));
                 qry.AddAttributeValue(lookup, parentid);
-                qry.AddOrder(childmeta.PrimaryNameAttribute, OrderType.Ascending);
+                qry.AddOrder(childmeta.Metadata.PrimaryNameAttribute, OrderType.Ascending);
                 var children = Service.RetrieveMultiple(qry);
-                return children;
+                var result = new QueryInfo
+                {
+                    AttributesSignature = string.Join("\n", qry.ColumnSet.Columns),
+                    EntityInfo = childmeta,
+                    Query = qry,
+                    Results = children,
+                    Relationship = rel
+                };
+                return result;
             }
             catch (Exception ex)
             {
