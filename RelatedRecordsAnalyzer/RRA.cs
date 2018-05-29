@@ -19,87 +19,47 @@ namespace Rappen.XTB.RRA
 {
     public partial class RRA : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IPayPalPlugin
     {
-        public string RepositoryName => "RelatedRecordsAnalyzer";
+        #region Private Fields
 
-        public string UserName => "rappen";
+        private const string aiEndpoint = "https://dc.services.visualstudio.com/v2/track";
+        //private const string aiKey = "cc7cb081-b489-421d-bb61-2ee53495c336";    // jonas@rappen.net tenant, TestAI
+        private const string aiKey = "eed73022-2444-45fd-928b-5eebd8fa46a6";    // jonas@rappen.net tenant, XrmToolBox
+        //private const string aiKey = "b6a4ec7c-ab43-4780-97cd-021e99506337";   // jonas@jonasrapp.net, XrmToolBoxInsights
 
-        public string DonationDescription => "Related Records Analyzer Fan Club";
+        private AppInsights ai;
 
-        public string EmailAccount => "jonas@rappen.net";
+        #endregion Private Fields
 
-        //private Settings mySettings;
+        #region Public Constructors
 
         public RRA()
         {
             InitializeComponent();
-        }
-
-        public event EventHandler<StatusBarMessageEventArgs> SendMessageToStatusBar;
-
-        private void RRA_Load(object sender, EventArgs e)
-        {
-            // Loads or creates the settings for the plugin
-            //if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
-            //{
-            //    mySettings = new Settings();
-
-            //    LogWarning("Settings not found => a new settings file has been created!");
-            //}
-            //else
-            //{
-            //    LogInfo("Settings found and loaded");
-            //}
-        }
-
-        private void tsbClose_Click(object sender, EventArgs e)
-        {
-            CloseTool();
-        }
-
-        private void tsbSample_Click(object sender, EventArgs e)
-        {
-            // The ExecuteMethod method handles connecting to an
-            // organization if XrmToolBox is not yet connected
-            ExecuteMethod(GetAccounts);
-        }
-
-        private void GetAccounts()
-        {
-            WorkAsync(new WorkAsyncInfo
+            ai = new AppInsights(new AiConfig(aiEndpoint, aiKey)
             {
-                Message = "Getting accounts",
-                Work = (worker, args) =>
-                {
-                    args.Result = Service.RetrieveMultiple(new QueryExpression("account")
-                    {
-                        TopCount = 50
-                    });
-                },
-                PostWorkCallBack = (args) =>
-                {
-                    if (args.Error != null)
-                    {
-                        MessageBox.Show(args.Error.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    var result = args.Result as EntityCollection;
-                    if (result != null)
-                    {
-                        MessageBox.Show($"Found {result.Entities.Count} accounts");
-                    }
-                }
+                PluginName = "Related Records Analyzer"
             });
         }
 
-        /// <summary>
-        /// This event occurs when the plugin is closed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MyPluginControl_OnCloseTool(object sender, EventArgs e)
-        {
-            // Before leaving, save the settings
-            //SettingsManager.Instance.Save(GetType(), mySettings);
-        }
+        #endregion Public Constructors
+
+        #region Public Events
+
+        //private Settings mySettings;
+        public event EventHandler<StatusBarMessageEventArgs> SendMessageToStatusBar;
+
+        #endregion Public Events
+
+        #region Public Properties
+
+        public string DonationDescription => "Related Records Analyzer Fan Club";
+        public string EmailAccount => "jonas@rappen.net";
+        public string RepositoryName => "RelatedRecordsAnalyzer";
+        public string UserName => "rappen";
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         /// <summary>
         /// This event occurs when the connection has been updated in XrmToolBox
@@ -114,82 +74,84 @@ namespace Rappen.XTB.RRA
             LogInfo("Connection has changed to: {0}", detail.WebApplicationUrl);
         }
 
-        private void LoadEntities(Action<EntityMetadataProxy[]> callback)
-        {
-            WorkAsync(new WorkAsyncInfo("Loading entities...",
-                (eventargs) =>
-                {
-                    eventargs.Result = MetadataHelper.LoadEntities(Service);
-                })
-            {
-                PostWorkCallBack = (completedargs) =>
-                {
-                    if (completedargs.Error != null)
-                    {
-                        MessageBox.Show(completedargs.Error.Message);
-                    }
-                    else
-                    {
-                        if (completedargs.Result is RetrieveMetadataChangesResponse)
-                        {
-                            var metaresponse = ((RetrieveMetadataChangesResponse)completedargs.Result).EntityMetadata;
-                            var entities = metaresponse
-                                .Where(e => e.IsCustomizable.Value == true && e.IsIntersect.Value != true)
-                                .Select(m => new EntityMetadataProxy(m))
-                                .OrderBy(e => e.ToString()).ToArray();
-                            callback?.Invoke(entities);
-                        }
-                    }
-                }
-            });
-        }
+        #endregion Public Methods
 
-        private void PopulateEntities(EntityMetadataProxy[] entities)
-        {
-            cmbEntities.Items.Clear();
-            cmbEntities.Items.AddRange(entities);
-        }
+        #region Internal Methods
 
-        private (EntityMetadataProxy, Guid) ParseRecordUrl(string url)
+        internal static void SortColumns(CRMGridView crmgrid, EntityMetadataProxy entity, IOrganizationService service)
         {
-            EntityMetadataProxy entity = null;
-            var id = Guid.Empty;
-            try
+            if (string.IsNullOrEmpty(entity.quickfindfetch))
             {
-                var uri = new Uri(url);
-                var uriparams = HttpUtility.ParseQueryString(uri.Query);
-                var idstr = uriparams["id"];
-                if (string.IsNullOrEmpty(idstr) && !string.IsNullOrEmpty(uriparams["extraqs"]))
+                GetQuickFind(entity, service);
+            }
+            var pos = 2;
+            foreach (var attribute in entity.layoutcolumns.Select(a => a.Trim()).Where(a => !string.IsNullOrWhiteSpace(a)))
+            {
+                if (crmgrid.Columns.Contains(attribute))
                 {
-                    var extraqs = HttpUtility.UrlDecode(uriparams["extraqs"]);
-                    var decodedparams = HttpUtility.ParseQueryString(extraqs);
-                    idstr = decodedparams["id"];
-                }
-                Guid.TryParse(idstr, out id);
-                var etn = uriparams["etn"];
-                if (!string.IsNullOrEmpty(etn))
-                {
-                    entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(e => e.Metadata.LogicalName == etn);
-                }
-                else
-                {
-                    var etcstr = uriparams["etc"];
-                    if (int.TryParse(etcstr, out int etc))
+                    var column = crmgrid.Columns[attribute];
+                    foreach (var movecolumn in crmgrid.Columns.Cast<DataGridViewColumn>().Where(c => c.DisplayIndex >= pos && c.DisplayIndex < column.DisplayIndex))
                     {
-                        entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(e => e.Metadata.ObjectTypeCode == etc);
+                        movecolumn.DisplayIndex++;
                     }
+                    crmgrid.Columns[attribute].DisplayIndex = pos;
+                    pos++;
                 }
             }
-            catch (Exception ex)
-            {
-                SetStatus(ex.Message);
-            }
-            return (entity, id);
+            crmgrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
 
-        private void SetStatus(string status)
+        #endregion Internal Methods
+
+        #region Private Form Event Handlers
+
+        private void cmbEntities_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SendMessageToStatusBar(this, new StatusBarMessageEventArgs(status));
+            FindRecords(textBox1.Text);
+        }
+
+        private void crmGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            var record = gvRecords.SelectedRowRecords.Entities.Count == 1 ? gvRecords.SelectedRowRecords.Entities[0] : null;
+            tsbAnalyze.Enabled = record != null;
+            txtRecordName.Text = string.Empty;
+            txtRecordId.Text = string.Empty;
+            if (record != null)
+            {
+                if (cmbEntities.SelectedItem is EntityMetadataProxy entity)
+                {
+                    txtRecordName.Text = record.Contains(entity.Metadata.PrimaryNameAttribute) ? record[entity.Metadata.PrimaryNameAttribute] as string : "?";
+                }
+                txtRecordId.Text = record.Id.ToString();
+            }
+        }
+
+        /// <summary>
+        /// This event occurs when the plugin is closed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MyPluginControl_OnCloseTool(object sender, EventArgs e)
+        {
+            ai.WriteEvent("Close");
+            // Before leaving, save the settings
+            //SettingsManager.Instance.Save(GetType(), mySettings);
+        }
+
+        private void RRA_Load(object sender, EventArgs e)
+        {
+            ai.WriteEvent("Load");
+            // Loads or creates the settings for the plugin
+            //if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
+            //{
+            //    mySettings = new Settings();
+
+            //    LogWarning("Settings not found => a new settings file has been created!");
+            //}
+            //else
+            //{
+            //    LogInfo("Settings found and loaded");
+            //}
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -198,46 +160,34 @@ namespace Rappen.XTB.RRA
             typeTimer.Start();
         }
 
+        private void tsbAnalyze_Click(object sender, EventArgs e)
+        {
+            var record = gvRecords.SelectedRowRecords.Entities[0];
+            var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
+            GetRelatedChildren(record, entity);
+        }
+
+        private void tsbCancel_Click(object sender, EventArgs e)
+        {
+            CancelWorker();
+            tsbCancel.Enabled = false;
+            MessageBox.Show("Cancelled");
+        }
+
+        private void tsbClose_Click(object sender, EventArgs e)
+        {
+            CloseTool();
+        }
+
         private void typeTimer_Tick(object sender, EventArgs e)
         {
             typeTimer.Stop();
             FindRecords(textBox1.Text);
         }
 
-        private void FindRecords(string find)
-        {
-            QueryBase qry = GetUrlQuery(find);
-            if (qry == null && cmbEntities.SelectedItem is EntityMetadataProxy entity)
-            {
-                qry = GetGuidQuery(find, entity);
-                if (qry == null)
-                {
-                    if (string.IsNullOrEmpty(entity.quickfindfetch))
-                    {
-                        LoadQuickFind(entity, FindRecords, find);
-                        return;
-                    }
-                    if (entity.Metadata.Attributes == null)
-                    {
-                        LoadAttributes(entity, FindRecords, find);
-                        return;
-                    }
-                    qry = ReplaceQuickFindPlaceholders(entity, find);
-                }
-            }
-            LoadRecords(qry);
-        }
+        #endregion Private Form Event Handlers
 
-        private static QueryBase ReplaceQuickFindPlaceholders(EntityMetadataProxy entity, string find)
-        {
-            var fx = new XmlDocument();
-            fx.LoadXml(entity.quickfindfetch);
-            if (fx.SelectSingleNode("fetch/entity") is XmlNode entitynode)
-            {
-                FixEntity(entity, entitynode, find);
-            }
-            return new FetchExpression(fx.OuterXml);
-        }
+        #region Private Methods
 
         private static void FixEntity(EntityMetadataProxy entity, XmlNode entitynode, string find)
         {
@@ -283,12 +233,14 @@ namespace Rappen.XTB.RRA
                                             cond.Attributes["attribute"].Value = attrname + "name";
                                         }
                                         break;
+
                                     case AttributeTypeCode.Boolean:
                                         if (!specbool)
                                         {
                                             cond.Attributes["attribute"].Value = attrname + "name";
                                         }
                                         break;
+
                                     case AttributeTypeCode.Picklist:
                                     case AttributeTypeCode.State:
                                     case AttributeTypeCode.Status:
@@ -298,13 +250,16 @@ namespace Rappen.XTB.RRA
                             }
                             value = findstr;
                             break;
+
                         case "1":
                             value = specint ? findint.ToString() : null;
                             break;
+
                         case "2":
                         case "4":
                             value = specfloat ? findfloat.ToString() : null;
                             break;
+
                         case "3":
                             value = specdate ? finddate.ToString() : null;
                             break;
@@ -326,15 +281,67 @@ namespace Rappen.XTB.RRA
             }
         }
 
-        private QueryExpression GetUrlQuery(string url)
+        private static void GetQuickFind(EntityMetadataProxy entity, IOrganizationService service)
         {
-            var entity = ParseRecordUrl(url);
-            if (entity.Item1 != null && !entity.Item2.Equals(Guid.Empty))
+            var qry = new QueryExpression("savedquery");
+            qry.ColumnSet.AddColumns("fetchxml", "layoutxml");
+            qry.Criteria.AddCondition("returnedtypecode", ConditionOperator.Equal, entity.Metadata.ObjectTypeCode);
+            qry.Criteria.AddCondition("querytype", ConditionOperator.Equal, 4);
+            var view = service.RetrieveMultiple(qry).Entities.FirstOrDefault();
+            if (view != null && view.Contains("fetchxml"))
             {
-                var meta = entity.Item1.Metadata;
-                var qry = new QueryExpression(meta.LogicalName);
-                qry.Criteria.AddCondition(meta.PrimaryIdAttribute, ConditionOperator.Equal, entity.Item2);
-                qry.ColumnSet.AddColumns(GetQuickFindQueryColumns(entity.Item1));
+                entity.quickfindfetch = view["fetchxml"] as string;
+                var layout = new XmlDocument();
+                layout.LoadXml(view["layoutxml"] as string);
+                entity.layoutcolumns = layout.SelectNodes("grid/row/cell")
+                    .Cast<XmlNode>()
+                    .Select(c => c.Attributes["name"].Value)
+                    .ToList();
+            }
+        }
+
+        private static QueryBase ReplaceQuickFindPlaceholders(EntityMetadataProxy entity, string find)
+        {
+            var fx = new XmlDocument();
+            fx.LoadXml(entity.quickfindfetch);
+            if (fx.SelectSingleNode("fetch/entity") is XmlNode entitynode)
+            {
+                FixEntity(entity, entitynode, find);
+            }
+            return new FetchExpression(fx.OuterXml);
+        }
+
+        private void FindRecords(string find)
+        {
+            QueryBase qry = GetUrlQuery(find);
+            if (qry == null && cmbEntities.SelectedItem is EntityMetadataProxy entity)
+            {
+                qry = GetGuidQuery(find, entity);
+                if (qry == null)
+                {
+                    if (string.IsNullOrEmpty(entity.quickfindfetch))
+                    {
+                        LoadQuickFind(entity, FindRecords, find);
+                        return;
+                    }
+                    if (entity.Metadata.Attributes == null)
+                    {
+                        LoadAttributes(entity, FindRecords, find);
+                        return;
+                    }
+                    qry = ReplaceQuickFindPlaceholders(entity, find);
+                }
+            }
+            LoadRecords(qry);
+        }
+
+        private QueryExpression GetGuidQuery(string id, EntityMetadataProxy entity)
+        {
+            if (Guid.TryParse(id, out Guid guid))
+            {
+                var qry = new QueryExpression(entity.Metadata.LogicalName);
+                qry.Criteria.AddCondition(entity.Metadata.PrimaryIdAttribute, ConditionOperator.Equal, guid);
+                qry.ColumnSet.AddColumns(entity.Metadata.PrimaryIdAttribute, entity.Metadata.PrimaryNameAttribute);
                 return qry;
             }
             return null;
@@ -356,13 +363,79 @@ namespace Rappen.XTB.RRA
             return result;
         }
 
-        private QueryExpression GetGuidQuery(string id, EntityMetadataProxy entity)
+        private void GetRelatedChildren(Entity parentrecord, EntityMetadataProxy entity)
         {
-            if (Guid.TryParse(id, out Guid guid))
+            ai.WriteEvent("Analyze");
+            tsbAnalyze.Enabled = false;
+            tsbCancel.Enabled = true;
+            gvRecords.Enabled = false;
+            tabControl1.TabPages.Clear();
+            var relations = entity.Metadata.OneToManyRelationships.Count();
+            WorkAsync(new WorkAsyncInfo
             {
-                var qry = new QueryExpression(entity.Metadata.LogicalName);
-                qry.Criteria.AddCondition(entity.Metadata.PrimaryIdAttribute, ConditionOperator.Equal, guid);
-                qry.ColumnSet.AddColumns(entity.Metadata.PrimaryIdAttribute, entity.Metadata.PrimaryNameAttribute);
+                Message = "Loading children",
+                IsCancelable = true,
+                AsyncArgument = (entity, chkShowHidden.Checked),
+                Work = (worker, args) =>
+                {
+                    if (!(args.Argument is ValueTuple<EntityMetadataProxy, bool> asyncarg))
+                    {
+                        return;
+                    }
+                    var asyncentity = asyncarg.Item1;
+                    var includehidden = asyncarg.Item2;
+                    var allchildren = new List<QueryInfo>();
+                    var rels = asyncentity.Metadata.OneToManyRelationships
+                        .Where(r => includehidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
+                        .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
+                    var current = 0;
+                    var total = rels.Count();
+                    foreach (var rel in rels)
+                    {
+                        if (worker.CancellationPending)
+                        {
+                            args.Cancel = true;
+                            break;
+                        }
+                        current++;
+                        if (cmbEntities.Items
+                            .Cast<EntityMetadataProxy>()
+                            .FirstOrDefault(ent => ent.Metadata.LogicalName == rel.ReferencingEntity) is EntityMetadataProxy childentity)
+                        {
+                            worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n{rel.SchemaName}");
+                            allchildren.Add(LoadRelatedChildren(parentrecord.Id, childentity, entity, rel));
+                        }
+                    }
+                    args.Result = allchildren;
+                },
+                ProgressChanged = (args) =>
+                {
+                    SetWorkingMessage(args.UserState?.ToString());
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(args.ProgressPercentage, args.UserState.ToString().Replace("\r\n", " ")));
+                },
+                PostWorkCallBack = (args) =>
+                {
+                    tsbCancel.Enabled = false;
+                    if (!args.Cancelled && args.Result is List<QueryInfo> allchildren)
+                    {
+                        RenderChildren(allchildren);
+                    }
+                    gvRecords.Enabled = true;
+                    tsbAnalyze.Enabled = true;
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
+                }
+            });
+        }
+
+        private QueryExpression GetUrlQuery(string url)
+        {
+            var entity = ParseRecordUrl(url);
+            if (entity.Item1 != null && !entity.Item2.Equals(Guid.Empty))
+            {
+                var meta = entity.Item1.Metadata;
+                var qry = new QueryExpression(meta.LogicalName);
+                qry.Criteria.AddCondition(meta.PrimaryIdAttribute, ConditionOperator.Equal, entity.Item2);
+                qry.ColumnSet.AddColumns(GetQuickFindQueryColumns(entity.Item1));
                 return qry;
             }
             return null;
@@ -386,6 +459,36 @@ namespace Rappen.XTB.RRA
                     {
                         entity.Metadata = metadata.EntityMetadata.FirstOrDefault();
                         callback?.Invoke(find);
+                    }
+                }
+            });
+        }
+
+        private void LoadEntities(Action<EntityMetadataProxy[]> callback)
+        {
+            WorkAsync(new WorkAsyncInfo("Loading entities...",
+                (eventargs) =>
+                {
+                    eventargs.Result = MetadataHelper.LoadEntities(Service);
+                })
+            {
+                PostWorkCallBack = (completedargs) =>
+                {
+                    if (completedargs.Error != null)
+                    {
+                        MessageBox.Show(completedargs.Error.Message);
+                    }
+                    else
+                    {
+                        if (completedargs.Result is RetrieveMetadataChangesResponse)
+                        {
+                            var metaresponse = ((RetrieveMetadataChangesResponse)completedargs.Result).EntityMetadata;
+                            var entities = metaresponse
+                                .Where(e => e.IsCustomizable.Value == true && e.IsIntersect.Value != true)
+                                .Select(m => new EntityMetadataProxy(m))
+                                .OrderBy(e => e.ToString()).ToArray();
+                            callback?.Invoke(entities);
+                        }
                     }
                 }
             });
@@ -416,25 +519,6 @@ namespace Rappen.XTB.RRA
                     }
                 }
             });
-        }
-
-        private static void GetQuickFind(EntityMetadataProxy entity, IOrganizationService service)
-        {
-            var qry = new QueryExpression("savedquery");
-            qry.ColumnSet.AddColumns("fetchxml", "layoutxml");
-            qry.Criteria.AddCondition("returnedtypecode", ConditionOperator.Equal, entity.Metadata.ObjectTypeCode);
-            qry.Criteria.AddCondition("querytype", ConditionOperator.Equal, 4);
-            var view = service.RetrieveMultiple(qry).Entities.FirstOrDefault();
-            if (view != null && view.Contains("fetchxml"))
-            {
-                entity.quickfindfetch = view["fetchxml"] as string;
-                var layout = new XmlDocument();
-                layout.LoadXml(view["layoutxml"] as string);
-                entity.layoutcolumns = layout.SelectNodes("grid/row/cell")
-                    .Cast<XmlNode>()
-                    .Select(c => c.Attributes["name"].Value)
-                    .ToList();
-            }
         }
 
         private void LoadRecords(QueryBase qry)
@@ -469,113 +553,7 @@ namespace Rappen.XTB.RRA
             });
         }
 
-        internal static void SortColumns(CRMGridView crmgrid, EntityMetadataProxy entity, IOrganizationService service)
-        {
-            if (string.IsNullOrEmpty(entity.quickfindfetch))
-            {
-                GetQuickFind(entity, service);
-            }
-            var pos = 2;
-            foreach (var attribute in entity.layoutcolumns.Select(a => a.Trim()).Where(a => !string.IsNullOrWhiteSpace(a)))
-            {
-                if (crmgrid.Columns.Contains(attribute))
-                {
-                    var column = crmgrid.Columns[attribute];
-                    foreach (var movecolumn in crmgrid.Columns.Cast<DataGridViewColumn>().Where(c => c.DisplayIndex >= pos && c.DisplayIndex < column.DisplayIndex))
-                    {
-                        movecolumn.DisplayIndex++;
-                    }
-                    crmgrid.Columns[attribute].DisplayIndex = pos;
-                    pos++;
-                }
-            }
-            crmgrid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-        }
-
-        private void cmbEntities_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            FindRecords(textBox1.Text);
-        }
-
-        private void crmGridView1_SelectionChanged(object sender, EventArgs e)
-        {
-            var record = gvRecords.SelectedRowRecords.Entities.Count == 1 ? gvRecords.SelectedRowRecords.Entities[0] : null;
-            btnFindRelations.Enabled = record != null;
-            txtRecordName.Text = string.Empty;
-            txtRecordId.Text = string.Empty;
-            if (record != null)
-            {
-                if (cmbEntities.SelectedItem is EntityMetadataProxy entity)
-                {
-                    txtRecordName.Text = record.Contains(entity.Metadata.PrimaryNameAttribute) ? record[entity.Metadata.PrimaryNameAttribute] as string : "?";
-                }
-                txtRecordId.Text = record.Id.ToString();
-            }
-        }
-
-        private void btnFindRelations_Click(object sender, EventArgs e)
-        {
-            var record = gvRecords.SelectedRowRecords.Entities[0];
-            var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
-            AddRelatedChildren(record, entity);
-        }
-
-        private void AddRelatedChildren(Entity parentrecord, EntityMetadataProxy entity)
-        {
-            tabControl1.TabPages.Clear();
-            var relations = entity.Metadata.OneToManyRelationships.Count();
-            WorkAsync(new WorkAsyncInfo
-            {
-                Message = "Loading children",
-                AsyncArgument = (entity, chkShowHidden.Checked),
-                Work = (worker, args) =>
-                {
-                    if (!(args.Argument is ValueTuple<EntityMetadataProxy, bool> asyncarg))
-                    {
-                        return;
-                    }
-                    var asyncentity = asyncarg.Item1;
-                    var includehidden = asyncarg.Item2;
-                    var allchildren = new List<QueryInfo>();
-                    var current = 0;
-                    var rels = asyncentity.Metadata.OneToManyRelationships
-                        .Where(r => includehidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
-                        .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
-                    var total = rels.Count();
-                    foreach (var rel in rels)
-                    {
-                        current++;
-                        if (cmbEntities.Items
-                            .Cast<EntityMetadataProxy>()
-                            .FirstOrDefault(ent => ent.Metadata.LogicalName == rel.ReferencingEntity) is EntityMetadataProxy childentity)
-                        {
-                            worker.ReportProgress(0, $"Loading {current}/{total}\r\n{rel.SchemaName}");
-                            allchildren.Add(GetRelatedChildren(parentrecord.Id, childentity, entity, rel));
-                        }
-                    }
-                    args.Result = allchildren;
-                },
-                PostWorkCallBack = (args) =>
-                {
-                    if (args.Result is List<QueryInfo> allchildren)
-                    {
-                        var selectedchildren = allchildren
-                            .Where(c => c != null && c.EntityInfo != null && c.Relationship != null && c.Results != null)
-                            .Where(c => !chkShowOnlyData.Checked || c.Results.Entities.Count > 0);
-                        foreach (var children in selectedchildren)
-                        {
-                            new RelatedRecordsControl(tabControl1, Service, children);
-                        }
-                    }
-                },
-                ProgressChanged = (args) =>
-                {
-                    SetWorkingMessage(args.UserState?.ToString());
-                }
-            });
-        }
-
-        private QueryInfo GetRelatedChildren(Guid parentid, EntityMetadataProxy childmeta, EntityMetadataProxy parententity, OneToManyRelationshipMetadata rel)
+        private QueryInfo LoadRelatedChildren(Guid parentid, EntityMetadataProxy childmeta, EntityMetadataProxy parententity, OneToManyRelationshipMetadata rel)
         {
             var lookup = rel.ReferencingAttribute;
             try
@@ -601,5 +579,109 @@ namespace Rappen.XTB.RRA
                 return null;
             }
         }
+
+        private (EntityMetadataProxy, Guid) ParseRecordUrl(string url)
+        {
+            EntityMetadataProxy entity = null;
+            var id = Guid.Empty;
+            try
+            {
+                var uri = new Uri(url);
+                var uriparams = HttpUtility.ParseQueryString(uri.Query);
+                var idstr = uriparams["id"];
+                if (string.IsNullOrEmpty(idstr) && !string.IsNullOrEmpty(uriparams["extraqs"]))
+                {
+                    var extraqs = HttpUtility.UrlDecode(uriparams["extraqs"]);
+                    var decodedparams = HttpUtility.ParseQueryString(extraqs);
+                    idstr = decodedparams["id"];
+                }
+                Guid.TryParse(idstr, out id);
+                var etn = uriparams["etn"];
+                if (!string.IsNullOrEmpty(etn))
+                {
+                    entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(e => e.Metadata.LogicalName == etn);
+                }
+                else
+                {
+                    var etcstr = uriparams["etc"];
+                    if (int.TryParse(etcstr, out int etc))
+                    {
+                        entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(e => e.Metadata.ObjectTypeCode == etc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                SetStatus(ex.Message);
+            }
+            return (entity, id);
+        }
+
+        private void PopulateEntities(EntityMetadataProxy[] entities)
+        {
+            cmbEntities.Items.Clear();
+            cmbEntities.Items.AddRange(entities);
+        }
+
+        private void RenderChildren(List<QueryInfo> allchildren)
+        {
+            tsbAnalyze.Enabled = false;
+            tsbCancel.Enabled = true;
+            gvRecords.Enabled = false;
+            tabControl1.TabPages.Clear();
+            var selectedchildren = allchildren
+                .Where(c => c != null && c.EntityInfo != null && c.Relationship != null && c.Results != null)
+                .Where(c => !chkShowOnlyData.Checked || c.Results.Entities.Count > 0);
+            WorkAsync(new WorkAsyncInfo
+            {
+                Message = "Rendering children",
+                IsCancelable = true,
+                AsyncArgument = (selectedchildren, tabControl1),
+                Work = (worker, args) =>
+                {
+                    if (!(args.Argument is ValueTuple<IEnumerable<QueryInfo>, TabControl> asyncarg))
+                    {
+                        return;
+                    }
+                    var children = asyncarg.Item1;
+                    var tc = asyncarg.Item2;
+                    var current = 0;
+                    var total = selectedchildren.Count();
+                    foreach (var child in children)
+                    {
+                        if (worker.CancellationPending)
+                        {
+                            args.Cancel = true;
+                            break;
+                        }
+                        worker.ReportProgress(current * 100 / total, $"Rendering {child.EntityInfo}");
+                        MethodInvoker mi = delegate
+                        {
+                            new RelatedRecordsControl(tc, Service, child);
+                        };
+                        Invoke(mi);
+                    }
+                },
+                ProgressChanged = (args) =>
+                {
+                    SetWorkingMessage(args.UserState?.ToString());
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(args.ProgressPercentage, args.UserState.ToString().Replace("\r\n", " ")));
+                },
+                PostWorkCallBack = (args) =>
+                {
+                    tsbCancel.Enabled = false;
+                    gvRecords.Enabled = true;
+                    tsbAnalyze.Enabled = true;
+                    SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
+                }
+            });
+        }
+
+        private void SetStatus(string status)
+        {
+            SendMessageToStatusBar(this, new StatusBarMessageEventArgs(status));
+        }
+
+        #endregion Private Methods
     }
 }

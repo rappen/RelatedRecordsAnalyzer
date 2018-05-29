@@ -34,6 +34,7 @@
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbAnalyze = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gvRecords = new Cinteros.Xrm.CRMWinForm.CRMGridView();
@@ -43,19 +44,20 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cmbEntities = new System.Windows.Forms.ComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.chkShowOnlyData = new System.Windows.Forms.CheckBox();
-            this.chkShowHidden = new System.Windows.Forms.CheckBox();
-            this.btnFindRelations = new System.Windows.Forms.Button();
-            this.typeTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtRecordName = new System.Windows.Forms.TextBox();
             this.txtRecordId = new System.Windows.Forms.TextBox();
+            this.txtRecordName = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkShowOnlyData = new System.Windows.Forms.CheckBox();
+            this.chkShowHidden = new System.Windows.Forms.CheckBox();
+            this.typeTimer = new System.Windows.Forms.Timer(this.components);
+            this.chkShowMM = new System.Windows.Forms.CheckBox();
+            this.tsbCancel = new System.Windows.Forms.ToolStripButton();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -64,9 +66,9 @@
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvRecords)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -74,7 +76,9 @@
             this.toolStripMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbClose,
-            this.tssSeparator1});
+            this.tssSeparator1,
+            this.tsbAnalyze,
+            this.tsbCancel});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
             this.toolStripMenu.Size = new System.Drawing.Size(886, 31);
@@ -83,17 +87,26 @@
             // 
             // tsbClose
             // 
-            this.tsbClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
             this.tsbClose.Name = "tsbClose";
-            this.tsbClose.Size = new System.Drawing.Size(28, 28);
-            this.tsbClose.Text = "Close this tool";
+            this.tsbClose.Size = new System.Drawing.Size(64, 28);
+            this.tsbClose.Text = "Close";
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
             // 
             // tssSeparator1
             // 
             this.tssSeparator1.Name = "tssSeparator1";
             this.tssSeparator1.Size = new System.Drawing.Size(6, 31);
+            // 
+            // tsbAnalyze
+            // 
+            this.tsbAnalyze.Enabled = false;
+            this.tsbAnalyze.Image = ((System.Drawing.Image)(resources.GetObject("tsbAnalyze.Image")));
+            this.tsbAnalyze.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAnalyze.Name = "tsbAnalyze";
+            this.tsbAnalyze.Size = new System.Drawing.Size(127, 28);
+            this.tsbAnalyze.Text = "Analyze Relations";
+            this.tsbAnalyze.Click += new System.EventHandler(this.tsbAnalyze_Click);
             // 
             // splitContainer1
             // 
@@ -218,58 +231,6 @@
             this.tabControl1.Size = new System.Drawing.Size(567, 434);
             this.tabControl1.TabIndex = 2;
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.chkShowOnlyData);
-            this.groupBox3.Controls.Add(this.chkShowHidden);
-            this.groupBox3.Controls.Add(this.btnFindRelations);
-            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.groupBox3.Location = new System.Drawing.Point(298, 0);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(269, 79);
-            this.groupBox3.TabIndex = 1;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Analyze relations";
-            // 
-            // chkShowOnlyData
-            // 
-            this.chkShowOnlyData.AutoSize = true;
-            this.chkShowOnlyData.Checked = true;
-            this.chkShowOnlyData.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowOnlyData.Location = new System.Drawing.Point(16, 46);
-            this.chkShowOnlyData.Name = "chkShowOnlyData";
-            this.chkShowOnlyData.Size = new System.Drawing.Size(163, 17);
-            this.chkShowOnlyData.TabIndex = 2;
-            this.chkShowOnlyData.Text = "Only show relations with data";
-            this.chkShowOnlyData.UseVisualStyleBackColor = true;
-            // 
-            // chkShowHidden
-            // 
-            this.chkShowHidden.AutoSize = true;
-            this.chkShowHidden.Location = new System.Drawing.Point(16, 19);
-            this.chkShowHidden.Name = "chkShowHidden";
-            this.chkShowHidden.Size = new System.Drawing.Size(130, 17);
-            this.chkShowHidden.TabIndex = 1;
-            this.chkShowHidden.Text = "Show hidden relations";
-            this.chkShowHidden.UseVisualStyleBackColor = true;
-            // 
-            // btnFindRelations
-            // 
-            this.btnFindRelations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFindRelations.Enabled = false;
-            this.btnFindRelations.Image = ((System.Drawing.Image)(resources.GetObject("btnFindRelations.Image")));
-            this.btnFindRelations.Location = new System.Drawing.Point(208, 17);
-            this.btnFindRelations.Name = "btnFindRelations";
-            this.btnFindRelations.Size = new System.Drawing.Size(55, 47);
-            this.btnFindRelations.TabIndex = 0;
-            this.btnFindRelations.UseVisualStyleBackColor = true;
-            this.btnFindRelations.Click += new System.EventHandler(this.btnFindRelations_Click);
-            // 
-            // typeTimer
-            // 
-            this.typeTimer.Interval = 200;
-            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
-            // 
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -298,19 +259,32 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(288, 79);
+            this.groupBox4.Size = new System.Drawing.Size(267, 79);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Selected record";
             // 
-            // label3
+            // txtRecordId
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 20);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Name";
+            this.txtRecordId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtRecordId.BackColor = System.Drawing.SystemColors.Window;
+            this.txtRecordId.Location = new System.Drawing.Point(78, 44);
+            this.txtRecordId.Name = "txtRecordId";
+            this.txtRecordId.ReadOnly = true;
+            this.txtRecordId.Size = new System.Drawing.Size(183, 20);
+            this.txtRecordId.TabIndex = 3;
+            // 
+            // txtRecordName
+            // 
+            this.txtRecordName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtRecordName.BackColor = System.Drawing.SystemColors.Window;
+            this.txtRecordName.Location = new System.Drawing.Point(78, 17);
+            this.txtRecordName.Name = "txtRecordName";
+            this.txtRecordName.ReadOnly = true;
+            this.txtRecordName.Size = new System.Drawing.Size(183, 20);
+            this.txtRecordName.TabIndex = 2;
             // 
             // label4
             // 
@@ -321,35 +295,85 @@
             this.label4.TabIndex = 1;
             this.label4.Text = "Id";
             // 
-            // txtRecordName
+            // label3
             // 
-            this.txtRecordName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRecordName.BackColor = System.Drawing.SystemColors.Window;
-            this.txtRecordName.Location = new System.Drawing.Point(78, 17);
-            this.txtRecordName.Name = "txtRecordName";
-            this.txtRecordName.ReadOnly = true;
-            this.txtRecordName.Size = new System.Drawing.Size(204, 20);
-            this.txtRecordName.TabIndex = 2;
-            // 
-            // txtRecordId
-            // 
-            this.txtRecordId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRecordId.BackColor = System.Drawing.SystemColors.Window;
-            this.txtRecordId.Location = new System.Drawing.Point(78, 44);
-            this.txtRecordId.Name = "txtRecordId";
-            this.txtRecordId.ReadOnly = true;
-            this.txtRecordId.Size = new System.Drawing.Size(204, 20);
-            this.txtRecordId.TabIndex = 3;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(35, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Name";
             // 
             // panel3
             // 
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(288, 0);
+            this.panel3.Location = new System.Drawing.Point(267, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(10, 79);
+            this.panel3.Size = new System.Drawing.Size(6, 79);
             this.panel3.TabIndex = 3;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.chkShowMM);
+            this.groupBox3.Controls.Add(this.chkShowOnlyData);
+            this.groupBox3.Controls.Add(this.chkShowHidden);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Right;
+            this.groupBox3.Location = new System.Drawing.Point(273, 0);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(294, 79);
+            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Options";
+            // 
+            // chkShowOnlyData
+            // 
+            this.chkShowOnlyData.AutoSize = true;
+            this.chkShowOnlyData.Checked = true;
+            this.chkShowOnlyData.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowOnlyData.Location = new System.Drawing.Point(16, 46);
+            this.chkShowOnlyData.Name = "chkShowOnlyData";
+            this.chkShowOnlyData.Size = new System.Drawing.Size(163, 17);
+            this.chkShowOnlyData.TabIndex = 2;
+            this.chkShowOnlyData.Text = "Only show relations with data";
+            this.chkShowOnlyData.UseVisualStyleBackColor = true;
+            // 
+            // chkShowHidden
+            // 
+            this.chkShowHidden.AutoSize = true;
+            this.chkShowHidden.Checked = true;
+            this.chkShowHidden.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowHidden.Location = new System.Drawing.Point(16, 19);
+            this.chkShowHidden.Name = "chkShowHidden";
+            this.chkShowHidden.Size = new System.Drawing.Size(130, 17);
+            this.chkShowHidden.TabIndex = 1;
+            this.chkShowHidden.Text = "Show hidden relations";
+            this.chkShowHidden.UseVisualStyleBackColor = true;
+            // 
+            // typeTimer
+            // 
+            this.typeTimer.Interval = 200;
+            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
+            // 
+            // chkShowMM
+            // 
+            this.chkShowMM.AutoSize = true;
+            this.chkShowMM.Enabled = false;
+            this.chkShowMM.Location = new System.Drawing.Point(191, 19);
+            this.chkShowMM.Name = "chkShowMM";
+            this.chkShowMM.Size = new System.Drawing.Size(89, 17);
+            this.chkShowMM.TabIndex = 3;
+            this.chkShowMM.Text = "M:M relations";
+            this.chkShowMM.UseVisualStyleBackColor = true;
+            // 
+            // tsbCancel
+            // 
+            this.tsbCancel.Enabled = false;
+            this.tsbCancel.Image = ((System.Drawing.Image)(resources.GetObject("tsbCancel.Image")));
+            this.tsbCancel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCancel.Name = "tsbCancel";
+            this.tsbCancel.Size = new System.Drawing.Size(71, 28);
+            this.tsbCancel.Text = "Cancel";
+            this.tsbCancel.Click += new System.EventHandler(this.tsbCancel_Click);
             // 
             // RRA
             // 
@@ -371,11 +395,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvRecords)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -394,7 +418,6 @@
         private System.Windows.Forms.ComboBox cmbEntities;
         private Cinteros.Xrm.CRMWinForm.CRMGridView gvRecords;
         private System.Windows.Forms.Timer typeTimer;
-        private System.Windows.Forms.Button btnFindRelations;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.CheckBox chkShowOnlyData;
@@ -407,5 +430,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.ToolStripButton tsbAnalyze;
+        private System.Windows.Forms.CheckBox chkShowMM;
+        private System.Windows.Forms.ToolStripButton tsbCancel;
     }
 }
