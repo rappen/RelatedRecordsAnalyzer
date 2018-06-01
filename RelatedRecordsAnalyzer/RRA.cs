@@ -7,6 +7,7 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
@@ -22,8 +23,10 @@ namespace Rappen.XTB.RRA
         #region Private Fields
 
         private const string aiEndpoint = "https://dc.services.visualstudio.com/v2/track";
+
         //private const string aiKey = "cc7cb081-b489-421d-bb61-2ee53495c336";    // jonas@rappen.net tenant, TestAI
         private const string aiKey = "eed73022-2444-45fd-928b-5eebd8fa46a6";    // jonas@rappen.net tenant, XrmToolBox
+
         //private const string aiKey = "b6a4ec7c-ab43-4780-97cd-021e99506337";   // jonas@jonasrapp.net, XrmToolBoxInsights
 
         private AppInsights ai;
@@ -107,7 +110,7 @@ namespace Rappen.XTB.RRA
 
         private void cmbEntities_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FindRecords(textBox1.Text);
+            FindRecords(txtSearch.Text);
         }
 
         private void crmGridView1_SelectionChanged(object sender, EventArgs e)
@@ -141,6 +144,7 @@ namespace Rappen.XTB.RRA
         private void RRA_Load(object sender, EventArgs e)
         {
             ai.WriteEvent("Load");
+            ShowInfoNotification("Select entity and search for parent record, or paste record url. Double-click record to open in CRM.\r\nVerify options and Analyze relations of selected record. Right-click child record to make it parent for further analysis.", null);
             // Loads or creates the settings for the plugin
             //if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
             //{
@@ -152,12 +156,6 @@ namespace Rappen.XTB.RRA
             //{
             //    LogInfo("Settings found and loaded");
             //}
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            typeTimer.Stop();
-            typeTimer.Start();
         }
 
         private void tsbAnalyze_Click(object sender, EventArgs e)
@@ -179,10 +177,34 @@ namespace Rappen.XTB.RRA
             CloseTool();
         }
 
+        private void tvChildren_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        {
+            if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Text == "dummy")
+            {
+                e.Node.Nodes.RemoveAt(0);
+                MessageBox.Show("Load children (not yet implemented)");
+            }
+        }
+
+        private void tvChildren_DoubleClick(object sender, EventArgs e)
+        {
+            if (!(tvChildren.SelectedNode is TreeNode node))
+            {
+                return;
+            }
+            SelectChildRecordFromTreeNode(node);
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            typeTimer.Stop();
+            typeTimer.Start();
+        }
+
         private void typeTimer_Tick(object sender, EventArgs e)
         {
             typeTimer.Stop();
-            FindRecords(textBox1.Text);
+            FindRecords(txtSearch.Text);
         }
 
         #endregion Private Form Event Handlers
@@ -281,6 +303,28 @@ namespace Rappen.XTB.RRA
             }
         }
 
+        private static TreeNode GetNodeForChild(QueryInfo child, TreeView tv)
+        {
+            TreeNode node = null;
+            //node = tv.Nodes.Cast<TreeNode>().FirstOrDefault(n => GetNodeForChild(child, n) is TreeNode);
+            if (node == null)
+            {
+                node = new TreeNode($"{child}");
+                node.Tag = child;
+                tv.Nodes.Add(node);
+            }
+            return node;
+        }
+
+        private static TreeNode GetNodeForChild(QueryInfo child, TreeNode node)
+        {
+            if (node.Tag is QueryInfo qi && qi.EntityInfo == child.EntityInfo)
+            {
+                return node;
+            }
+            return node.Nodes.Cast<TreeNode>().FirstOrDefault(n => GetNodeForChild(child, n) is TreeNode);
+        }
+
         private static void GetQuickFind(EntityMetadataProxy entity, IOrganizationService service)
         {
             var qry = new QueryExpression("savedquery");
@@ -300,15 +344,23 @@ namespace Rappen.XTB.RRA
             }
         }
 
-        private static QueryBase ReplaceQuickFindPlaceholders(EntityMetadataProxy entity, string find)
+        private void AddChildEntitiesDetails(QueryInfo child)
         {
-            var fx = new XmlDocument();
-            fx.LoadXml(entity.quickfindfetch);
-            if (fx.SelectSingleNode("fetch/entity") is XmlNode entitynode)
+            new RelatedRecordsControl(tabControl1, Service, child, RecordDoubleClick, RecordSetAsParent);
+        }
+
+        private void AddChildEntitiesToTree(QueryInfo child)
+        {
+            var entitynode = GetNodeForChild(child, tvChildren);
+            foreach (var record in child.Results.Entities.OrderBy(r => r.Name(child.EntityInfo)))
             {
-                FixEntity(entity, entitynode, find);
+                var recordnode = new TreeNode(record.Name(child.EntityInfo))
+                {
+                    Tag = (child, record)
+                };
+                recordnode.Nodes.Add("dummy");
+                entitynode.Nodes.Add(recordnode);
             }
-            return new FetchExpression(fx.OuterXml);
         }
 
         private void FindRecords(string find)
@@ -335,13 +387,72 @@ namespace Rappen.XTB.RRA
             LoadRecords(qry);
         }
 
+        private string GetEntityReferenceUrl(EntityReference entref)
+        {
+            if (!string.IsNullOrEmpty(entref.LogicalName) && !entref.Id.Equals(Guid.Empty))
+            {
+                var url = ConnectionDetail.WebApplicationUrl;
+                if (string.IsNullOrEmpty(url))
+                {
+                    url = string.Concat(ConnectionDetail.ServerName, "/", ConnectionDetail.Organization);
+                    if (!url.ToLower().StartsWith("http"))
+                    {
+                        url = string.Concat("http://", url);
+                    }
+                }
+                url = string.Concat(url,
+                    url.EndsWith("/") ? "" : "/",
+                    "main.aspx?etn=",
+                    entref.LogicalName,
+                    "&pagetype=entityrecord&id=",
+                    entref.Id.ToString());
+                return url;
+            }
+            return string.Empty;
+        }
+
+        private string GetEntityUrl(Entity entity)
+        {
+            var entref = entity.ToEntityReference();
+            switch (entref.LogicalName)
+            {
+                case "activitypointer":
+                    if (!entity.Contains("activitytypecode"))
+                    {
+                        MessageBox.Show("To open records of type activitypointer, attribute 'activitytypecode' must be included in the query.", "Open Record", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        entref.LogicalName = string.Empty;
+                    }
+                    else
+                    {
+                        entref.LogicalName = entity["activitytypecode"].ToString();
+                    }
+                    break;
+
+                case "activityparty":
+                    if (!entity.Contains("partyid"))
+                    {
+                        MessageBox.Show("To open records of type activityparty, attribute 'partyid' must be included in the query.", "Open Record", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        entref.LogicalName = string.Empty;
+                    }
+                    else
+                    {
+                        var party = (EntityReference)entity["partyid"];
+                        entref.LogicalName = party.LogicalName;
+                        entref.Id = party.Id;
+                    }
+                    break;
+            }
+            return GetEntityReferenceUrl(entref);
+        }
+
         private QueryExpression GetGuidQuery(string id, EntityMetadataProxy entity)
         {
             if (Guid.TryParse(id, out Guid guid))
             {
                 var qry = new QueryExpression(entity.Metadata.LogicalName);
                 qry.Criteria.AddCondition(entity.Metadata.PrimaryIdAttribute, ConditionOperator.Equal, guid);
-                qry.ColumnSet.AddColumns(entity.Metadata.PrimaryIdAttribute, entity.Metadata.PrimaryNameAttribute);
+                qry.ColumnSet.AddColumns(GetQuickFindQueryColumns(entity));
+                SetStatus($"Valid guid for {entity}");
                 return qry;
             }
             return null;
@@ -369,7 +480,6 @@ namespace Rappen.XTB.RRA
             tsbAnalyze.Enabled = false;
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
-            tabControl1.TabPages.Clear();
             var relations = entity.Metadata.OneToManyRelationships.Count();
             WorkAsync(new WorkAsyncInfo
             {
@@ -436,6 +546,7 @@ namespace Rappen.XTB.RRA
                 var qry = new QueryExpression(meta.LogicalName);
                 qry.Criteria.AddCondition(meta.PrimaryIdAttribute, ConditionOperator.Equal, entity.Item2);
                 qry.ColumnSet.AddColumns(GetQuickFindQueryColumns(entity.Item1));
+                SetStatus($"Valid url for {entity.Item1}");
                 return qry;
             }
             return null;
@@ -623,12 +734,50 @@ namespace Rappen.XTB.RRA
             cmbEntities.Items.AddRange(entities);
         }
 
+        private void RecordDoubleClick(object sender, CRMRecordEventArgs eventargs)
+        {
+            if (eventargs.Entity != null)
+            {
+                string url = GetEntityUrl(eventargs.Entity);
+                if (!string.IsNullOrEmpty(url))
+                {
+                    ai.WriteEvent("OpenRecord");
+                    Process.Start(url);
+                }
+            }
+        }
+
+        private void RecordSetAsParent(object sender, CRMRecordEventArgs eventargs)
+        {
+            if (!(eventargs.Entity is Entity selectedentity) ||
+                !(cmbEntities.Items
+                    .Cast<EntityMetadataProxy>()
+                    .FirstOrDefault(e => e.Metadata.LogicalName == selectedentity.LogicalName) is EntityMetadataProxy entity))
+            {
+                return;
+            }
+            txtSearch.Text = selectedentity.Id.ToString();
+            typeTimer.Enabled = false;
+            if (cmbEntities.SelectedItem == entity)
+            {
+                FindRecords(txtSearch.Text);
+            }
+            else
+            {
+                cmbEntities.SelectedItem = entity;
+            }
+        }
+
         private void RenderChildren(List<QueryInfo> allchildren)
         {
             tsbAnalyze.Enabled = false;
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
-            tabControl1.TabPages.Clear();
+            foreach (var page in tabControl1.TabPages.Cast<TabPage>().Where(t => t != tabTree))
+            {
+                tabControl1.TabPages.Remove(page);
+            }
+            tvChildren.Nodes.Clear();
             var selectedchildren = allchildren
                 .Where(c => c != null && c.EntityInfo != null && c.Relationship != null && c.Results != null)
                 .Where(c => !chkShowOnlyData.Checked || c.Results.Entities.Count > 0);
@@ -657,7 +806,8 @@ namespace Rappen.XTB.RRA
                         worker.ReportProgress(current * 100 / total, $"Rendering {child.EntityInfo}");
                         MethodInvoker mi = delegate
                         {
-                            new RelatedRecordsControl(tc, Service, child);
+                            AddChildEntitiesToTree(child);
+                            AddChildEntitiesDetails(child);
                         };
                         Invoke(mi);
                     }
@@ -675,6 +825,39 @@ namespace Rappen.XTB.RRA
                     SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
                 }
             });
+        }
+
+        private QueryBase ReplaceQuickFindPlaceholders(EntityMetadataProxy entity, string find)
+        {
+            var fx = new XmlDocument();
+            fx.LoadXml(entity.quickfindfetch);
+            if (fx.SelectSingleNode("fetch/entity") is XmlNode entitynode)
+            {
+                FixEntity(entity, entitynode, find);
+            }
+            SetStatus($"Composed quick find query for {entity}");
+            return new FetchExpression(fx.OuterXml);
+        }
+
+        private void SelectChildRecordFromTreeNode(TreeNode node)
+        {
+            if (node.Tag is QueryInfo qi &&
+                 tabControl1.TabPages.Cast<TabPage>().FirstOrDefault(p => p.Tag == qi) is TabPage page1)
+            {
+                tabControl1.SelectedTab = page1;
+            }
+            else if (node.Tag is ValueTuple<QueryInfo, Entity> recordinfo &&
+                tabControl1.TabPages.Cast<TabPage>().FirstOrDefault(p => p.Tag == recordinfo.Item1) is TabPage page2 &&
+                page2.Controls.Cast<Control>().FirstOrDefault(c => c is RelatedRecordsControl) is RelatedRecordsControl rrc &&
+                rrc.Controls.Cast<Control>().FirstOrDefault(c => c is CRMGridView) is CRMGridView grid &&
+                grid.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => r.Cells["#entity"].Value == recordinfo.Item2) is DataGridViewRow selectrow)
+            {
+                tabControl1.SelectedTab = page2;
+                foreach (var row in grid.Rows.Cast<DataGridViewRow>())
+                {
+                    row.Selected = row == selectrow;
+                }
+            }
         }
 
         private void SetStatus(string status)

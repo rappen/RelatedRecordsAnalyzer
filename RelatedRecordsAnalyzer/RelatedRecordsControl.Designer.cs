@@ -28,12 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gvChildren = new Cinteros.Xrm.CRMWinForm.CRMGridView();
+            this.ctxMenuChildren = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ctxMenuSelectAsParent = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.txtCascadeRollup = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -55,8 +59,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtEntity = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gvChildren)).BeginInit();
+            this.ctxMenuChildren.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -79,6 +83,7 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.gvChildren.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.gvChildren.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.gvChildren.ContextMenuStrip = this.ctxMenuChildren;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -101,11 +106,26 @@
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.gvChildren.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.gvChildren.RowHeadersVisible = false;
+            this.gvChildren.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gvChildren.ShowFriendlyNames = true;
             this.gvChildren.ShowIdColumn = false;
             this.gvChildren.ShowLocalTimes = true;
             this.gvChildren.Size = new System.Drawing.Size(646, 263);
             this.gvChildren.TabIndex = 0;
+            // 
+            // ctxMenuChildren
+            // 
+            this.ctxMenuChildren.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ctxMenuSelectAsParent});
+            this.ctxMenuChildren.Name = "ctxMenuChildren";
+            this.ctxMenuChildren.Size = new System.Drawing.Size(194, 26);
+            // 
+            // ctxMenuSelectAsParent
+            // 
+            this.ctxMenuSelectAsParent.Name = "ctxMenuSelectAsParent";
+            this.ctxMenuSelectAsParent.Size = new System.Drawing.Size(193, 22);
+            this.ctxMenuSelectAsParent.Text = "Select as parent record";
+            this.ctxMenuSelectAsParent.Click += new System.EventHandler(this.ctxMenuSelectAsParent_Click);
             // 
             // panel1
             // 
@@ -136,6 +156,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(646, 124);
             this.panel1.TabIndex = 1;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(78, 13);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(65, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Entity Info";
             // 
             // label11
             // 
@@ -348,16 +378,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Entity";
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(78, 13);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(65, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Entity Info";
-            // 
             // RelatedRecordsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -368,6 +388,7 @@
             this.Name = "RelatedRecordsControl";
             this.Size = new System.Drawing.Size(646, 387);
             ((System.ComponentModel.ISupportInitialize)(this.gvChildren)).EndInit();
+            this.ctxMenuChildren.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -399,5 +420,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.ContextMenuStrip ctxMenuChildren;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuSelectAsParent;
     }
 }

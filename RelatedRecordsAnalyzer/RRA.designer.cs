@@ -30,16 +30,17 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RRA));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbAnalyze = new System.Windows.Forms.ToolStripButton();
+            this.tsbCancel = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.gvRecords = new Cinteros.Xrm.CRMWinForm.CRMGridView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.gbSearch = new System.Windows.Forms.GroupBox();
+            this.txtSearch = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbEntities = new System.Windows.Forms.ComboBox();
@@ -53,11 +54,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkShowMM = new System.Windows.Forms.CheckBox();
             this.chkShowOnlyData = new System.Windows.Forms.CheckBox();
             this.chkShowHidden = new System.Windows.Forms.CheckBox();
             this.typeTimer = new System.Windows.Forms.Timer(this.components);
-            this.chkShowMM = new System.Windows.Forms.CheckBox();
-            this.tsbCancel = new System.Windows.Forms.ToolStripButton();
+            this.tabTree = new System.Windows.Forms.TabPage();
+            this.tvChildren = new System.Windows.Forms.TreeView();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -65,10 +67,12 @@
             this.splitContainer1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvRecords)).BeginInit();
-            this.groupBox1.SuspendLayout();
+            this.gbSearch.SuspendLayout();
+            this.tabControl1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tabTree.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -108,6 +112,16 @@
             this.tsbAnalyze.Text = "Analyze Relations";
             this.tsbAnalyze.Click += new System.EventHandler(this.tsbAnalyze_Click);
             // 
+            // tsbCancel
+            // 
+            this.tsbCancel.Enabled = false;
+            this.tsbCancel.Image = ((System.Drawing.Image)(resources.GetObject("tsbCancel.Image")));
+            this.tsbCancel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCancel.Name = "tsbCancel";
+            this.tsbCancel.Size = new System.Drawing.Size(71, 28);
+            this.tsbCancel.Text = "Cancel";
+            this.tsbCancel.Click += new System.EventHandler(this.tsbCancel_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -117,7 +131,7 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.groupBox2);
-            this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.gbSearch);
             // 
             // splitContainer1.Panel2
             // 
@@ -146,8 +160,8 @@
             this.gvRecords.AllowUserToDeleteRows = false;
             this.gvRecords.AllowUserToOrderColumns = true;
             this.gvRecords.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.gvRecords.BackgroundColor = System.Drawing.SystemColors.Window;
             this.gvRecords.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -164,31 +178,32 @@
             this.gvRecords.ShowLocalTimes = true;
             this.gvRecords.Size = new System.Drawing.Size(305, 419);
             this.gvRecords.TabIndex = 0;
+            this.gvRecords.RecordDoubleClick += new Cinteros.Xrm.CRMWinForm.CRMRecordEventHandler(this.RecordDoubleClick);
             this.gvRecords.SelectionChanged += new System.EventHandler(this.crmGridView1_SelectionChanged);
             // 
-            // groupBox1
+            // gbSearch
             // 
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.cmbEntities);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(311, 79);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Find record";
+            this.gbSearch.Controls.Add(this.txtSearch);
+            this.gbSearch.Controls.Add(this.label2);
+            this.gbSearch.Controls.Add(this.label1);
+            this.gbSearch.Controls.Add(this.cmbEntities);
+            this.gbSearch.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbSearch.Location = new System.Drawing.Point(0, 0);
+            this.gbSearch.Name = "gbSearch";
+            this.gbSearch.Size = new System.Drawing.Size(311, 79);
+            this.gbSearch.TabIndex = 0;
+            this.gbSearch.TabStop = false;
+            this.gbSearch.Text = "Find record";
             // 
-            // textBox1
+            // txtSearch
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(78, 44);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(227, 20);
-            this.textBox1.TabIndex = 3;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.txtSearch.Location = new System.Drawing.Point(78, 44);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(227, 20);
+            this.txtSearch.TabIndex = 3;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // label2
             // 
@@ -224,6 +239,7 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Controls.Add(this.tabTree);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 83);
             this.tabControl1.Name = "tabControl1";
@@ -325,6 +341,17 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
             // 
+            // chkShowMM
+            // 
+            this.chkShowMM.AutoSize = true;
+            this.chkShowMM.Enabled = false;
+            this.chkShowMM.Location = new System.Drawing.Point(191, 19);
+            this.chkShowMM.Name = "chkShowMM";
+            this.chkShowMM.Size = new System.Drawing.Size(89, 17);
+            this.chkShowMM.TabIndex = 3;
+            this.chkShowMM.Text = "M:M relations";
+            this.chkShowMM.UseVisualStyleBackColor = true;
+            // 
             // chkShowOnlyData
             // 
             this.chkShowOnlyData.AutoSize = true;
@@ -351,29 +378,28 @@
             // 
             // typeTimer
             // 
-            this.typeTimer.Interval = 200;
+            this.typeTimer.Interval = 500;
             this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
             // 
-            // chkShowMM
+            // tabTree
             // 
-            this.chkShowMM.AutoSize = true;
-            this.chkShowMM.Enabled = false;
-            this.chkShowMM.Location = new System.Drawing.Point(191, 19);
-            this.chkShowMM.Name = "chkShowMM";
-            this.chkShowMM.Size = new System.Drawing.Size(89, 17);
-            this.chkShowMM.TabIndex = 3;
-            this.chkShowMM.Text = "M:M relations";
-            this.chkShowMM.UseVisualStyleBackColor = true;
+            this.tabTree.Controls.Add(this.tvChildren);
+            this.tabTree.Location = new System.Drawing.Point(4, 22);
+            this.tabTree.Name = "tabTree";
+            this.tabTree.Size = new System.Drawing.Size(559, 408);
+            this.tabTree.TabIndex = 0;
+            this.tabTree.Text = "Hierarchy";
+            this.tabTree.UseVisualStyleBackColor = true;
             // 
-            // tsbCancel
+            // tvChildren
             // 
-            this.tsbCancel.Enabled = false;
-            this.tsbCancel.Image = ((System.Drawing.Image)(resources.GetObject("tsbCancel.Image")));
-            this.tsbCancel.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbCancel.Name = "tsbCancel";
-            this.tsbCancel.Size = new System.Drawing.Size(71, 28);
-            this.tsbCancel.Text = "Cancel";
-            this.tsbCancel.Click += new System.EventHandler(this.tsbCancel_Click);
+            this.tvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvChildren.Location = new System.Drawing.Point(0, 0);
+            this.tvChildren.Name = "tvChildren";
+            this.tvChildren.Size = new System.Drawing.Size(559, 408);
+            this.tvChildren.TabIndex = 0;
+            this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvChildren_BeforeExpand);
+            this.tvChildren.DoubleClick += new System.EventHandler(this.tvChildren_DoubleClick);
             // 
             // RRA
             // 
@@ -393,13 +419,15 @@
             this.splitContainer1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gvRecords)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gbSearch.ResumeLayout(false);
+            this.gbSearch.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.tabTree.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -411,8 +439,8 @@
         private System.Windows.Forms.ToolStripSeparator tssSeparator1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.GroupBox gbSearch;
+        private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cmbEntities;
@@ -433,5 +461,7 @@
         private System.Windows.Forms.ToolStripButton tsbAnalyze;
         private System.Windows.Forms.CheckBox chkShowMM;
         private System.Windows.Forms.ToolStripButton tsbCancel;
+        private System.Windows.Forms.TabPage tabTree;
+        private System.Windows.Forms.TreeView tvChildren;
     }
 }

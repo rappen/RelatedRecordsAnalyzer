@@ -11,5 +11,10 @@ namespace Rappen.XTB.RRA
         public string AttributesSignature;
         public EntityCollection Results;
         public RelationshipMetadataBase Relationship;
+
+        public override string ToString()
+        {
+            return $"{EntityInfo.Metadata.DisplayName.UserLocalizedLabel.Label} ({Results?.Entities?.Count})";
+        }
     }
 }
