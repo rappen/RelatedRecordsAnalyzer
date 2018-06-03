@@ -15,18 +15,8 @@ namespace Rappen.XTB.RRA
             InitializeComponent();
             gvChildren.RecordDoubleClick += recorddoubleclick;
             SelectAsParent = recordselectasparent;
-            var related = child.EntityInfo.Metadata.DisplayCollectionName.UserLocalizedLabel.Label;
             if (child.Relationship is OneToManyRelationshipMetadata rel1m)
             {
-                switch (rel1m.AssociatedMenuConfiguration.Behavior)
-                {
-                    case AssociatedMenuBehavior.DoNotDisplay:
-                        related += " (hidden)";
-                        break;
-                    case AssociatedMenuBehavior.UseLabel:
-                        related = rel1m.AssociatedMenuConfiguration.Label.UserLocalizedLabel.Label;
-                        break;
-                }
                 txtCascadeAssign.Text = rel1m.CascadeConfiguration.Assign?.ToString();
                 txtCascadeShare.Text = rel1m.CascadeConfiguration.Share?.ToString();
                 txtCascadeUnshare.Text = rel1m.CascadeConfiguration.Unshare?.ToString();
@@ -35,18 +25,32 @@ namespace Rappen.XTB.RRA
                 txtCascadeMerge.Text = rel1m.CascadeConfiguration.Merge?.ToString();
                 txtCascadeRollup.Text = rel1m.CascadeConfiguration.RollupView?.ToString();
             }
-            txtEntity.Text = related;
+            txtEntity.Text = child.CollectionDisplayName;
             txtRelation.Text = child.Relationship.SchemaName;
             txtCount.Text = child.Results.Entities.Count.ToString();
-            var tp = new TabPage(related);
-            tp.Tag = child;
-            tp.Name = child.Relationship.SchemaName;
+            var tp = new TabPage(child.CollectionDisplayName)
+            {
+                Tag = child,
+                Name = child.Relationship.SchemaName
+            };
             tp.Controls.Add(this);
             Dock = DockStyle.Fill;
             parent.TabPages.Add(tp);
             gvChildren.OrganizationService = service;
             gvChildren.DataSource = child.Results;
-            RRA.SortColumns(gvChildren, child.EntityInfo, service);
+            RRA.SortColumns(gvChildren, child.EntityInfo, gvChildren.OrganizationService);
+        }
+
+        public void AddRecords(QueryInfo child)
+        {
+            if (!(gvChildren.GetDataSource<EntityCollection>() is EntityCollection entities))
+            {
+                return;
+            }
+            entities.Merge(child.Results);
+            txtCount.Text = entities.Entities.Count.ToString();
+            gvChildren.Refresh();
+            RRA.SortColumns(gvChildren, child.EntityInfo, gvChildren.OrganizationService);
         }
 
         private void ctxMenuSelectAsParent_Click(object sender, System.EventArgs e) 

@@ -160,6 +160,11 @@ namespace Rappen.XTB.RRA
 
         private void tsbAnalyze_Click(object sender, EventArgs e)
         {
+            tvChildren.Nodes.Clear();
+            foreach (var page in tabControl1.TabPages.Cast<TabPage>().Where(t => t != tabTree))
+            {
+                tabControl1.TabPages.Remove(page);
+            }
             var record = gvRecords.SelectedRowRecords.Entities[0];
             var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
             GetRelatedChildren(record, entity);
@@ -179,10 +184,9 @@ namespace Rappen.XTB.RRA
 
         private void tvChildren_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
-            if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Text == "dummy")
+            if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Name == "dummy" && e.Node.Tag is ValueTuple<QueryInfo, Entity> nodeinfo)
             {
-                e.Node.Nodes.RemoveAt(0);
-                MessageBox.Show("Load children (not yet implemented)");
+                GetRelatedChildren(nodeinfo.Item2, nodeinfo.Item1.EntityInfo);
             }
         }
 
@@ -303,26 +307,44 @@ namespace Rappen.XTB.RRA
             }
         }
 
-        private static TreeNode GetNodeForChild(QueryInfo child, TreeView tv)
+        private static TreeNode GetEntityNode(QueryInfo child, TreeView tv)
         {
-            TreeNode node = null;
-            //node = tv.Nodes.Cast<TreeNode>().FirstOrDefault(n => GetNodeForChild(child, n) is TreeNode);
-            if (node == null)
+            var node = new TreeNode($"{child.CollectionDisplayName} ({child.EntityInfo.Metadata.LogicalName}): {child.Results.Entities.Count} records")
             {
-                node = new TreeNode($"{child}");
-                node.Tag = child;
+                Tag = child
+            };
+            var parentnode = GetParentNode(child, tv.Nodes);
+            if (parentnode == null)
+            {
                 tv.Nodes.Add(node);
+            }
+            else
+            {
+                if (parentnode.Nodes.Count == 1 && parentnode.Nodes[0].Name == "dummy")
+                {
+                    parentnode.Nodes.RemoveAt(0);
+                }
+                parentnode.Nodes.Add(node);
             }
             return node;
         }
 
-        private static TreeNode GetNodeForChild(QueryInfo child, TreeNode node)
+        private static TreeNode GetParentNode(QueryInfo child, TreeNodeCollection nodes)
         {
-            if (node.Tag is QueryInfo qi && qi.EntityInfo == child.EntityInfo)
+            foreach (TreeNode node in nodes)
             {
-                return node;
+                if (node.Tag is ValueTuple<QueryInfo, Entity> nodeinfo &&
+                    nodeinfo.Item2.LogicalName == child.ParentEntity.LogicalName &&
+                    nodeinfo.Item2.Id.Equals(child.ParentEntity.Id))
+                {
+                    return node;
+                }
+                else if (GetParentNode(child, node.Nodes) is TreeNode parent)
+                {
+                    return parent;
+                }
             }
-            return node.Nodes.Cast<TreeNode>().FirstOrDefault(n => GetNodeForChild(child, n) is TreeNode);
+            return null;
         }
 
         private static void GetQuickFind(EntityMetadataProxy entity, IOrganizationService service)
@@ -344,21 +366,49 @@ namespace Rappen.XTB.RRA
             }
         }
 
+        private static RelatedRecordsControl GetRelatedRecordsControl(TabControl tc, QueryInfo child)
+        {
+            return tc.TabPages
+                .Cast<TabPage>()
+                .Where(p => p.Controls.Count == 1
+                    && p.Controls[0] is RelatedRecordsControl
+                    && p.Tag is QueryInfo qi
+                    && qi.Relationship == child.Relationship)
+                .Select(p => p.Controls[0] as RelatedRecordsControl)
+                .FirstOrDefault();
+        }
+
+        private static TabPage GetTabPage(TabControl tc, QueryInfo child)
+        {
+            return tc.TabPages
+                .Cast<TabPage>()
+                .Where(p => p.Controls.Count == 1 && p.Controls[0] is RelatedRecordsControl)
+                .FirstOrDefault(p => p.Controls[0] is RelatedRecordsControl rrc &&
+                    p.Tag is QueryInfo qi && qi.Relationship == child.Relationship);
+        }
+
         private void AddChildEntitiesDetails(QueryInfo child)
         {
-            new RelatedRecordsControl(tabControl1, Service, child, RecordDoubleClick, RecordSetAsParent);
+            if (GetRelatedRecordsControl(tabControl1, child) is RelatedRecordsControl details)
+            {
+                details.AddRecords(child);
+            }
+            else
+            {
+                new RelatedRecordsControl(tabControl1, Service, child, RecordDoubleClick, RecordSetAsParent);
+            }
         }
 
         private void AddChildEntitiesToTree(QueryInfo child)
         {
-            var entitynode = GetNodeForChild(child, tvChildren);
+            var entitynode = GetEntityNode(child, tvChildren);
             foreach (var record in child.Results.Entities.OrderBy(r => r.Name(child.EntityInfo)))
             {
                 var recordnode = new TreeNode(record.Name(child.EntityInfo))
                 {
                     Tag = (child, record)
                 };
-                recordnode.Nodes.Add("dummy");
+                recordnode.Nodes.Add("dummy", "Loading...");
                 entitynode.Nodes.Add(recordnode);
             }
         }
@@ -470,8 +520,12 @@ namespace Rappen.XTB.RRA
             var result = attributes
                 .Cast<XmlNode>()
                 .Select(a => a.Attributes["name"].Value)
-                .ToArray();
-            return result;
+                .ToList();
+            if (!result.Contains(entity.Metadata.PrimaryNameAttribute))
+            {
+                result.Add(entity.Metadata.PrimaryNameAttribute);
+            }
+            return result.ToArray();
         }
 
         private void GetRelatedChildren(Entity parentrecord, EntityMetadataProxy entity)
@@ -513,7 +567,7 @@ namespace Rappen.XTB.RRA
                             .FirstOrDefault(ent => ent.Metadata.LogicalName == rel.ReferencingEntity) is EntityMetadataProxy childentity)
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n{rel.SchemaName}");
-                            allchildren.Add(LoadRelatedChildren(parentrecord.Id, childentity, entity, rel));
+                            allchildren.Add(LoadRelatedChildren(parentrecord, childentity, entity, rel));
                         }
                     }
                     args.Result = allchildren;
@@ -664,18 +718,19 @@ namespace Rappen.XTB.RRA
             });
         }
 
-        private QueryInfo LoadRelatedChildren(Guid parentid, EntityMetadataProxy childmeta, EntityMetadataProxy parententity, OneToManyRelationshipMetadata rel)
+        private QueryInfo LoadRelatedChildren(Entity parent, EntityMetadataProxy childmeta, EntityMetadataProxy parententity, OneToManyRelationshipMetadata rel)
         {
             var lookup = rel.ReferencingAttribute;
             try
             {
                 var qry = new QueryByAttribute(childmeta.Metadata.LogicalName);
                 qry.ColumnSet = new ColumnSet(GetQuickFindQueryColumns(childmeta));
-                qry.AddAttributeValue(lookup, parentid);
+                qry.AddAttributeValue(lookup, parent.Id);
                 qry.AddOrder(childmeta.Metadata.PrimaryNameAttribute, OrderType.Ascending);
                 var children = Service.RetrieveMultiple(qry);
                 var result = new QueryInfo
                 {
+                    ParentEntity = parent,
                     AttributesSignature = string.Join("\n", qry.ColumnSet.Columns),
                     EntityInfo = childmeta,
                     Query = qry,
@@ -773,11 +828,11 @@ namespace Rappen.XTB.RRA
             tsbAnalyze.Enabled = false;
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
-            foreach (var page in tabControl1.TabPages.Cast<TabPage>().Where(t => t != tabTree))
+            if (tvChildren.SelectedNode?.Nodes?.Count == 1 && tvChildren.SelectedNode.Nodes[0].Name == "dummy")
             {
-                tabControl1.TabPages.Remove(page);
+                tvChildren.SelectedNode.Nodes.RemoveAt(0);
             }
-            tvChildren.Nodes.Clear();
+            //tvChildren.Nodes.Clear();
             var selectedchildren = allchildren
                 .Where(c => c != null && c.EntityInfo != null && c.Relationship != null && c.Results != null)
                 .Where(c => !chkShowOnlyData.Checked || c.Results.Entities.Count > 0);
@@ -841,18 +896,27 @@ namespace Rappen.XTB.RRA
 
         private void SelectChildRecordFromTreeNode(TreeNode node)
         {
-            if (node.Tag is QueryInfo qi &&
-                 tabControl1.TabPages.Cast<TabPage>().FirstOrDefault(p => p.Tag == qi) is TabPage page1)
+            var qi = node.Tag is QueryInfo tag1 ? tag1 : node.Tag is ValueTuple<QueryInfo, Entity> tuple1 ? tuple1.Item1 : null;
+            if (qi == null)
             {
-                tabControl1.SelectedTab = page1;
+                return;
             }
-            else if (node.Tag is ValueTuple<QueryInfo, Entity> recordinfo &&
-                tabControl1.TabPages.Cast<TabPage>().FirstOrDefault(p => p.Tag == recordinfo.Item1) is TabPage page2 &&
-                page2.Controls.Cast<Control>().FirstOrDefault(c => c is RelatedRecordsControl) is RelatedRecordsControl rrc &&
-                rrc.Controls.Cast<Control>().FirstOrDefault(c => c is CRMGridView) is CRMGridView grid &&
-                grid.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => r.Cells["#entity"].Value == recordinfo.Item2) is DataGridViewRow selectrow)
+            var page = GetTabPage(tabControl1, qi);
+            if (page == null)
             {
-                tabControl1.SelectedTab = page2;
+                return;
+            }
+            tabControl1.SelectedTab = page;
+
+            var entity = node.Tag is ValueTuple<QueryInfo, Entity> tuple2 ? tuple2.Item2 : null;
+            if (entity == null)
+            {
+                return;
+            }
+            if (page.Controls.Cast<Control>().FirstOrDefault(c => c is RelatedRecordsControl) is RelatedRecordsControl rrc &&
+                rrc.Controls.Cast<Control>().FirstOrDefault(c => c is CRMGridView) is CRMGridView grid &&
+                grid.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => r.Cells["#entity"].Value == entity) is DataGridViewRow selectrow)
+            {
                 foreach (var row in grid.Rows.Cast<DataGridViewRow>())
                 {
                     row.Selected = row == selectrow;
