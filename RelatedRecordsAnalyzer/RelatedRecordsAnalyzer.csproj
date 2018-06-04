@@ -139,9 +139,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About.designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
     <Compile Include="EntityMetadataProxy.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MetadataHelper.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="QueryInfo.cs" />
     <Compile Include="RelatedRecordsControl.cs">
       <SubType>UserControl</SubType>
@@ -166,6 +177,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="RelatedRecordsControl.resx">
       <DependentUpon>RelatedRecordsControl.cs</DependentUpon>
     </EmbeddedResource>

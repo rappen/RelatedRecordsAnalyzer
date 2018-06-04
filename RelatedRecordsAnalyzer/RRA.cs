@@ -29,7 +29,7 @@ namespace Rappen.XTB.RRA
 
         //private const string aiKey = "b6a4ec7c-ab43-4780-97cd-021e99506337";   // jonas@jonasrapp.net, XrmToolBoxInsights
 
-        private AppInsights ai;
+        internal AppInsights ai;
 
         #endregion Private Fields
 
@@ -66,7 +66,10 @@ namespace Rappen.XTB.RRA
 
         public void ShowAboutDialog()
         {
-            MessageBox.Show("This is RRA.");
+            using (var about = new About(this))
+            {
+                about.ShowDialog(this);
+            }
         }
 
         /// <summary>
@@ -149,7 +152,8 @@ namespace Rappen.XTB.RRA
         private void RRA_Load(object sender, EventArgs e)
         {
             ai.WriteEvent("Load");
-            ShowInfoNotification("Select entity and search for parent record, or paste record url. Double-click record to open in CRM.\r\nVerify options and Analyze relations of selected record. Right-click child record to make it parent for further analysis.", null);
+            //ShowInfoNotification("Select entity and search for parent record, or paste record url. Double-click record to open in CRM.\r\nVerify options and Analyze relations of selected record. Right-click child record to make it parent for further analysis.", null);
+
             // Loads or creates the settings for the plugin
             //if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
             //{
@@ -189,7 +193,7 @@ namespace Rappen.XTB.RRA
 
         private void tslByJonas_Click(object sender, EventArgs e)
         {
-            Process.Start("http://jonasrapp.net/?src=RRA");
+            ShowAboutDialog();
         }
 
         private void tvChildren_BeforeExpand(object sender, TreeViewCancelEventArgs e)
