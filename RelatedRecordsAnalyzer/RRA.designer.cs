@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RRA));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -45,6 +45,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cmbEntities = new System.Windows.Forms.ComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabTree = new System.Windows.Forms.TabPage();
+            this.tvChildren = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -58,8 +60,7 @@
             this.chkShowOnlyData = new System.Windows.Forms.CheckBox();
             this.chkShowHidden = new System.Windows.Forms.CheckBox();
             this.typeTimer = new System.Windows.Forms.Timer(this.components);
-            this.tabTree = new System.Windows.Forms.TabPage();
-            this.tvChildren = new System.Windows.Forms.TreeView();
+            this.tslByJonas = new System.Windows.Forms.ToolStripLabel();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -69,10 +70,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvRecords)).BeginInit();
             this.gbSearch.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            this.tabTree.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.tabTree.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -82,7 +83,8 @@
             this.tsbClose,
             this.tssSeparator1,
             this.tsbAnalyze,
-            this.tsbCancel});
+            this.tsbCancel,
+            this.tslByJonas});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
             this.toolStripMenu.Size = new System.Drawing.Size(886, 31);
@@ -160,8 +162,8 @@
             this.gvRecords.AllowUserToDeleteRows = false;
             this.gvRecords.AllowUserToOrderColumns = true;
             this.gvRecords.AllowUserToResizeRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gvRecords.BackgroundColor = System.Drawing.SystemColors.Window;
             this.gvRecords.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -246,6 +248,26 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(567, 434);
             this.tabControl1.TabIndex = 2;
+            // 
+            // tabTree
+            // 
+            this.tabTree.Controls.Add(this.tvChildren);
+            this.tabTree.Location = new System.Drawing.Point(4, 22);
+            this.tabTree.Name = "tabTree";
+            this.tabTree.Size = new System.Drawing.Size(559, 408);
+            this.tabTree.TabIndex = 0;
+            this.tabTree.Text = "Hierarchy";
+            this.tabTree.UseVisualStyleBackColor = true;
+            // 
+            // tvChildren
+            // 
+            this.tvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvChildren.Location = new System.Drawing.Point(0, 0);
+            this.tvChildren.Name = "tvChildren";
+            this.tvChildren.Size = new System.Drawing.Size(559, 408);
+            this.tvChildren.TabIndex = 0;
+            this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvChildren_BeforeExpand);
+            this.tvChildren.DoubleClick += new System.EventHandler(this.tvChildren_DoubleClick);
             // 
             // panel1
             // 
@@ -381,25 +403,17 @@
             this.typeTimer.Interval = 500;
             this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
             // 
-            // tabTree
+            // tslByJonas
             // 
-            this.tabTree.Controls.Add(this.tvChildren);
-            this.tabTree.Location = new System.Drawing.Point(4, 22);
-            this.tabTree.Name = "tabTree";
-            this.tabTree.Size = new System.Drawing.Size(559, 408);
-            this.tabTree.TabIndex = 0;
-            this.tabTree.Text = "Hierarchy";
-            this.tabTree.UseVisualStyleBackColor = true;
-            // 
-            // tvChildren
-            // 
-            this.tvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvChildren.Location = new System.Drawing.Point(0, 0);
-            this.tvChildren.Name = "tvChildren";
-            this.tvChildren.Size = new System.Drawing.Size(559, 408);
-            this.tvChildren.TabIndex = 0;
-            this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvChildren_BeforeExpand);
-            this.tvChildren.DoubleClick += new System.EventHandler(this.tvChildren_DoubleClick);
+            this.tslByJonas.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tslByJonas.Image = ((System.Drawing.Image)(resources.GetObject("tslByJonas.Image")));
+            this.tslByJonas.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tslByJonas.IsLink = true;
+            this.tslByJonas.Name = "tslByJonas";
+            this.tslByJonas.Size = new System.Drawing.Size(106, 28);
+            this.tslByJonas.Text = "by Jonas Rapp";
+            this.tslByJonas.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.tslByJonas.Click += new System.EventHandler(this.tslByJonas_Click);
             // 
             // RRA
             // 
@@ -409,7 +423,9 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStripMenu);
             this.Name = "RRA";
+            this.PluginIcon = ((System.Drawing.Icon)(resources.GetObject("$this.PluginIcon")));
             this.Size = new System.Drawing.Size(886, 548);
+            this.TabIcon = ((System.Drawing.Image)(resources.GetObject("$this.TabIcon")));
             this.Load += new System.EventHandler(this.RRA_Load);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
@@ -422,12 +438,12 @@
             this.gbSearch.ResumeLayout(false);
             this.gbSearch.PerformLayout();
             this.tabControl1.ResumeLayout(false);
+            this.tabTree.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.tabTree.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -463,5 +479,6 @@
         private System.Windows.Forms.ToolStripButton tsbCancel;
         private System.Windows.Forms.TabPage tabTree;
         private System.Windows.Forms.TreeView tvChildren;
+        private System.Windows.Forms.ToolStripLabel tslByJonas;
     }
 }

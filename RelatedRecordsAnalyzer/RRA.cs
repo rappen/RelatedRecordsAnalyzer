@@ -18,7 +18,7 @@ using XrmToolBox.Extensibility.Interfaces;
 
 namespace Rappen.XTB.RRA
 {
-    public partial class RRA : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IPayPalPlugin
+    public partial class RRA : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IPayPalPlugin, IAboutPlugin
     {
         #region Private Fields
 
@@ -63,6 +63,11 @@ namespace Rappen.XTB.RRA
         #endregion Public Properties
 
         #region Public Methods
+
+        public void ShowAboutDialog()
+        {
+            MessageBox.Show("This is RRA.");
+        }
 
         /// <summary>
         /// This event occurs when the connection has been updated in XrmToolBox
@@ -180,6 +185,11 @@ namespace Rappen.XTB.RRA
         private void tsbClose_Click(object sender, EventArgs e)
         {
             CloseTool();
+        }
+
+        private void tslByJonas_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://jonasrapp.net/?src=RRA");
         }
 
         private void tvChildren_BeforeExpand(object sender, TreeViewCancelEventArgs e)
