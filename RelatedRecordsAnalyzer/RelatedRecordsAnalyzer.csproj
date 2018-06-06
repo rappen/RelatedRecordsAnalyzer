@@ -160,6 +160,7 @@
     <Compile Include="RelatedRecordsControl.Designer.cs">
       <DependentUpon>RelatedRecordsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="RelationInfo.cs" />
     <Compile Include="RRADescription.cs" />
     <Compile Include="RRA.cs">
       <SubType>UserControl</SubType>

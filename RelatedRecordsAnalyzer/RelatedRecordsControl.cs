@@ -22,8 +22,6 @@ namespace Rappen.XTB.RRA
                 txtCascadeUnshare.Text = rel1m.CascadeConfiguration.Unshare?.ToString();
                 txtCascadeReparent.Text = rel1m.CascadeConfiguration.Reparent?.ToString();
                 txtCascadeDelete.Text = rel1m.CascadeConfiguration.Delete?.ToString();
-                txtCascadeMerge.Text = rel1m.CascadeConfiguration.Merge?.ToString();
-                txtCascadeRollup.Text = rel1m.CascadeConfiguration.RollupView?.ToString();
             }
             txtEntity.Text = child.CollectionDisplayName;
             txtRelation.Text = child.Relationship.SchemaName;

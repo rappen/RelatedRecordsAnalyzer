@@ -22,14 +22,13 @@ namespace Rappen.XTB.RRA
     {
         #region Private Fields
 
+        internal AppInsights ai;
         private const string aiEndpoint = "https://dc.services.visualstudio.com/v2/track";
 
         //private const string aiKey = "cc7cb081-b489-421d-bb61-2ee53495c336";    // jonas@rappen.net tenant, TestAI
         private const string aiKey = "eed73022-2444-45fd-928b-5eebd8fa46a6";    // jonas@rappen.net tenant, XrmToolBox
 
         //private const string aiKey = "b6a4ec7c-ab43-4780-97cd-021e99506337";   // jonas@jonasrapp.net, XrmToolBoxInsights
-
-        internal AppInsights ai;
 
         #endregion Private Fields
 
@@ -147,6 +146,19 @@ namespace Rappen.XTB.RRA
             ai.WriteEvent("Close");
             // Before leaving, save the settings
             //SettingsManager.Instance.Save(GetType(), mySettings);
+        }
+
+        private void OptionMouseEnter(object sender, EventArgs e)
+        {
+            if (sender is Control control && control.Tag != null)
+            {
+                lblOptionHint.Text = $"Hint: {control.Tag as string}";
+            }
+        }
+
+        private void OptionMouseLeave(object sender, EventArgs e)
+        {
+            lblOptionHint.Text = string.Empty;
         }
 
         private void RRA_Load(object sender, EventArgs e)
@@ -427,6 +439,15 @@ namespace Rappen.XTB.RRA
             }
         }
 
+        private bool CheckRelationshipBehavior(OneToManyRelationshipMetadata relation, RelationInfo obj)
+        {
+            return (obj.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Assign)
+                 || obj.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Reparent))
+                && (obj.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Share)
+                 || obj.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Unshare))
+                && obj.DeleteTypes.Contains((CascadeType)relation.CascadeConfiguration.Delete);
+        }
+
         private void FindRecords(string find)
         {
             QueryBase qry = GetUrlQuery(find);
@@ -549,22 +570,37 @@ namespace Rappen.XTB.RRA
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
             var relations = entity.Metadata.OneToManyRelationships.Count();
+            var workobject = new RelationInfo(entity)
+            {
+                Hidden = chkShowHidden.Checked,
+                OnlyData = chkShowOnlyData.Checked
+            };
+            if (chkBehAssAll.Checked) workobject.AssignTypes.Add(CascadeType.Cascade);
+            if (chkBehAssAct.Checked) workobject.AssignTypes.Add(CascadeType.Active);
+            if (chkBehAssUser.Checked) workobject.AssignTypes.Add(CascadeType.UserOwned);
+            if (chkBehAssNone.Checked) workobject.AssignTypes.Add(CascadeType.NoCascade);
+            if (chkBehShrAll.Checked) workobject.ShareTypes.Add(CascadeType.Cascade);
+            if (chkBehShrAct.Checked) workobject.ShareTypes.Add(CascadeType.Active);
+            if (chkBehShrUser.Checked) workobject.ShareTypes.Add(CascadeType.UserOwned);
+            if (chkBehShrNone.Checked) workobject.ShareTypes.Add(CascadeType.NoCascade);
+            if (chkBehDelAll.Checked) workobject.DeleteTypes.Add(CascadeType.Cascade);
+            if (chkBehDelRem.Checked) workobject.DeleteTypes.Add(CascadeType.RemoveLink);
+            if (chkBehDelRest.Checked) workobject.DeleteTypes.Add(CascadeType.Restrict);
             WorkAsync(new WorkAsyncInfo
             {
                 Message = "Loading children",
                 IsCancelable = true,
-                AsyncArgument = (entity, chkShowHidden.Checked),
+                AsyncArgument = workobject,
                 Work = (worker, args) =>
                 {
-                    if (!(args.Argument is ValueTuple<EntityMetadataProxy, bool> asyncarg))
+                    if (!(args.Argument is RelationInfo obj))
                     {
                         return;
                     }
-                    var asyncentity = asyncarg.Item1;
-                    var includehidden = asyncarg.Item2;
                     var allchildren = new List<QueryInfo>();
-                    var rels = asyncentity.Metadata.OneToManyRelationships
-                        .Where(r => includehidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
+                    var rels = obj.Parent.Metadata.OneToManyRelationships
+                        .Where(r => obj.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
+                        .Where(r => CheckRelationshipBehavior(r, obj))
                         .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
                     var current = 0;
                     var total = rels.Count();
@@ -581,7 +617,11 @@ namespace Rappen.XTB.RRA
                             .FirstOrDefault(ent => ent.Metadata.LogicalName == rel.ReferencingEntity) is EntityMetadataProxy childentity)
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n{rel.SchemaName}");
-                            allchildren.Add(LoadRelatedChildren(parentrecord, childentity, entity, rel));
+                            var children = LoadRelatedChildren(parentrecord, childentity, entity, rel);
+                            if (!obj.OnlyData || children.Results.Entities.Count > 0)
+                            {
+                                allchildren.Add(children);
+                            }
                         }
                     }
                     args.Result = allchildren;
@@ -846,25 +886,21 @@ namespace Rappen.XTB.RRA
             {
                 tvChildren.SelectedNode.Nodes.RemoveAt(0);
             }
-            //tvChildren.Nodes.Clear();
-            var selectedchildren = allchildren
-                .Where(c => c != null && c.EntityInfo != null && c.Relationship != null && c.Results != null)
-                .Where(c => !chkShowOnlyData.Checked || c.Results.Entities.Count > 0);
             WorkAsync(new WorkAsyncInfo
             {
                 Message = "Rendering children",
                 IsCancelable = true,
-                AsyncArgument = (selectedchildren, tabControl1),
+                AsyncArgument = (allchildren, tabControl1),
                 Work = (worker, args) =>
                 {
-                    if (!(args.Argument is ValueTuple<IEnumerable<QueryInfo>, TabControl> asyncarg))
+                    if (!(args.Argument is ValueTuple<List<QueryInfo>, TabControl> asyncarg))
                     {
                         return;
                     }
                     var children = asyncarg.Item1;
                     var tc = asyncarg.Item2;
                     var current = 0;
-                    var total = selectedchildren.Count();
+                    var total = children.Count();
                     foreach (var child in children)
                     {
                         if (worker.CancellationPending)
