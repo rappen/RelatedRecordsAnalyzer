@@ -63,6 +63,11 @@ namespace Rappen.XTB.RRA
 
         #region Public Methods
 
+        public override void ClosingPlugin(PluginCloseInfo info)
+        {
+            SaveSettings();
+            base.ClosingPlugin(info);
+        }
         public void ShowAboutDialog()
         {
             using (var about = new About(this))
@@ -77,11 +82,20 @@ namespace Rappen.XTB.RRA
         public override void UpdateConnection(IOrganizationService newService, ConnectionDetail detail, string actionName, object parameter)
         {
             base.UpdateConnection(newService, detail, actionName, parameter);
+            LoadSettings();
             gvRecords.OrganizationService = newService;
             LoadEntities(PopulateEntities);
 
             //mySettings.LastUsedOrganizationWebappUrl = detail.WebApplicationUrl;
             LogInfo("Connection has changed to: {0}", detail.WebApplicationUrl);
+        }
+
+        private void LoadSettings()
+        {
+            if (SettingsManager.Instance.TryLoad(typeof(RRA), out AnalysisOptions ao, ConnectionDetail?.ConnectionName))
+            {
+                SetAnalysisOptions(ao);
+            }
         }
 
         #endregion Public Methods
@@ -164,19 +178,9 @@ namespace Rappen.XTB.RRA
         private void RRA_Load(object sender, EventArgs e)
         {
             ai.WriteEvent("Load");
+            LoadSettings();
+
             //ShowInfoNotification("Select entity and search for parent record, or paste record url. Double-click record to open in CRM.\r\nVerify options and Analyze relations of selected record. Right-click child record to make it parent for further analysis.", null);
-
-            // Loads or creates the settings for the plugin
-            //if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
-            //{
-            //    mySettings = new Settings();
-
-            //    LogWarning("Settings not found => a new settings file has been created!");
-            //}
-            //else
-            //{
-            //    LogInfo("Settings found and loaded");
-            //}
         }
 
         private void tsbAnalyze_Click(object sender, EventArgs e)
@@ -240,6 +244,14 @@ namespace Rappen.XTB.RRA
         #endregion Private Form Event Handlers
 
         #region Private Methods
+
+        private void SaveSettings()
+        {
+            //var settings = GetSettings();
+            //SettingsManager.Instance.Save(typeof(PluginTraceViewer), settings, "Settings");
+            var ao = GetAnalysisOptions(null);
+            SettingsManager.Instance.Save(typeof(RRA), ao, ConnectionDetail?.ConnectionName);
+        }
 
         private static void FixEntity(EntityMetadataProxy entity, XmlNode entitynode, string find)
         {
@@ -439,13 +451,13 @@ namespace Rappen.XTB.RRA
             }
         }
 
-        private bool CheckRelationshipBehavior(OneToManyRelationshipMetadata relation, RelationInfo obj)
+        private bool CheckRelationshipBehavior(OneToManyRelationshipMetadata relation, AnalysisOptions ao)
         {
-            return (obj.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Assign)
-                 || obj.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Reparent))
-                && (obj.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Share)
-                 || obj.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Unshare))
-                && obj.DeleteTypes.Contains((CascadeType)relation.CascadeConfiguration.Delete);
+            return (ao.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Assign)
+                 || ao.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Reparent))
+                && (ao.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Share)
+                 || ao.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Unshare))
+                && ao.DeleteTypes.Contains((CascadeType)relation.CascadeConfiguration.Delete);
         }
 
         private void FindRecords(string find)
@@ -570,22 +582,7 @@ namespace Rappen.XTB.RRA
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
             var relations = entity.Metadata.OneToManyRelationships.Count();
-            var workobject = new RelationInfo(entity)
-            {
-                Hidden = chkShowHidden.Checked,
-                OnlyData = chkShowOnlyData.Checked
-            };
-            if (chkBehAssAll.Checked) workobject.AssignTypes.Add(CascadeType.Cascade);
-            if (chkBehAssAct.Checked) workobject.AssignTypes.Add(CascadeType.Active);
-            if (chkBehAssUser.Checked) workobject.AssignTypes.Add(CascadeType.UserOwned);
-            if (chkBehAssNone.Checked) workobject.AssignTypes.Add(CascadeType.NoCascade);
-            if (chkBehShrAll.Checked) workobject.ShareTypes.Add(CascadeType.Cascade);
-            if (chkBehShrAct.Checked) workobject.ShareTypes.Add(CascadeType.Active);
-            if (chkBehShrUser.Checked) workobject.ShareTypes.Add(CascadeType.UserOwned);
-            if (chkBehShrNone.Checked) workobject.ShareTypes.Add(CascadeType.NoCascade);
-            if (chkBehDelAll.Checked) workobject.DeleteTypes.Add(CascadeType.Cascade);
-            if (chkBehDelRem.Checked) workobject.DeleteTypes.Add(CascadeType.RemoveLink);
-            if (chkBehDelRest.Checked) workobject.DeleteTypes.Add(CascadeType.Restrict);
+            var workobject = GetAnalysisOptions(entity);
             WorkAsync(new WorkAsyncInfo
             {
                 Message = "Loading children",
@@ -593,14 +590,14 @@ namespace Rappen.XTB.RRA
                 AsyncArgument = workobject,
                 Work = (worker, args) =>
                 {
-                    if (!(args.Argument is RelationInfo obj))
+                    if (!(args.Argument is AnalysisOptions ao))
                     {
                         return;
                     }
                     var allchildren = new List<QueryInfo>();
-                    var rels = obj.Parent.Metadata.OneToManyRelationships
-                        .Where(r => obj.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
-                        .Where(r => CheckRelationshipBehavior(r, obj))
+                    var rels = ao.Parent.Metadata.OneToManyRelationships
+                        .Where(r => ao.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
+                        .Where(r => CheckRelationshipBehavior(r, ao))
                         .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
                     var current = 0;
                     var total = rels.Count();
@@ -618,7 +615,7 @@ namespace Rappen.XTB.RRA
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n{rel.SchemaName}");
                             var children = LoadRelatedChildren(parentrecord, childentity, entity, rel);
-                            if (!obj.OnlyData || children.Results.Entities.Count > 0)
+                            if (!ao.OnlyData || children.Results.Entities.Count > 0)
                             {
                                 allchildren.Add(children);
                             }
@@ -643,6 +640,44 @@ namespace Rappen.XTB.RRA
                     SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
                 }
             });
+        }
+
+        private AnalysisOptions GetAnalysisOptions(EntityMetadataProxy entity)
+        {
+            var ao = new AnalysisOptions(entity)
+            {
+                Hidden = chkShowHidden.Checked,
+                OnlyData = chkShowOnlyData.Checked
+            };
+            if (chkBehAssAll.Checked) ao.AssignTypes.Add(CascadeType.Cascade);
+            if (chkBehAssAct.Checked) ao.AssignTypes.Add(CascadeType.Active);
+            if (chkBehAssUser.Checked) ao.AssignTypes.Add(CascadeType.UserOwned);
+            if (chkBehAssNone.Checked) ao.AssignTypes.Add(CascadeType.NoCascade);
+            if (chkBehShrAll.Checked) ao.ShareTypes.Add(CascadeType.Cascade);
+            if (chkBehShrAct.Checked) ao.ShareTypes.Add(CascadeType.Active);
+            if (chkBehShrUser.Checked) ao.ShareTypes.Add(CascadeType.UserOwned);
+            if (chkBehShrNone.Checked) ao.ShareTypes.Add(CascadeType.NoCascade);
+            if (chkBehDelAll.Checked) ao.DeleteTypes.Add(CascadeType.Cascade);
+            if (chkBehDelRem.Checked) ao.DeleteTypes.Add(CascadeType.RemoveLink);
+            if (chkBehDelRest.Checked) ao.DeleteTypes.Add(CascadeType.Restrict);
+            return ao;
+        }
+
+        private void SetAnalysisOptions(AnalysisOptions ao)
+        {
+            chkShowHidden.Checked = ao.Hidden;
+            chkShowOnlyData.Checked = ao.OnlyData;
+            chkBehAssAll.Checked = ao.AssignTypes.Contains(CascadeType.Cascade);
+            chkBehAssAct.Checked = ao.AssignTypes.Contains(CascadeType.Active);
+            chkBehAssUser.Checked = ao.AssignTypes.Contains(CascadeType.UserOwned);
+            chkBehAssNone.Checked = ao.AssignTypes.Contains(CascadeType.NoCascade);
+            chkBehShrAll.Checked = ao.ShareTypes.Contains(CascadeType.Cascade);
+            chkBehShrAct.Checked = ao.ShareTypes.Contains(CascadeType.Active);
+            chkBehShrUser.Checked = ao.ShareTypes.Contains(CascadeType.UserOwned);
+            chkBehShrNone.Checked = ao.ShareTypes.Contains(CascadeType.NoCascade);
+            chkBehDelAll.Checked = ao.DeleteTypes.Contains(CascadeType.Cascade);
+            chkBehDelRem.Checked = ao.DeleteTypes.Contains(CascadeType.RemoveLink);
+            chkBehDelRest.Checked = ao.DeleteTypes.Contains(CascadeType.Restrict);
         }
 
         private QueryExpression GetUrlQuery(string url)

@@ -28,7 +28,7 @@ namespace Rappen.XTB.RRA
                     switch (rel1m.AssociatedMenuConfiguration.Behavior)
                     {
                         case AssociatedMenuBehavior.DoNotDisplay:
-                            result += " (hidden)";
+                            result += " (invisible)";
                             break;
                         case AssociatedMenuBehavior.UseLabel:
                             result = rel1m.AssociatedMenuConfiguration.Label.UserLocalizedLabel.Label;

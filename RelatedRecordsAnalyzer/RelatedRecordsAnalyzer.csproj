@@ -160,7 +160,7 @@
     <Compile Include="RelatedRecordsControl.Designer.cs">
       <DependentUpon>RelatedRecordsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="RelationInfo.cs" />
+    <Compile Include="AnalysisOptions.cs" />
     <Compile Include="RRADescription.cs" />
     <Compile Include="RRA.cs">
       <SubType>UserControl</SubType>
@@ -169,7 +169,6 @@
       <DependentUpon>RRA.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
