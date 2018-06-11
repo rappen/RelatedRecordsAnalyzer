@@ -45,36 +45,41 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cmbEntities = new System.Windows.Forms.ComboBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabTree = new System.Windows.Forms.TabPage();
-            this.tvChildren = new System.Windows.Forms.TreeView();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.txtRecordId = new System.Windows.Forms.TextBox();
             this.txtRecordName = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.chkShowMM = new System.Windows.Forms.CheckBox();
-            this.chkShowOnlyData = new System.Windows.Forms.CheckBox();
-            this.chkShowHidden = new System.Windows.Forms.CheckBox();
-            this.typeTimer = new System.Windows.Forms.Timer(this.components);
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.lblOptionHint = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.chkBehAssAll = new System.Windows.Forms.CheckBox();
-            this.chkBehAssAct = new System.Windows.Forms.CheckBox();
-            this.chkBehAssUser = new System.Windows.Forms.CheckBox();
-            this.chkBehAssNone = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.chkBehDelRest = new System.Windows.Forms.CheckBox();
+            this.chkBehDelRem = new System.Windows.Forms.CheckBox();
+            this.chkBehDelAll = new System.Windows.Forms.CheckBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.chkBehShrNone = new System.Windows.Forms.CheckBox();
             this.chkBehShrUser = new System.Windows.Forms.CheckBox();
             this.chkBehShrAct = new System.Windows.Forms.CheckBox();
             this.chkBehShrAll = new System.Windows.Forms.CheckBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.chkBehDelRest = new System.Windows.Forms.CheckBox();
-            this.chkBehDelRem = new System.Windows.Forms.CheckBox();
-            this.chkBehDelAll = new System.Windows.Forms.CheckBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.chkBehAssNone = new System.Windows.Forms.CheckBox();
+            this.chkBehAssUser = new System.Windows.Forms.CheckBox();
+            this.chkBehAssAct = new System.Windows.Forms.CheckBox();
+            this.chkBehAssAll = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkShowHidden = new System.Windows.Forms.CheckBox();
+            this.chkShowOnlyData = new System.Windows.Forms.CheckBox();
+            this.chkShowMM = new System.Windows.Forms.CheckBox();
+            this.lblOptionHint = new System.Windows.Forms.Label();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabTree = new System.Windows.Forms.TabPage();
+            this.tvChildren = new System.Windows.Forms.TreeView();
+            this.menuChildren = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuChildrenViewDetails = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuChildrenOpenInBrowser = new System.Windows.Forms.ToolStripMenuItem();
+            this.typeTimer = new System.Windows.Forms.Timer(this.components);
+            this.menuChildrenSelectAsParent = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuChildrenReloadChildren = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -83,18 +88,19 @@
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvRecords)).BeginInit();
             this.gbSearch.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.tabTree.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            this.groupBox6.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabTree.SuspendLayout();
+            this.menuChildren.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -154,7 +160,6 @@
             this.tslByJonas.Name = "tslByJonas";
             this.tslByJonas.Size = new System.Drawing.Size(106, 28);
             this.tslByJonas.Text = "by Jonas Rapp";
-            this.tslByJonas.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.tslByJonas.Click += new System.EventHandler(this.tslByJonas_Click);
             // 
             // splitContainer1
@@ -271,36 +276,6 @@
             this.cmbEntities.TabIndex = 0;
             this.cmbEntities.SelectedIndexChanged += new System.EventHandler(this.cmbEntities_SelectedIndexChanged);
             // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabTree);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(597, 357);
-            this.tabControl1.TabIndex = 2;
-            // 
-            // tabTree
-            // 
-            this.tabTree.Controls.Add(this.tvChildren);
-            this.tabTree.Location = new System.Drawing.Point(4, 22);
-            this.tabTree.Name = "tabTree";
-            this.tabTree.Size = new System.Drawing.Size(589, 331);
-            this.tabTree.TabIndex = 0;
-            this.tabTree.Text = "Hierarchy";
-            this.tabTree.UseVisualStyleBackColor = true;
-            // 
-            // tvChildren
-            // 
-            this.tvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvChildren.Location = new System.Drawing.Point(0, 0);
-            this.tvChildren.Name = "tvChildren";
-            this.tvChildren.Size = new System.Drawing.Size(589, 331);
-            this.tvChildren.TabIndex = 0;
-            this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvChildren_BeforeExpand);
-            this.tvChildren.DoubleClick += new System.EventHandler(this.tvChildren_DoubleClick);
-            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.txtRecordId);
@@ -355,71 +330,6 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Name";
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.groupBox7);
-            this.groupBox3.Controls.Add(this.groupBox6);
-            this.groupBox3.Controls.Add(this.groupBox5);
-            this.groupBox3.Controls.Add(this.groupBox1);
-            this.groupBox3.Controls.Add(this.lblOptionHint);
-            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox3.Location = new System.Drawing.Point(0, 0);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(597, 156);
-            this.groupBox3.TabIndex = 1;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Analysis Options";
-            // 
-            // chkShowMM
-            // 
-            this.chkShowMM.AutoSize = true;
-            this.chkShowMM.Enabled = false;
-            this.chkShowMM.Location = new System.Drawing.Point(13, 65);
-            this.chkShowMM.Name = "chkShowMM";
-            this.chkShowMM.Size = new System.Drawing.Size(47, 17);
-            this.chkShowMM.TabIndex = 3;
-            this.chkShowMM.Tag = "Include Many-to-Many relationships in the analysis.";
-            this.chkShowMM.Text = "M:M";
-            this.chkShowMM.UseVisualStyleBackColor = true;
-            this.chkShowMM.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkShowMM.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // chkShowOnlyData
-            // 
-            this.chkShowOnlyData.AutoSize = true;
-            this.chkShowOnlyData.Checked = true;
-            this.chkShowOnlyData.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowOnlyData.Location = new System.Drawing.Point(13, 42);
-            this.chkShowOnlyData.Name = "chkShowOnlyData";
-            this.chkShowOnlyData.Size = new System.Drawing.Size(93, 17);
-            this.chkShowOnlyData.TabIndex = 2;
-            this.chkShowOnlyData.Tag = "Only show details for relationships that have any child records.";
-            this.chkShowOnlyData.Text = "Only with data";
-            this.chkShowOnlyData.UseVisualStyleBackColor = true;
-            this.chkShowOnlyData.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkShowOnlyData.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // chkShowHidden
-            // 
-            this.chkShowHidden.AutoSize = true;
-            this.chkShowHidden.Checked = true;
-            this.chkShowHidden.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowHidden.Location = new System.Drawing.Point(13, 19);
-            this.chkShowHidden.Name = "chkShowHidden";
-            this.chkShowHidden.Size = new System.Drawing.Size(64, 17);
-            this.chkShowHidden.TabIndex = 1;
-            this.chkShowHidden.Tag = "Include relations that are not visible in the form navigation of the parent recor" +
-    "d";
-            this.chkShowHidden.Text = "Invisible";
-            this.chkShowHidden.UseVisualStyleBackColor = true;
-            this.chkShowHidden.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkShowHidden.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // typeTimer
-            // 
-            this.typeTimer.Interval = 500;
-            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
-            // 
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -439,96 +349,75 @@
             this.splitContainer2.SplitterDistance = 156;
             this.splitContainer2.TabIndex = 3;
             // 
-            // lblOptionHint
+            // groupBox3
             // 
-            this.lblOptionHint.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblOptionHint.Location = new System.Drawing.Point(3, 128);
-            this.lblOptionHint.Name = "lblOptionHint";
-            this.lblOptionHint.Size = new System.Drawing.Size(591, 25);
-            this.lblOptionHint.TabIndex = 4;
+            this.groupBox3.Controls.Add(this.groupBox7);
+            this.groupBox3.Controls.Add(this.groupBox6);
+            this.groupBox3.Controls.Add(this.groupBox5);
+            this.groupBox3.Controls.Add(this.groupBox1);
+            this.groupBox3.Controls.Add(this.lblOptionHint);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox3.Location = new System.Drawing.Point(0, 0);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(597, 156);
+            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Analysis Options";
             // 
-            // groupBox1
+            // groupBox7
             // 
-            this.groupBox1.Controls.Add(this.chkShowHidden);
-            this.groupBox1.Controls.Add(this.chkShowOnlyData);
-            this.groupBox1.Controls.Add(this.chkShowMM);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox1.Location = new System.Drawing.Point(3, 16);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(129, 112);
-            this.groupBox1.TabIndex = 9;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Types";
+            this.groupBox7.Controls.Add(this.chkBehDelRest);
+            this.groupBox7.Controls.Add(this.chkBehDelRem);
+            this.groupBox7.Controls.Add(this.chkBehDelAll);
+            this.groupBox7.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox7.Location = new System.Drawing.Point(426, 16);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(147, 112);
+            this.groupBox7.TabIndex = 12;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Delete";
             // 
-            // groupBox5
+            // chkBehDelRest
             // 
-            this.groupBox5.Controls.Add(this.chkBehAssNone);
-            this.groupBox5.Controls.Add(this.chkBehAssUser);
-            this.groupBox5.Controls.Add(this.chkBehAssAct);
-            this.groupBox5.Controls.Add(this.chkBehAssAll);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox5.Location = new System.Drawing.Point(132, 16);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(147, 112);
-            this.groupBox5.TabIndex = 10;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Assign/Reparent";
+            this.chkBehDelRest.AutoSize = true;
+            this.chkBehDelRest.Checked = true;
+            this.chkBehDelRest.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehDelRest.Location = new System.Drawing.Point(13, 65);
+            this.chkBehDelRest.Name = "chkBehDelRest";
+            this.chkBehDelRest.Size = new System.Drawing.Size(96, 17);
+            this.chkBehDelRest.TabIndex = 2;
+            this.chkBehDelRest.Text = "Restrict Delete";
+            this.chkBehDelRest.UseVisualStyleBackColor = true;
+            this.chkBehDelRest.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkBehDelRest.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
-            // chkBehAssAll
+            // chkBehDelRem
             // 
-            this.chkBehAssAll.AutoSize = true;
-            this.chkBehAssAll.Checked = true;
-            this.chkBehAssAll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBehAssAll.Location = new System.Drawing.Point(13, 19);
-            this.chkBehAssAll.Name = "chkBehAssAll";
-            this.chkBehAssAll.Size = new System.Drawing.Size(82, 17);
-            this.chkBehAssAll.TabIndex = 0;
-            this.chkBehAssAll.Text = "Cascade All";
-            this.chkBehAssAll.UseVisualStyleBackColor = true;
-            this.chkBehAssAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkBehAssAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            this.chkBehDelRem.AutoSize = true;
+            this.chkBehDelRem.Checked = true;
+            this.chkBehDelRem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehDelRem.Location = new System.Drawing.Point(13, 42);
+            this.chkBehDelRem.Name = "chkBehDelRem";
+            this.chkBehDelRem.Size = new System.Drawing.Size(89, 17);
+            this.chkBehDelRem.TabIndex = 1;
+            this.chkBehDelRem.Text = "Remove Link";
+            this.chkBehDelRem.UseVisualStyleBackColor = true;
+            this.chkBehDelRem.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkBehDelRem.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
-            // chkBehAssAct
+            // chkBehDelAll
             // 
-            this.chkBehAssAct.AutoSize = true;
-            this.chkBehAssAct.Checked = true;
-            this.chkBehAssAct.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBehAssAct.Location = new System.Drawing.Point(13, 42);
-            this.chkBehAssAct.Name = "chkBehAssAct";
-            this.chkBehAssAct.Size = new System.Drawing.Size(101, 17);
-            this.chkBehAssAct.TabIndex = 1;
-            this.chkBehAssAct.Text = "Cascade Active";
-            this.chkBehAssAct.UseVisualStyleBackColor = true;
-            this.chkBehAssAct.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkBehAssAct.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // chkBehAssUser
-            // 
-            this.chkBehAssUser.AutoSize = true;
-            this.chkBehAssUser.Checked = true;
-            this.chkBehAssUser.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBehAssUser.Location = new System.Drawing.Point(13, 65);
-            this.chkBehAssUser.Name = "chkBehAssUser";
-            this.chkBehAssUser.Size = new System.Drawing.Size(130, 17);
-            this.chkBehAssUser.TabIndex = 2;
-            this.chkBehAssUser.Text = "Cascade User-Owned";
-            this.chkBehAssUser.UseVisualStyleBackColor = true;
-            this.chkBehAssUser.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkBehAssUser.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // chkBehAssNone
-            // 
-            this.chkBehAssNone.AutoSize = true;
-            this.chkBehAssNone.Checked = true;
-            this.chkBehAssNone.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBehAssNone.Location = new System.Drawing.Point(13, 88);
-            this.chkBehAssNone.Name = "chkBehAssNone";
-            this.chkBehAssNone.Size = new System.Drawing.Size(97, 17);
-            this.chkBehAssNone.TabIndex = 3;
-            this.chkBehAssNone.Text = "Cascade None";
-            this.chkBehAssNone.UseVisualStyleBackColor = true;
-            this.chkBehAssNone.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkBehAssNone.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            this.chkBehDelAll.AutoSize = true;
+            this.chkBehDelAll.Checked = true;
+            this.chkBehDelAll.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehDelAll.Location = new System.Drawing.Point(13, 19);
+            this.chkBehDelAll.Name = "chkBehDelAll";
+            this.chkBehDelAll.Size = new System.Drawing.Size(82, 17);
+            this.chkBehDelAll.TabIndex = 0;
+            this.chkBehDelAll.Text = "Cascade All";
+            this.chkBehDelAll.UseVisualStyleBackColor = true;
+            this.chkBehDelAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkBehDelAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
             // groupBox6
             // 
@@ -600,60 +489,215 @@
             this.chkBehShrAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehShrAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
-            // groupBox7
+            // groupBox5
             // 
-            this.groupBox7.Controls.Add(this.chkBehDelRest);
-            this.groupBox7.Controls.Add(this.chkBehDelRem);
-            this.groupBox7.Controls.Add(this.chkBehDelAll);
-            this.groupBox7.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox7.Location = new System.Drawing.Point(426, 16);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(147, 112);
-            this.groupBox7.TabIndex = 12;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Delete";
+            this.groupBox5.Controls.Add(this.chkBehAssNone);
+            this.groupBox5.Controls.Add(this.chkBehAssUser);
+            this.groupBox5.Controls.Add(this.chkBehAssAct);
+            this.groupBox5.Controls.Add(this.chkBehAssAll);
+            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox5.Location = new System.Drawing.Point(132, 16);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(147, 112);
+            this.groupBox5.TabIndex = 10;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Assign/Reparent";
             // 
-            // chkBehDelRest
+            // chkBehAssNone
             // 
-            this.chkBehDelRest.AutoSize = true;
-            this.chkBehDelRest.Checked = true;
-            this.chkBehDelRest.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBehDelRest.Location = new System.Drawing.Point(13, 65);
-            this.chkBehDelRest.Name = "chkBehDelRest";
-            this.chkBehDelRest.Size = new System.Drawing.Size(96, 17);
-            this.chkBehDelRest.TabIndex = 2;
-            this.chkBehDelRest.Text = "Restrict Delete";
-            this.chkBehDelRest.UseVisualStyleBackColor = true;
-            this.chkBehDelRest.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkBehDelRest.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            this.chkBehAssNone.AutoSize = true;
+            this.chkBehAssNone.Checked = true;
+            this.chkBehAssNone.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehAssNone.Location = new System.Drawing.Point(13, 88);
+            this.chkBehAssNone.Name = "chkBehAssNone";
+            this.chkBehAssNone.Size = new System.Drawing.Size(97, 17);
+            this.chkBehAssNone.TabIndex = 3;
+            this.chkBehAssNone.Text = "Cascade None";
+            this.chkBehAssNone.UseVisualStyleBackColor = true;
+            this.chkBehAssNone.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkBehAssNone.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
-            // chkBehDelRem
+            // chkBehAssUser
             // 
-            this.chkBehDelRem.AutoSize = true;
-            this.chkBehDelRem.Checked = true;
-            this.chkBehDelRem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBehDelRem.Location = new System.Drawing.Point(13, 42);
-            this.chkBehDelRem.Name = "chkBehDelRem";
-            this.chkBehDelRem.Size = new System.Drawing.Size(89, 17);
-            this.chkBehDelRem.TabIndex = 1;
-            this.chkBehDelRem.Text = "Remove Link";
-            this.chkBehDelRem.UseVisualStyleBackColor = true;
-            this.chkBehDelRem.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkBehDelRem.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            this.chkBehAssUser.AutoSize = true;
+            this.chkBehAssUser.Checked = true;
+            this.chkBehAssUser.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehAssUser.Location = new System.Drawing.Point(13, 65);
+            this.chkBehAssUser.Name = "chkBehAssUser";
+            this.chkBehAssUser.Size = new System.Drawing.Size(130, 17);
+            this.chkBehAssUser.TabIndex = 2;
+            this.chkBehAssUser.Text = "Cascade User-Owned";
+            this.chkBehAssUser.UseVisualStyleBackColor = true;
+            this.chkBehAssUser.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkBehAssUser.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
-            // chkBehDelAll
+            // chkBehAssAct
             // 
-            this.chkBehDelAll.AutoSize = true;
-            this.chkBehDelAll.Checked = true;
-            this.chkBehDelAll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBehDelAll.Location = new System.Drawing.Point(13, 19);
-            this.chkBehDelAll.Name = "chkBehDelAll";
-            this.chkBehDelAll.Size = new System.Drawing.Size(82, 17);
-            this.chkBehDelAll.TabIndex = 0;
-            this.chkBehDelAll.Text = "Cascade All";
-            this.chkBehDelAll.UseVisualStyleBackColor = true;
-            this.chkBehDelAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkBehDelAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            this.chkBehAssAct.AutoSize = true;
+            this.chkBehAssAct.Checked = true;
+            this.chkBehAssAct.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehAssAct.Location = new System.Drawing.Point(13, 42);
+            this.chkBehAssAct.Name = "chkBehAssAct";
+            this.chkBehAssAct.Size = new System.Drawing.Size(101, 17);
+            this.chkBehAssAct.TabIndex = 1;
+            this.chkBehAssAct.Text = "Cascade Active";
+            this.chkBehAssAct.UseVisualStyleBackColor = true;
+            this.chkBehAssAct.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkBehAssAct.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkBehAssAll
+            // 
+            this.chkBehAssAll.AutoSize = true;
+            this.chkBehAssAll.Checked = true;
+            this.chkBehAssAll.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehAssAll.Location = new System.Drawing.Point(13, 19);
+            this.chkBehAssAll.Name = "chkBehAssAll";
+            this.chkBehAssAll.Size = new System.Drawing.Size(82, 17);
+            this.chkBehAssAll.TabIndex = 0;
+            this.chkBehAssAll.Text = "Cascade All";
+            this.chkBehAssAll.UseVisualStyleBackColor = true;
+            this.chkBehAssAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkBehAssAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.chkShowHidden);
+            this.groupBox1.Controls.Add(this.chkShowOnlyData);
+            this.groupBox1.Controls.Add(this.chkShowMM);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox1.Location = new System.Drawing.Point(3, 16);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(129, 112);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Types";
+            // 
+            // chkShowHidden
+            // 
+            this.chkShowHidden.AutoSize = true;
+            this.chkShowHidden.Checked = true;
+            this.chkShowHidden.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowHidden.Location = new System.Drawing.Point(13, 19);
+            this.chkShowHidden.Name = "chkShowHidden";
+            this.chkShowHidden.Size = new System.Drawing.Size(64, 17);
+            this.chkShowHidden.TabIndex = 1;
+            this.chkShowHidden.Tag = "Include relations that are not visible in the form navigation of the parent recor" +
+    "d";
+            this.chkShowHidden.Text = "Invisible";
+            this.chkShowHidden.UseVisualStyleBackColor = true;
+            this.chkShowHidden.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkShowHidden.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkShowOnlyData
+            // 
+            this.chkShowOnlyData.AutoSize = true;
+            this.chkShowOnlyData.Checked = true;
+            this.chkShowOnlyData.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowOnlyData.Location = new System.Drawing.Point(13, 42);
+            this.chkShowOnlyData.Name = "chkShowOnlyData";
+            this.chkShowOnlyData.Size = new System.Drawing.Size(93, 17);
+            this.chkShowOnlyData.TabIndex = 2;
+            this.chkShowOnlyData.Tag = "Only show details for relationships that have any child records.";
+            this.chkShowOnlyData.Text = "Only with data";
+            this.chkShowOnlyData.UseVisualStyleBackColor = true;
+            this.chkShowOnlyData.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkShowOnlyData.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkShowMM
+            // 
+            this.chkShowMM.AutoSize = true;
+            this.chkShowMM.Enabled = false;
+            this.chkShowMM.Location = new System.Drawing.Point(13, 65);
+            this.chkShowMM.Name = "chkShowMM";
+            this.chkShowMM.Size = new System.Drawing.Size(47, 17);
+            this.chkShowMM.TabIndex = 3;
+            this.chkShowMM.Tag = "Include Many-to-Many relationships in the analysis.";
+            this.chkShowMM.Text = "M:M";
+            this.chkShowMM.UseVisualStyleBackColor = true;
+            this.chkShowMM.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkShowMM.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // lblOptionHint
+            // 
+            this.lblOptionHint.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.lblOptionHint.Location = new System.Drawing.Point(3, 128);
+            this.lblOptionHint.Name = "lblOptionHint";
+            this.lblOptionHint.Size = new System.Drawing.Size(591, 25);
+            this.lblOptionHint.TabIndex = 4;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabTree);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(597, 357);
+            this.tabControl1.TabIndex = 2;
+            // 
+            // tabTree
+            // 
+            this.tabTree.Controls.Add(this.tvChildren);
+            this.tabTree.Location = new System.Drawing.Point(4, 22);
+            this.tabTree.Name = "tabTree";
+            this.tabTree.Size = new System.Drawing.Size(589, 331);
+            this.tabTree.TabIndex = 0;
+            this.tabTree.Text = "Hierarchy";
+            this.tabTree.UseVisualStyleBackColor = true;
+            // 
+            // tvChildren
+            // 
+            this.tvChildren.ContextMenuStrip = this.menuChildren;
+            this.tvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvChildren.Location = new System.Drawing.Point(0, 0);
+            this.tvChildren.Name = "tvChildren";
+            this.tvChildren.Size = new System.Drawing.Size(589, 331);
+            this.tvChildren.TabIndex = 0;
+            this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvChildren_BeforeExpand);
+            // 
+            // menuChildren
+            // 
+            this.menuChildren.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuChildrenViewDetails,
+            this.menuChildrenOpenInBrowser,
+            this.menuChildrenSelectAsParent,
+            this.menuChildrenReloadChildren});
+            this.menuChildren.Name = "menuChildren";
+            this.menuChildren.Size = new System.Drawing.Size(194, 114);
+            this.menuChildren.Opening += new System.ComponentModel.CancelEventHandler(this.menuChildren_Opening);
+            // 
+            // menuChildrenViewDetails
+            // 
+            this.menuChildrenViewDetails.Name = "menuChildrenViewDetails";
+            this.menuChildrenViewDetails.Size = new System.Drawing.Size(193, 22);
+            this.menuChildrenViewDetails.Text = "View details";
+            this.menuChildrenViewDetails.Click += new System.EventHandler(this.menuChildrenViewDetails_Click);
+            // 
+            // menuChildrenOpenInBrowser
+            // 
+            this.menuChildrenOpenInBrowser.Name = "menuChildrenOpenInBrowser";
+            this.menuChildrenOpenInBrowser.Size = new System.Drawing.Size(193, 22);
+            this.menuChildrenOpenInBrowser.Text = "Open in browser";
+            this.menuChildrenOpenInBrowser.Click += new System.EventHandler(this.menuChildrenOpenInBrowser_Click);
+            // 
+            // typeTimer
+            // 
+            this.typeTimer.Interval = 500;
+            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
+            // 
+            // menuChildrenSelectAsParent
+            // 
+            this.menuChildrenSelectAsParent.Name = "menuChildrenSelectAsParent";
+            this.menuChildrenSelectAsParent.Size = new System.Drawing.Size(193, 22);
+            this.menuChildrenSelectAsParent.Text = "Select as parent record";
+            this.menuChildrenSelectAsParent.Click += new System.EventHandler(this.menuChildrenSelectAsParent_Click);
+            // 
+            // menuChildrenReloadChildren
+            // 
+            this.menuChildrenReloadChildren.Name = "menuChildrenReloadChildren";
+            this.menuChildrenReloadChildren.Size = new System.Drawing.Size(193, 22);
+            this.menuChildrenReloadChildren.Text = "Reload children";
+            this.menuChildrenReloadChildren.Click += new System.EventHandler(this.menuChildrenReloadChildren_Click);
             // 
             // RRA
             // 
@@ -677,23 +721,24 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvRecords)).EndInit();
             this.gbSearch.ResumeLayout(false);
             this.gbSearch.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
-            this.tabTree.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabTree.ResumeLayout(false);
+            this.menuChildren.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -744,5 +789,10 @@
         private System.Windows.Forms.CheckBox chkBehAssAct;
         private System.Windows.Forms.CheckBox chkBehAssAll;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ContextMenuStrip menuChildren;
+        private System.Windows.Forms.ToolStripMenuItem menuChildrenViewDetails;
+        private System.Windows.Forms.ToolStripMenuItem menuChildrenOpenInBrowser;
+        private System.Windows.Forms.ToolStripMenuItem menuChildrenSelectAsParent;
+        private System.Windows.Forms.ToolStripMenuItem menuChildrenReloadChildren;
     }
 }

@@ -68,6 +68,7 @@ namespace Rappen.XTB.RRA
             SaveSettings();
             base.ClosingPlugin(info);
         }
+
         public void ShowAboutDialog()
         {
             using (var about = new About(this))
@@ -150,6 +151,57 @@ namespace Rappen.XTB.RRA
             }
         }
 
+        private void menuChildren_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var node = tvChildren.SelectedNode;
+            var recordselected = node != null &&
+                node.Tag is ValueTuple<QueryInfo, Entity> tuple &&
+                tuple.Item2 is Entity;
+            menuChildrenOpenInBrowser.Enabled = recordselected;
+            menuChildrenViewDetails.Enabled = recordselected;
+            menuChildrenSelectAsParent.Enabled = recordselected;
+            menuChildrenReloadChildren.Enabled = recordselected && (node.Nodes.Count != 1 || node.Nodes[0].Name != "dummy");
+        }
+
+        private void menuChildrenOpenInBrowser_Click(object sender, EventArgs e)
+        {
+            if (!(tvChildren.SelectedNode is TreeNode node))
+            {
+                return;
+            }
+            OpenRecordFromTreeNode(node);
+        }
+
+        private void menuChildrenReloadChildren_Click(object sender, EventArgs e)
+        {
+            if (tvChildren.SelectedNode is TreeNode node &&
+                node.Tag is ValueTuple<QueryInfo, Entity> tuple)
+            {
+                node.Nodes.Clear();
+                node.Nodes.Add("dummy", "Loading...");
+                GetRelatedChildren(tuple.Item2, tuple.Item1.EntityInfo);
+            }
+        }
+
+        private void menuChildrenSelectAsParent_Click(object sender, EventArgs e)
+        {
+            if (tvChildren.SelectedNode is TreeNode node &&
+                node.Tag is ValueTuple<QueryInfo, Entity> tuple &&
+                tuple.Item2 is Entity entity)
+            {
+                SetRecordAsParent(entity);
+            }
+        }
+
+        private void menuChildrenViewDetails_Click(object sender, EventArgs e)
+        {
+            if (!(tvChildren.SelectedNode is TreeNode node))
+            {
+                return;
+            }
+            SelectChildRecordFromTreeNode(node);
+        }
+
         /// <summary>
         /// This event occurs when the plugin is closed
         /// </summary>
@@ -175,6 +227,15 @@ namespace Rappen.XTB.RRA
             lblOptionHint.Text = string.Empty;
         }
 
+        private void RecordSetAsParent_Click(object sender, CRMRecordEventArgs eventargs)
+        {
+            if (!(eventargs.Entity is Entity selectedentity))
+            {
+                return;
+            }
+            SetRecordAsParent(selectedentity);
+        }
+
         private void RRA_Load(object sender, EventArgs e)
         {
             ai.WriteEvent("Load");
@@ -192,6 +253,11 @@ namespace Rappen.XTB.RRA
             }
             var record = gvRecords.SelectedRowRecords.Entities[0];
             var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
+            AddChildEntitiesToTree(new QueryInfo
+            {
+                EntityInfo = entity,
+                Results = new EntityCollection(new List<Entity> { record })
+            });
             GetRelatedChildren(record, entity);
         }
 
@@ -220,15 +286,6 @@ namespace Rappen.XTB.RRA
             }
         }
 
-        private void tvChildren_DoubleClick(object sender, EventArgs e)
-        {
-            if (!(tvChildren.SelectedNode is TreeNode node))
-            {
-                return;
-            }
-            SelectChildRecordFromTreeNode(node);
-        }
-
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             typeTimer.Stop();
@@ -244,14 +301,6 @@ namespace Rappen.XTB.RRA
         #endregion Private Form Event Handlers
 
         #region Private Methods
-
-        private void SaveSettings()
-        {
-            //var settings = GetSettings();
-            //SettingsManager.Instance.Save(typeof(PluginTraceViewer), settings, "Settings");
-            var ao = GetAnalysisOptions(null);
-            SettingsManager.Instance.Save(typeof(RRA), ao, ConnectionDetail?.ConnectionName);
-        }
 
         private static void FixEntity(EntityMetadataProxy entity, XmlNode entitynode, string find)
         {
@@ -347,37 +396,41 @@ namespace Rappen.XTB.RRA
 
         private static TreeNode GetEntityNode(QueryInfo child, TreeView tv)
         {
+            if (child.ParentEntity == null)
+            {
+                return null;
+            }
             var node = new TreeNode($"{child.CollectionDisplayName} ({child.EntityInfo.Metadata.LogicalName}): {child.Results.Entities.Count} records")
             {
                 Tag = child
             };
-            var parentnode = GetParentNode(child, tv.Nodes);
+            var parentnode = GetParentNode(child.ParentEntity, tv.Nodes);
             if (parentnode == null)
             {
                 tv.Nodes.Add(node);
             }
             else
             {
-                if (parentnode.Nodes.Count == 1 && parentnode.Nodes[0].Name == "dummy")
-                {
-                    parentnode.Nodes.RemoveAt(0);
-                }
                 parentnode.Nodes.Add(node);
             }
             return node;
         }
 
-        private static TreeNode GetParentNode(QueryInfo child, TreeNodeCollection nodes)
+        private static TreeNode GetParentNode(Entity parententity, TreeNodeCollection nodes)
         {
+            if (parententity == null)
+            {
+                return null;
+            }
             foreach (TreeNode node in nodes)
             {
                 if (node.Tag is ValueTuple<QueryInfo, Entity> nodeinfo &&
-                    nodeinfo.Item2.LogicalName == child.ParentEntity.LogicalName &&
-                    nodeinfo.Item2.Id.Equals(child.ParentEntity.Id))
+                    nodeinfo.Item2.LogicalName == parententity.LogicalName &&
+                    nodeinfo.Item2.Id.Equals(parententity.Id))
                 {
                     return node;
                 }
-                else if (GetParentNode(child, node.Nodes) is TreeNode parent)
+                else if (GetParentNode(parententity, node.Nodes) is TreeNode parent)
                 {
                     return parent;
                 }
@@ -433,12 +486,13 @@ namespace Rappen.XTB.RRA
             }
             else
             {
-                new RelatedRecordsControl(tabControl1, Service, child, RecordDoubleClick, RecordSetAsParent);
+                new RelatedRecordsControl(tabControl1, Service, child, RecordDoubleClick, RecordSetAsParent_Click);
             }
         }
 
         private void AddChildEntitiesToTree(QueryInfo child)
         {
+            tvChildren.BeginUpdate();
             var entitynode = GetEntityNode(child, tvChildren);
             foreach (var record in child.Results.Entities.OrderBy(r => r.Name(child.EntityInfo)))
             {
@@ -447,8 +501,18 @@ namespace Rappen.XTB.RRA
                     Tag = (child, record)
                 };
                 recordnode.Nodes.Add("dummy", "Loading...");
-                entitynode.Nodes.Add(recordnode);
+                if (entitynode == null)
+                {
+                    tvChildren.Nodes.Add(recordnode);
+                }
+                else
+                {
+                    entitynode.Nodes.Add(recordnode);
+                }
             }
+            ExpandNode(entitynode);
+            RemoveDummyNode(child.ParentEntity);
+            tvChildren.EndUpdate();
         }
 
         private bool CheckRelationshipBehavior(OneToManyRelationshipMetadata relation, AnalysisOptions ao)
@@ -458,6 +522,19 @@ namespace Rappen.XTB.RRA
                 && (ao.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Share)
                  || ao.ShareTypes.Contains((CascadeType)relation.CascadeConfiguration.Unshare))
                 && ao.DeleteTypes.Contains((CascadeType)relation.CascadeConfiguration.Delete);
+        }
+
+        private void ExpandNode(TreeNode node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            if (node.Parent?.IsExpanded != true)
+            {
+                ExpandNode(node.Parent);
+            }
+            node.Expand();
         }
 
         private void FindRecords(string find)
@@ -482,6 +559,27 @@ namespace Rappen.XTB.RRA
                 }
             }
             LoadRecords(qry);
+        }
+
+        private AnalysisOptions GetAnalysisOptions(EntityMetadataProxy entity)
+        {
+            var ao = new AnalysisOptions(entity)
+            {
+                Hidden = chkShowHidden.Checked,
+                OnlyData = chkShowOnlyData.Checked
+            };
+            if (chkBehAssAll.Checked) ao.AssignTypes.Add(CascadeType.Cascade);
+            if (chkBehAssAct.Checked) ao.AssignTypes.Add(CascadeType.Active);
+            if (chkBehAssUser.Checked) ao.AssignTypes.Add(CascadeType.UserOwned);
+            if (chkBehAssNone.Checked) ao.AssignTypes.Add(CascadeType.NoCascade);
+            if (chkBehShrAll.Checked) ao.ShareTypes.Add(CascadeType.Cascade);
+            if (chkBehShrAct.Checked) ao.ShareTypes.Add(CascadeType.Active);
+            if (chkBehShrUser.Checked) ao.ShareTypes.Add(CascadeType.UserOwned);
+            if (chkBehShrNone.Checked) ao.ShareTypes.Add(CascadeType.NoCascade);
+            if (chkBehDelAll.Checked) ao.DeleteTypes.Add(CascadeType.Cascade);
+            if (chkBehDelRem.Checked) ao.DeleteTypes.Add(CascadeType.RemoveLink);
+            if (chkBehDelRest.Checked) ao.DeleteTypes.Add(CascadeType.Restrict);
+            return ao;
         }
 
         private string GetEntityReferenceUrl(EntityReference entref)
@@ -581,6 +679,8 @@ namespace Rappen.XTB.RRA
             tsbAnalyze.Enabled = false;
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
+            tvChildren.Enabled = false;
+            tvChildren.Cursor = Cursors.WaitCursor;
             var relations = entity.Metadata.OneToManyRelationships.Count();
             var workobject = GetAnalysisOptions(entity);
             WorkAsync(new WorkAsyncInfo
@@ -615,7 +715,7 @@ namespace Rappen.XTB.RRA
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n{rel.SchemaName}");
                             var children = LoadRelatedChildren(parentrecord, childentity, entity, rel);
-                            if (!ao.OnlyData || children.Results.Entities.Count > 0)
+                            if (!ao.OnlyData || children?.Results?.Entities?.Count > 0)
                             {
                                 allchildren.Add(children);
                             }
@@ -635,49 +735,14 @@ namespace Rappen.XTB.RRA
                     {
                         RenderChildren(allchildren);
                     }
+                    RemoveDummyNode(parentrecord);
                     gvRecords.Enabled = true;
                     tsbAnalyze.Enabled = true;
+                    tvChildren.Enabled = true;
+                    tvChildren.Cursor = Cursors.Default;
                     SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
                 }
             });
-        }
-
-        private AnalysisOptions GetAnalysisOptions(EntityMetadataProxy entity)
-        {
-            var ao = new AnalysisOptions(entity)
-            {
-                Hidden = chkShowHidden.Checked,
-                OnlyData = chkShowOnlyData.Checked
-            };
-            if (chkBehAssAll.Checked) ao.AssignTypes.Add(CascadeType.Cascade);
-            if (chkBehAssAct.Checked) ao.AssignTypes.Add(CascadeType.Active);
-            if (chkBehAssUser.Checked) ao.AssignTypes.Add(CascadeType.UserOwned);
-            if (chkBehAssNone.Checked) ao.AssignTypes.Add(CascadeType.NoCascade);
-            if (chkBehShrAll.Checked) ao.ShareTypes.Add(CascadeType.Cascade);
-            if (chkBehShrAct.Checked) ao.ShareTypes.Add(CascadeType.Active);
-            if (chkBehShrUser.Checked) ao.ShareTypes.Add(CascadeType.UserOwned);
-            if (chkBehShrNone.Checked) ao.ShareTypes.Add(CascadeType.NoCascade);
-            if (chkBehDelAll.Checked) ao.DeleteTypes.Add(CascadeType.Cascade);
-            if (chkBehDelRem.Checked) ao.DeleteTypes.Add(CascadeType.RemoveLink);
-            if (chkBehDelRest.Checked) ao.DeleteTypes.Add(CascadeType.Restrict);
-            return ao;
-        }
-
-        private void SetAnalysisOptions(AnalysisOptions ao)
-        {
-            chkShowHidden.Checked = ao.Hidden;
-            chkShowOnlyData.Checked = ao.OnlyData;
-            chkBehAssAll.Checked = ao.AssignTypes.Contains(CascadeType.Cascade);
-            chkBehAssAct.Checked = ao.AssignTypes.Contains(CascadeType.Active);
-            chkBehAssUser.Checked = ao.AssignTypes.Contains(CascadeType.UserOwned);
-            chkBehAssNone.Checked = ao.AssignTypes.Contains(CascadeType.NoCascade);
-            chkBehShrAll.Checked = ao.ShareTypes.Contains(CascadeType.Cascade);
-            chkBehShrAct.Checked = ao.ShareTypes.Contains(CascadeType.Active);
-            chkBehShrUser.Checked = ao.ShareTypes.Contains(CascadeType.UserOwned);
-            chkBehShrNone.Checked = ao.ShareTypes.Contains(CascadeType.NoCascade);
-            chkBehDelAll.Checked = ao.DeleteTypes.Contains(CascadeType.Cascade);
-            chkBehDelRem.Checked = ao.DeleteTypes.Contains(CascadeType.RemoveLink);
-            chkBehDelRest.Checked = ao.DeleteTypes.Contains(CascadeType.Restrict);
         }
 
         private QueryExpression GetUrlQuery(string url)
@@ -835,6 +900,21 @@ namespace Rappen.XTB.RRA
             }
         }
 
+        private void OpenRecordFromTreeNode(TreeNode node)
+        {
+            var entity = node.Tag is ValueTuple<QueryInfo, Entity> tuple ? tuple.Item2 : null;
+            if (entity == null)
+            {
+                return;
+            }
+            string url = GetEntityUrl(entity);
+            if (!string.IsNullOrEmpty(url))
+            {
+                ai.WriteEvent("OpenRecord");
+                Process.Start(url);
+            }
+        }
+
         private (EntityMetadataProxy, Guid) ParseRecordUrl(string url)
         {
             EntityMetadataProxy entity = null;
@@ -891,24 +971,12 @@ namespace Rappen.XTB.RRA
             }
         }
 
-        private void RecordSetAsParent(object sender, CRMRecordEventArgs eventargs)
+        private void RemoveDummyNode(Entity parentrecord)
         {
-            if (!(eventargs.Entity is Entity selectedentity) ||
-                !(cmbEntities.Items
-                    .Cast<EntityMetadataProxy>()
-                    .FirstOrDefault(e => e.Metadata.LogicalName == selectedentity.LogicalName) is EntityMetadataProxy entity))
+            var parentnode = GetParentNode(parentrecord, tvChildren.Nodes);
+            if (parentnode?.Nodes?.Count > 0 && parentnode.Nodes[0].Name == "dummy")
             {
-                return;
-            }
-            txtSearch.Text = selectedentity.Id.ToString();
-            typeTimer.Enabled = false;
-            if (cmbEntities.SelectedItem == entity)
-            {
-                FindRecords(txtSearch.Text);
-            }
-            else
-            {
-                cmbEntities.SelectedItem = entity;
+                parentnode.Nodes.RemoveAt(0);
             }
         }
 
@@ -917,23 +985,17 @@ namespace Rappen.XTB.RRA
             tsbAnalyze.Enabled = false;
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
-            if (tvChildren.SelectedNode?.Nodes?.Count == 1 && tvChildren.SelectedNode.Nodes[0].Name == "dummy")
-            {
-                tvChildren.SelectedNode.Nodes.RemoveAt(0);
-            }
             WorkAsync(new WorkAsyncInfo
             {
                 Message = "Rendering children",
                 IsCancelable = true,
-                AsyncArgument = (allchildren, tabControl1),
+                AsyncArgument = allchildren,
                 Work = (worker, args) =>
                 {
-                    if (!(args.Argument is ValueTuple<List<QueryInfo>, TabControl> asyncarg))
+                    if (!(args.Argument is List<QueryInfo> children))
                     {
                         return;
                     }
-                    var children = asyncarg.Item1;
-                    var tc = asyncarg.Item2;
                     var current = 0;
                     var total = children.Count();
                     foreach (var child in children)
@@ -979,6 +1041,14 @@ namespace Rappen.XTB.RRA
             return new FetchExpression(fx.OuterXml);
         }
 
+        private void SaveSettings()
+        {
+            //var settings = GetSettings();
+            //SettingsManager.Instance.Save(typeof(PluginTraceViewer), settings, "Settings");
+            var ao = GetAnalysisOptions(null);
+            SettingsManager.Instance.Save(typeof(RRA), ao, ConnectionDetail?.ConnectionName);
+        }
+
         private void SelectChildRecordFromTreeNode(TreeNode node)
         {
             var qi = node.Tag is QueryInfo tag1 ? tag1 : node.Tag is ValueTuple<QueryInfo, Entity> tuple1 ? tuple1.Item1 : null;
@@ -1006,6 +1076,43 @@ namespace Rappen.XTB.RRA
                 {
                     row.Selected = row == selectrow;
                 }
+            }
+        }
+
+        private void SetAnalysisOptions(AnalysisOptions ao)
+        {
+            chkShowHidden.Checked = ao.Hidden;
+            chkShowOnlyData.Checked = ao.OnlyData;
+            chkBehAssAll.Checked = ao.AssignTypes.Contains(CascadeType.Cascade);
+            chkBehAssAct.Checked = ao.AssignTypes.Contains(CascadeType.Active);
+            chkBehAssUser.Checked = ao.AssignTypes.Contains(CascadeType.UserOwned);
+            chkBehAssNone.Checked = ao.AssignTypes.Contains(CascadeType.NoCascade);
+            chkBehShrAll.Checked = ao.ShareTypes.Contains(CascadeType.Cascade);
+            chkBehShrAct.Checked = ao.ShareTypes.Contains(CascadeType.Active);
+            chkBehShrUser.Checked = ao.ShareTypes.Contains(CascadeType.UserOwned);
+            chkBehShrNone.Checked = ao.ShareTypes.Contains(CascadeType.NoCascade);
+            chkBehDelAll.Checked = ao.DeleteTypes.Contains(CascadeType.Cascade);
+            chkBehDelRem.Checked = ao.DeleteTypes.Contains(CascadeType.RemoveLink);
+            chkBehDelRest.Checked = ao.DeleteTypes.Contains(CascadeType.Restrict);
+        }
+
+        private void SetRecordAsParent(Entity selectedentity)
+        {
+            if (!(cmbEntities.Items
+                    .Cast<EntityMetadataProxy>()
+                    .FirstOrDefault(e => e.Metadata.LogicalName == selectedentity.LogicalName) is EntityMetadataProxy entity))
+            {
+                return;
+            }
+            txtSearch.Text = selectedentity.Id.ToString();
+            typeTimer.Enabled = false;
+            if (cmbEntities.SelectedItem == entity)
+            {
+                FindRecords(txtSearch.Text);
+            }
+            else
+            {
+                cmbEntities.SelectedItem = entity;
             }
         }
 
