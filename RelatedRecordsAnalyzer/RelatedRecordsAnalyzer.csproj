@@ -154,6 +154,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="QueryInfo.cs" />
+    <Compile Include="QuickFindUtils.cs" />
     <Compile Include="RelatedRecordsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

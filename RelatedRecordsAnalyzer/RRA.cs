@@ -11,7 +11,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
-using System.Xml;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Args;
 using XrmToolBox.Extensibility.Interfaces;
@@ -302,98 +301,6 @@ namespace Rappen.XTB.RRA
 
         #region Private Methods
 
-        private static void FixEntity(EntityMetadataProxy entity, XmlNode entitynode, string find)
-        {
-            var filters = entitynode.SelectNodes("filter");
-            foreach (XmlNode filter in filters)
-            {
-                FixFilter(entity, filter, find);
-            }
-            var linkentities = entitynode.SelectNodes("link-entity");
-            foreach (XmlNode linkentity in linkentities)
-            {
-                FixEntity(entity, linkentity, find);
-            }
-        }
-
-        private static void FixFilter(EntityMetadataProxy entity, XmlNode filter, string find)
-        {
-            if (filter.Attributes["type"]?.Value == "or" && filter.Attributes["isquickfindfields"]?.Value == "1")
-            {
-                var findstr = find + "%";
-                var specint = int.TryParse(find, out int findint);
-                var specfloat = float.TryParse(find, out float findfloat);
-                var specdate = DateTime.TryParse(find, out DateTime finddate);
-                var specguid = Guid.TryParse(find, out Guid findguid);
-                var specbool = bool.TryParse(find, out bool findbool);
-                var conditions = filter.SelectNodes("condition");
-                foreach (XmlNode cond in conditions)
-                {
-                    var attrname = cond.Attributes["attribute"]?.Value;
-                    var value = cond.Attributes["value"]?.Value;
-                    switch (value.Trim('{').Trim('}'))
-                    {
-                        case "0":
-                            if (entity.Metadata.Attributes.FirstOrDefault(a => a.LogicalName == attrname) is AttributeMetadata attrmeta)
-                            {
-                                switch (attrmeta.AttributeType)
-                                {
-                                    case AttributeTypeCode.Customer:
-                                    case AttributeTypeCode.Lookup:
-                                    case AttributeTypeCode.Owner:
-                                        if (!specguid)
-                                        {
-                                            cond.Attributes["attribute"].Value = attrname + "name";
-                                        }
-                                        break;
-
-                                    case AttributeTypeCode.Boolean:
-                                        if (!specbool)
-                                        {
-                                            cond.Attributes["attribute"].Value = attrname + "name";
-                                        }
-                                        break;
-
-                                    case AttributeTypeCode.Picklist:
-                                    case AttributeTypeCode.State:
-                                    case AttributeTypeCode.Status:
-                                        cond.Attributes["attribute"].Value = attrname + "name";
-                                        break;
-                                }
-                            }
-                            value = findstr;
-                            break;
-
-                        case "1":
-                            value = specint ? findint.ToString() : null;
-                            break;
-
-                        case "2":
-                        case "4":
-                            value = specfloat ? findfloat.ToString() : null;
-                            break;
-
-                        case "3":
-                            value = specdate ? finddate.ToString() : null;
-                            break;
-                    }
-                    if (value == null)
-                    {
-                        filter.RemoveChild(cond);
-                    }
-                    else
-                    {
-                        cond.Attributes["value"].Value = value;
-                    }
-                }
-            }
-            var filters = filter.SelectNodes("filter");
-            foreach (XmlNode subfilter in filters)
-            {
-                FixFilter(entity, subfilter, find);
-            }
-        }
-
         private static TreeNode GetEntityNode(QueryInfo child, TreeView tv)
         {
             if (child.ParentEntity == null)
@@ -440,21 +347,9 @@ namespace Rappen.XTB.RRA
 
         private static void GetQuickFind(EntityMetadataProxy entity, IOrganizationService service)
         {
-            var qry = new QueryExpression("savedquery");
-            qry.ColumnSet.AddColumns("fetchxml", "layoutxml");
-            qry.Criteria.AddCondition("returnedtypecode", ConditionOperator.Equal, entity.Metadata.ObjectTypeCode);
-            qry.Criteria.AddCondition("querytype", ConditionOperator.Equal, 4);
-            var view = service.RetrieveMultiple(qry).Entities.FirstOrDefault();
-            if (view != null && view.Contains("fetchxml"))
-            {
-                entity.quickfindfetch = view["fetchxml"] as string;
-                var layout = new XmlDocument();
-                layout.LoadXml(view["layoutxml"] as string);
-                entity.layoutcolumns = layout.SelectNodes("grid/row/cell")
-                    .Cast<XmlNode>()
-                    .Select(c => c.Attributes["name"].Value)
-                    .ToList();
-            }
+            var qf = service.GetQuickFind((int)entity.Metadata.ObjectTypeCode);
+            entity.quickfindfetch = qf.Item1;
+            entity.layoutcolumns = qf.Item2;
         }
 
         private static RelatedRecordsControl GetRelatedRecordsControl(TabControl tc, QueryInfo child)
@@ -555,7 +450,9 @@ namespace Rappen.XTB.RRA
                         LoadAttributes(entity, FindRecords, find);
                         return;
                     }
-                    qry = ReplaceQuickFindPlaceholders(entity, find);
+                    var fetchxml = entity.quickfindfetch.ComposeQuickFindQuery(entity.Metadata.Attributes, find);
+                    SetStatus($"Composed quick find query for {entity}");
+                    qry = new FetchExpression(fetchxml);
                 }
             }
             LoadRecords(qry);
@@ -659,18 +556,7 @@ namespace Rappen.XTB.RRA
             {
                 LoadQuickFind(entity, null, null);
             }
-            var fxdoc = new XmlDocument();
-            fxdoc.LoadXml(entity.quickfindfetch);
-            var attributes = fxdoc.SelectNodes("fetch/entity/attribute");
-            var result = attributes
-                .Cast<XmlNode>()
-                .Select(a => a.Attributes["name"].Value)
-                .ToList();
-            if (!result.Contains(entity.Metadata.PrimaryNameAttribute))
-            {
-                result.Add(entity.Metadata.PrimaryNameAttribute);
-            }
-            return result.ToArray();
+            return entity.quickfindfetch.GetQueryColumns(entity.Metadata.PrimaryNameAttribute);
         }
 
         private void GetRelatedChildren(Entity parentrecord, EntityMetadataProxy entity)
@@ -1027,18 +913,6 @@ namespace Rappen.XTB.RRA
                     SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
                 }
             });
-        }
-
-        private QueryBase ReplaceQuickFindPlaceholders(EntityMetadataProxy entity, string find)
-        {
-            var fx = new XmlDocument();
-            fx.LoadXml(entity.quickfindfetch);
-            if (fx.SelectSingleNode("fetch/entity") is XmlNode entitynode)
-            {
-                FixEntity(entity, entitynode, find);
-            }
-            SetStatus($"Composed quick find query for {entity}");
-            return new FetchExpression(fx.OuterXml);
         }
 
         private void SaveSettings()
