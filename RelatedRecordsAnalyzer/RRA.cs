@@ -17,7 +17,7 @@ using XrmToolBox.Extensibility.Interfaces;
 
 namespace Rappen.XTB.RRA
 {
-    public partial class RRA : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IPayPalPlugin//, IAboutPlugin
+    public partial class RRA : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IPayPalPlugin, IAboutPlugin
     {
         #region Private Fields
 

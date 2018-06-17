@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Rappen.XrmToolBox.RelatedRecordsAnalyzer</id>
+    <version>1.0.0</version>
+    <title>Related Records Analyzer for XrmToolBox</title>
+    <authors>Jonas Rapp</authors>
+    <owners>rappen</owners>
+    <projectUrl>https://github.com/rappen/RelatedRecordsAnalyzer</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/rappen/RelatedRecordsAnalyzer/master/images/RRA-150-tsp.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Analyze relationships and related data on Microsoft Dynamics 365/CRM.
+      This tool will answer questions like:
+      - If I delete A, what orphaned children will be left?
+      - If I reassign B, what other records will follow?
+      - Why can't I delete C?
+
+      1. Select a record using record url or quick find.
+      2. Configure which relationships to investigate.
+      3. Let the tool analyze the relationships to find related records.
+      4. Browse results and expand next levels of related information.
+    </description>
+    <summary>Analyze relationships and related data on Microsoft Dynamics 365/CRM.</summary>
+    <releaseNotes>
+First public release
+    </releaseNotes>
+    <copyright>Copyright 2018 Jonas Rapp</copyright>
+    <tags>XrmToolBox Plugins RelatedRecordsAnalyzer</tags>
+    <dependencies>
+      <dependency id="XrmToolBox" version="1.2018.6.25" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Rappen.XTB.LCG.dll" target="lib\net452\Plugins" />
+  </files>
+</package>
