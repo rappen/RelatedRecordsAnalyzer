@@ -32,6 +32,6 @@ First public release
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Rappen.XTB.LCG.dll" target="lib\net452\Plugins" />
+    <file src="bin\Release\Rappen.XTB.RRA.dll" target="lib\net452\Plugins" />
   </files>
 </package>
