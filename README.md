@@ -1,5 +1,8 @@
 # RelatedRecordsAnalyzer for [XrmToolBox](http://www.xrmtoolbox.com)
 
+_Read more on [jonasrapp.net](https://jonasrapp.net) : [Relationship data analysis with XrmToolBox](https://jonasrapp.net/rra-intro/)_
+
+
 Analyze relationships and related data on Microsoft Dynamics 365/CRM.
 
 This tool will answer questions like...
