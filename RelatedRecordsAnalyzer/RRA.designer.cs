@@ -39,7 +39,7 @@
             this.tslByJonas = new System.Windows.Forms.ToolStripLabel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.gvRecords = new Cinteros.Xrm.CRMWinForm.CRMGridView();
+            this.gvRecords = new xrmtb.XrmToolBox.Controls.CRMGridView();
             this.gbSearch = new System.Windows.Forms.GroupBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -218,7 +218,7 @@
             this.gvRecords.ShowLocalTimes = true;
             this.gvRecords.Size = new System.Drawing.Size(321, 340);
             this.gvRecords.TabIndex = 0;
-            this.gvRecords.RecordDoubleClick += new Cinteros.Xrm.CRMWinForm.CRMRecordEventHandler(this.RecordDoubleClick);
+            this.gvRecords.RecordDoubleClick += new xrmtb.XrmToolBox.Controls.CRMRecordEventHandler(this.RecordDoubleClick);
             this.gvRecords.SelectionChanged += new System.EventHandler(this.crmGridView1_SelectionChanged);
             // 
             // gbSearch
@@ -756,7 +756,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cmbEntities;
-        private Cinteros.Xrm.CRMWinForm.CRMGridView gvRecords;
+        private xrmtb.XrmToolBox.Controls.CRMGridView gvRecords;
         private System.Windows.Forms.Timer typeTimer;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TabControl tabControl1;

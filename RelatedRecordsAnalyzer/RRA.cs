@@ -1,5 +1,4 @@
-﻿using Cinteros.Xrm.CRMWinForm;
-using McTools.Xrm.Connection;
+﻿using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
@@ -11,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
+using xrmtb.XrmToolBox.Controls;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Args;
 using XrmToolBox.Extensibility.Interfaces;

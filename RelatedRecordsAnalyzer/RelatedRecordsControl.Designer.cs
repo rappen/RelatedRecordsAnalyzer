@@ -33,7 +33,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.gvChildren = new Cinteros.Xrm.CRMWinForm.CRMGridView();
+            this.gvChildren = new xrmtb.XrmToolBox.Controls.CRMGridView();
             this.ctxMenuChildren = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxMenuSelectAsParent = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -323,7 +323,7 @@
         }
 
         #endregion
-        private Cinteros.Xrm.CRMWinForm.CRMGridView gvChildren;
+        private xrmtb.XrmToolBox.Controls.CRMGridView gvChildren;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox txtRelation;
         private System.Windows.Forms.Label label2;

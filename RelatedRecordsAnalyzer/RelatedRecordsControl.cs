@@ -1,8 +1,8 @@
-﻿using Cinteros.Xrm.CRMWinForm;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 using System.Linq;
 using System.Windows.Forms;
+using xrmtb.XrmToolBox.Controls;
 
 namespace Rappen.XTB.RRA
 {
