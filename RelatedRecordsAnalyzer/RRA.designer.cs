@@ -77,9 +77,9 @@
             this.menuChildren = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuChildrenViewDetails = new System.Windows.Forms.ToolStripMenuItem();
             this.menuChildrenOpenInBrowser = new System.Windows.Forms.ToolStripMenuItem();
-            this.typeTimer = new System.Windows.Forms.Timer(this.components);
             this.menuChildrenSelectAsParent = new System.Windows.Forms.ToolStripMenuItem();
             this.menuChildrenReloadChildren = new System.Windows.Forms.ToolStripMenuItem();
+            this.typeTimer = new System.Windows.Forms.Timer(this.components);
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -206,6 +206,7 @@
             this.gvRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.gvRecords.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvRecords.EnableHeadersVisualStyles = false;
+            this.gvRecords.FilterColumns = "";
             this.gvRecords.Location = new System.Drawing.Point(3, 16);
             this.gvRecords.Name = "gvRecords";
             this.gvRecords.ReadOnly = true;
@@ -663,7 +664,7 @@
             this.menuChildrenSelectAsParent,
             this.menuChildrenReloadChildren});
             this.menuChildren.Name = "menuChildren";
-            this.menuChildren.Size = new System.Drawing.Size(194, 114);
+            this.menuChildren.Size = new System.Drawing.Size(194, 92);
             this.menuChildren.Opening += new System.ComponentModel.CancelEventHandler(this.menuChildren_Opening);
             // 
             // menuChildrenViewDetails
@@ -680,11 +681,6 @@
             this.menuChildrenOpenInBrowser.Text = "Open in browser";
             this.menuChildrenOpenInBrowser.Click += new System.EventHandler(this.menuChildrenOpenInBrowser_Click);
             // 
-            // typeTimer
-            // 
-            this.typeTimer.Interval = 500;
-            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
-            // 
             // menuChildrenSelectAsParent
             // 
             this.menuChildrenSelectAsParent.Name = "menuChildrenSelectAsParent";
@@ -698,6 +694,11 @@
             this.menuChildrenReloadChildren.Size = new System.Drawing.Size(193, 22);
             this.menuChildrenReloadChildren.Text = "Reload children";
             this.menuChildrenReloadChildren.Click += new System.EventHandler(this.menuChildrenReloadChildren_Click);
+            // 
+            // typeTimer
+            // 
+            this.typeTimer.Interval = 500;
+            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
             // 
             // RRA
             // 

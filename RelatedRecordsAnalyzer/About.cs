@@ -30,19 +30,19 @@ namespace Rappen.XTB.RRA
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             rra.ai.WriteEvent("About-OpenHomepage");
-            System.Diagnostics.Process.Start("http://xtb.jonasrapp.net");
+            System.Diagnostics.Process.Start("https://jonasr.app/2018/06/rra-intro/");
         }
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             rra.ai.WriteEvent("About-OpenBlog");
-            System.Diagnostics.Process.Start("http://jonasrapp.net");
+            System.Diagnostics.Process.Start("https://jonasr.app");
         }
 
         private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             rra.ai.WriteEvent("About-OpenTwitter");
-            System.Diagnostics.Process.Start("http://twitter.com/rappen");
+            System.Diagnostics.Process.Start("https://twitter.com/rappen");
         }
 
         private void PopulateAssemblies()
