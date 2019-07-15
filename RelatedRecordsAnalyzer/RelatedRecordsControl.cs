@@ -22,11 +22,22 @@ namespace Rappen.XTB.RRA
                 txtCascadeUnshare.Text = rel1m.CascadeConfiguration.Unshare?.ToString();
                 txtCascadeReparent.Text = rel1m.CascadeConfiguration.Reparent?.ToString();
                 txtCascadeDelete.Text = rel1m.CascadeConfiguration.Delete?.ToString();
+                pan1Mrel.Visible = true;
+                panMMrel.Visible = false;
+            }
+            if (child.Relationship is ManyToManyRelationshipMetadata relmm)
+            {
+                txtMMEntity1.Text = relmm.Entity1LogicalName;
+                txtMMAttribute1.Text = relmm.Entity1IntersectAttribute;
+                txtMMEntity2.Text = relmm.Entity2LogicalName;
+                txtMMAttribute2.Text = relmm.Entity2IntersectAttribute;
+                pan1Mrel.Visible = false;
+                panMMrel.Visible = true;
             }
             txtEntity.Text = child.CollectionDisplayName;
             txtRelation.Text = child.Relationship.SchemaName;
             txtCount.Text = child.Results.Entities.Count.ToString();
-            var tp = new TabPage(child.CollectionDisplayName)
+            var tp = new TabPage(child.CollectionDisplayName + (child.Relationship is ManyToManyRelationshipMetadata ? " M:M" : ""))
             {
                 Tag = child,
                 Name = child.Relationship.SchemaName
@@ -51,7 +62,7 @@ namespace Rappen.XTB.RRA
             RRA.SortColumns(gvChildren, child.EntityInfo, gvChildren.OrganizationService);
         }
 
-        private void ctxMenuSelectAsParent_Click(object sender, System.EventArgs e) 
+        private void ctxMenuSelectAsParent_Click(object sender, System.EventArgs e)
             => SelectAsParent(sender, new CRMRecordEventArgs(-1, -1, gvChildren.SelectedCellRecords?.Entities?.FirstOrDefault(), string.Empty));
     }
 }

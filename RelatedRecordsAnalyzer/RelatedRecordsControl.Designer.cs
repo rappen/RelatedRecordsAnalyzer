@@ -53,9 +53,23 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtEntity = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.pan1Mrel = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panMMrel = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtMMAttribute2 = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtMMEntity2 = new System.Windows.Forms.TextBox();
+            this.txtMMEntity1 = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txtMMAttribute1 = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gvChildren)).BeginInit();
             this.ctxMenuChildren.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.pan1Mrel.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panMMrel.SuspendLayout();
             this.SuspendLayout();
             // 
             // gvChildren
@@ -88,6 +102,7 @@
             this.gvChildren.DefaultCellStyle = dataGridViewCellStyle3;
             this.gvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gvChildren.EnableHeadersVisualStyles = false;
+            this.gvChildren.FilterColumns = "";
             this.gvChildren.Location = new System.Drawing.Point(0, 93);
             this.gvChildren.Name = "gvChildren";
             this.gvChildren.ReadOnly = true;
@@ -104,7 +119,7 @@
             this.gvChildren.ShowFriendlyNames = true;
             this.gvChildren.ShowIdColumn = false;
             this.gvChildren.ShowLocalTimes = true;
-            this.gvChildren.Size = new System.Drawing.Size(669, 294);
+            this.gvChildren.Size = new System.Drawing.Size(938, 294);
             this.gvChildren.TabIndex = 0;
             // 
             // ctxMenuChildren
@@ -123,33 +138,19 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.txtCascadeDelete);
-            this.panel1.Controls.Add(this.txtCascadeReparent);
-            this.panel1.Controls.Add(this.label9);
-            this.panel1.Controls.Add(this.label10);
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.txtCascadeUnshare);
-            this.panel1.Controls.Add(this.txtCascadeShare);
-            this.panel1.Controls.Add(this.txtCascadeAssign);
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.txtCount);
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.txtRelation);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.txtEntity);
-            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.panel3);
+            this.panel1.Controls.Add(this.panMMrel);
+            this.panel1.Controls.Add(this.pan1Mrel);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(669, 93);
+            this.panel1.Size = new System.Drawing.Size(938, 93);
             this.panel1.TabIndex = 1;
             // 
             // txtCascadeDelete
             // 
-            this.txtCascadeDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCascadeDelete.BackColor = System.Drawing.SystemColors.Window;
-            this.txtCascadeDelete.Location = new System.Drawing.Point(543, 36);
+            this.txtCascadeDelete.Location = new System.Drawing.Point(234, 36);
             this.txtCascadeDelete.Name = "txtCascadeDelete";
             this.txtCascadeDelete.ReadOnly = true;
             this.txtCascadeDelete.Size = new System.Drawing.Size(100, 20);
@@ -157,9 +158,8 @@
             // 
             // txtCascadeReparent
             // 
-            this.txtCascadeReparent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCascadeReparent.BackColor = System.Drawing.SystemColors.Window;
-            this.txtCascadeReparent.Location = new System.Drawing.Point(543, 10);
+            this.txtCascadeReparent.Location = new System.Drawing.Point(234, 10);
             this.txtCascadeReparent.Name = "txtCascadeReparent";
             this.txtCascadeReparent.ReadOnly = true;
             this.txtCascadeReparent.Size = new System.Drawing.Size(100, 20);
@@ -167,9 +167,8 @@
             // 
             // label9
             // 
-            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(487, 39);
+            this.label9.Location = new System.Drawing.Point(178, 39);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(38, 13);
             this.label9.TabIndex = 16;
@@ -177,9 +176,8 @@
             // 
             // label10
             // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(487, 13);
+            this.label10.Location = new System.Drawing.Point(178, 13);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(51, 13);
             this.label10.TabIndex = 15;
@@ -187,9 +185,8 @@
             // 
             // label7
             // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(320, 65);
+            this.label7.Location = new System.Drawing.Point(11, 65);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(47, 13);
             this.label7.TabIndex = 14;
@@ -197,9 +194,8 @@
             // 
             // txtCascadeUnshare
             // 
-            this.txtCascadeUnshare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCascadeUnshare.BackColor = System.Drawing.SystemColors.Window;
-            this.txtCascadeUnshare.Location = new System.Drawing.Point(376, 62);
+            this.txtCascadeUnshare.Location = new System.Drawing.Point(67, 62);
             this.txtCascadeUnshare.Name = "txtCascadeUnshare";
             this.txtCascadeUnshare.ReadOnly = true;
             this.txtCascadeUnshare.Size = new System.Drawing.Size(100, 20);
@@ -207,9 +203,8 @@
             // 
             // txtCascadeShare
             // 
-            this.txtCascadeShare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCascadeShare.BackColor = System.Drawing.SystemColors.Window;
-            this.txtCascadeShare.Location = new System.Drawing.Point(376, 36);
+            this.txtCascadeShare.Location = new System.Drawing.Point(67, 36);
             this.txtCascadeShare.Name = "txtCascadeShare";
             this.txtCascadeShare.ReadOnly = true;
             this.txtCascadeShare.Size = new System.Drawing.Size(100, 20);
@@ -217,9 +212,8 @@
             // 
             // txtCascadeAssign
             // 
-            this.txtCascadeAssign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCascadeAssign.BackColor = System.Drawing.SystemColors.Window;
-            this.txtCascadeAssign.Location = new System.Drawing.Point(376, 10);
+            this.txtCascadeAssign.Location = new System.Drawing.Point(67, 10);
             this.txtCascadeAssign.Name = "txtCascadeAssign";
             this.txtCascadeAssign.ReadOnly = true;
             this.txtCascadeAssign.Size = new System.Drawing.Size(100, 20);
@@ -227,9 +221,8 @@
             // 
             // label6
             // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(320, 39);
+            this.label6.Location = new System.Drawing.Point(11, 39);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
             this.label6.TabIndex = 10;
@@ -237,9 +230,8 @@
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(320, 13);
+            this.label3.Location = new System.Drawing.Point(11, 13);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(38, 13);
             this.label3.TabIndex = 9;
@@ -250,16 +242,16 @@
             this.txtCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCount.BackColor = System.Drawing.SystemColors.Window;
-            this.txtCount.Location = new System.Drawing.Point(84, 62);
+            this.txtCount.Location = new System.Drawing.Point(85, 62);
             this.txtCount.Name = "txtCount";
             this.txtCount.ReadOnly = true;
-            this.txtCount.Size = new System.Drawing.Size(218, 20);
+            this.txtCount.Size = new System.Drawing.Size(159, 20);
             this.txtCount.TabIndex = 8;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 65);
+            this.label5.Location = new System.Drawing.Point(14, 65);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 13);
             this.label5.TabIndex = 7;
@@ -270,16 +262,16 @@
             this.txtRelation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRelation.BackColor = System.Drawing.SystemColors.Window;
-            this.txtRelation.Location = new System.Drawing.Point(84, 36);
+            this.txtRelation.Location = new System.Drawing.Point(85, 36);
             this.txtRelation.Name = "txtRelation";
             this.txtRelation.ReadOnly = true;
-            this.txtRelation.Size = new System.Drawing.Size(218, 20);
+            this.txtRelation.Size = new System.Drawing.Size(159, 20);
             this.txtRelation.TabIndex = 3;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(13, 39);
+            this.label2.Location = new System.Drawing.Point(14, 39);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(65, 13);
             this.label2.TabIndex = 2;
@@ -290,20 +282,140 @@
             this.txtEntity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtEntity.BackColor = System.Drawing.SystemColors.Window;
-            this.txtEntity.Location = new System.Drawing.Point(84, 10);
+            this.txtEntity.Location = new System.Drawing.Point(85, 10);
             this.txtEntity.Name = "txtEntity";
             this.txtEntity.ReadOnly = true;
-            this.txtEntity.Size = new System.Drawing.Size(218, 20);
+            this.txtEntity.Size = new System.Drawing.Size(159, 20);
             this.txtEntity.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(14, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(33, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Entity";
+            // 
+            // pan1Mrel
+            // 
+            this.pan1Mrel.Controls.Add(this.label3);
+            this.pan1Mrel.Controls.Add(this.txtCascadeDelete);
+            this.pan1Mrel.Controls.Add(this.label6);
+            this.pan1Mrel.Controls.Add(this.txtCascadeReparent);
+            this.pan1Mrel.Controls.Add(this.txtCascadeAssign);
+            this.pan1Mrel.Controls.Add(this.label9);
+            this.pan1Mrel.Controls.Add(this.txtCascadeShare);
+            this.pan1Mrel.Controls.Add(this.label10);
+            this.pan1Mrel.Controls.Add(this.txtCascadeUnshare);
+            this.pan1Mrel.Controls.Add(this.label7);
+            this.pan1Mrel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pan1Mrel.Location = new System.Drawing.Point(594, 0);
+            this.pan1Mrel.Name = "pan1Mrel";
+            this.pan1Mrel.Size = new System.Drawing.Size(344, 93);
+            this.pan1Mrel.TabIndex = 19;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.label1);
+            this.panel3.Controls.Add(this.txtCount);
+            this.panel3.Controls.Add(this.txtEntity);
+            this.panel3.Controls.Add(this.label5);
+            this.panel3.Controls.Add(this.label2);
+            this.panel3.Controls.Add(this.txtRelation);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(250, 93);
+            this.panel3.TabIndex = 9;
+            // 
+            // panMMrel
+            // 
+            this.panMMrel.Controls.Add(this.label4);
+            this.panMMrel.Controls.Add(this.txtMMAttribute2);
+            this.panMMrel.Controls.Add(this.label8);
+            this.panMMrel.Controls.Add(this.txtMMEntity2);
+            this.panMMrel.Controls.Add(this.txtMMEntity1);
+            this.panMMrel.Controls.Add(this.label11);
+            this.panMMrel.Controls.Add(this.txtMMAttribute1);
+            this.panMMrel.Controls.Add(this.label12);
+            this.panMMrel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panMMrel.Location = new System.Drawing.Point(250, 0);
+            this.panMMrel.Name = "panMMrel";
+            this.panMMrel.Size = new System.Drawing.Size(344, 93);
+            this.panMMrel.TabIndex = 20;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(11, 13);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(42, 13);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Entity 1";
+            // 
+            // txtMMAttribute2
+            // 
+            this.txtMMAttribute2.BackColor = System.Drawing.SystemColors.Window;
+            this.txtMMAttribute2.Location = new System.Drawing.Point(234, 36);
+            this.txtMMAttribute2.Name = "txtMMAttribute2";
+            this.txtMMAttribute2.ReadOnly = true;
+            this.txtMMAttribute2.Size = new System.Drawing.Size(100, 20);
+            this.txtMMAttribute2.TabIndex = 26;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(11, 39);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 13);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "Attribute 1";
+            // 
+            // txtMMEntity2
+            // 
+            this.txtMMEntity2.BackColor = System.Drawing.SystemColors.Window;
+            this.txtMMEntity2.Location = new System.Drawing.Point(234, 10);
+            this.txtMMEntity2.Name = "txtMMEntity2";
+            this.txtMMEntity2.ReadOnly = true;
+            this.txtMMEntity2.Size = new System.Drawing.Size(100, 20);
+            this.txtMMEntity2.TabIndex = 25;
+            // 
+            // txtMMEntity1
+            // 
+            this.txtMMEntity1.BackColor = System.Drawing.SystemColors.Window;
+            this.txtMMEntity1.Location = new System.Drawing.Point(67, 10);
+            this.txtMMEntity1.Name = "txtMMEntity1";
+            this.txtMMEntity1.ReadOnly = true;
+            this.txtMMEntity1.Size = new System.Drawing.Size(100, 20);
+            this.txtMMEntity1.TabIndex = 21;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(178, 39);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(55, 13);
+            this.label11.TabIndex = 24;
+            this.label11.Text = "Attribute 2";
+            // 
+            // txtMMAttribute1
+            // 
+            this.txtMMAttribute1.BackColor = System.Drawing.SystemColors.Window;
+            this.txtMMAttribute1.Location = new System.Drawing.Point(67, 36);
+            this.txtMMAttribute1.Name = "txtMMAttribute1";
+            this.txtMMAttribute1.ReadOnly = true;
+            this.txtMMAttribute1.Size = new System.Drawing.Size(100, 20);
+            this.txtMMAttribute1.TabIndex = 22;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(178, 13);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(42, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Entity 2";
             // 
             // RelatedRecordsControl
             // 
@@ -313,11 +425,16 @@
             this.Controls.Add(this.gvChildren);
             this.Controls.Add(this.panel1);
             this.Name = "RelatedRecordsControl";
-            this.Size = new System.Drawing.Size(669, 387);
+            this.Size = new System.Drawing.Size(938, 387);
             ((System.ComponentModel.ISupportInitialize)(this.gvChildren)).EndInit();
             this.ctxMenuChildren.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.pan1Mrel.ResumeLayout(false);
+            this.pan1Mrel.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panMMrel.ResumeLayout(false);
+            this.panMMrel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -343,5 +460,16 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ContextMenuStrip ctxMenuChildren;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuSelectAsParent;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panMMrel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtMMAttribute2;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtMMEntity2;
+        private System.Windows.Forms.TextBox txtMMEntity1;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox txtMMAttribute1;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Panel pan1Mrel;
     }
 }

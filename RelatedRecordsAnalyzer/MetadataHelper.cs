@@ -13,7 +13,7 @@ namespace Rappen.XTB.RRA
 
         public static String[] attributeProperties = { "DisplayName", "Description", "AttributeType", "IsManaged", "IsCustomizable", "IsCustomAttribute", "IsValidForCreate", "IsPrimaryName", "SchemaName", "MaxLength" };
         public static String[] entityDetails = { "Attributes" };
-        public static String[] entityProperties = { "LogicalName", "DisplayName", "DisplayCollectionName", "PrimaryIdAttribute", "PrimaryNameAttribute", "ObjectTypeCode", "IsManaged", "IsCustomizable", "IsCustomEntity", "IsIntersect", "IsValidForAdvancedFind", "OneToManyRelationships" };
+        public static String[] entityProperties = { "LogicalName", "DisplayName", "DisplayCollectionName", "PrimaryIdAttribute", "PrimaryNameAttribute", "ObjectTypeCode", "IsManaged", "IsCustomizable", "IsCustomEntity", "IsIntersect", "IsValidForAdvancedFind", "OneToManyRelationships", "ManyToManyRelationships" };
 
         #endregion Public Fields
 

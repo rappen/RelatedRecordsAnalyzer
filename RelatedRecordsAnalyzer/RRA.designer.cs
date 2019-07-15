@@ -607,13 +607,12 @@
             // chkShowMM
             // 
             this.chkShowMM.AutoSize = true;
-            this.chkShowMM.Enabled = false;
             this.chkShowMM.Location = new System.Drawing.Point(13, 65);
             this.chkShowMM.Name = "chkShowMM";
-            this.chkShowMM.Size = new System.Drawing.Size(47, 17);
+            this.chkShowMM.Size = new System.Drawing.Size(85, 17);
             this.chkShowMM.TabIndex = 3;
             this.chkShowMM.Tag = "Include Many-to-Many relationships in the analysis.";
-            this.chkShowMM.Text = "M:M";
+            this.chkShowMM.Text = "Include M:M";
             this.chkShowMM.UseVisualStyleBackColor = true;
             this.chkShowMM.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkShowMM.MouseLeave += new System.EventHandler(this.OptionMouseLeave);

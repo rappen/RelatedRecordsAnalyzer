@@ -307,7 +307,7 @@ namespace Rappen.XTB.RRA
             {
                 return null;
             }
-            var node = new TreeNode($"{child.CollectionDisplayName} ({child.EntityInfo.Metadata.LogicalName}): {child.Results.Entities.Count} records")
+            var node = new TreeNode((child.Relationship is ManyToManyRelationshipMetadata ? "M:M " : "") + $"{child.CollectionDisplayName} ({child.EntityInfo.Metadata.LogicalName}): {child.Results.Entities.Count} records")
             {
                 Tag = child
             };
@@ -463,7 +463,8 @@ namespace Rappen.XTB.RRA
             var ao = new AnalysisOptions(entity)
             {
                 Hidden = chkShowHidden.Checked,
-                OnlyData = chkShowOnlyData.Checked
+                OnlyData = chkShowOnlyData.Checked,
+                M2M = chkShowMM.Checked
             };
             if (chkBehAssAll.Checked) ao.AssignTypes.Add(CascadeType.Cascade);
             if (chkBehAssAct.Checked) ao.AssignTypes.Add(CascadeType.Active);
@@ -585,8 +586,10 @@ namespace Rappen.XTB.RRA
                         .Where(r => ao.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
                         .Where(r => CheckRelationshipBehavior(r, ao))
                         .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
+                    var mmrels = ao.Parent.Metadata.ManyToManyRelationships
+                        .Where(r => ao.M2M);
                     var current = 0;
-                    var total = rels.Count();
+                    var total = rels.Count() + mmrels.Count();
                     foreach (var rel in rels)
                     {
                         if (worker.CancellationPending)
@@ -599,11 +602,32 @@ namespace Rappen.XTB.RRA
                             .Cast<EntityMetadataProxy>()
                             .FirstOrDefault(ent => ent.Metadata.LogicalName == rel.ReferencingEntity) is EntityMetadataProxy childentity)
                         {
-                            worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n{rel.SchemaName}");
+                            worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n1:M {rel.SchemaName}");
                             var children = LoadRelatedChildren(parentrecord, childentity, entity, rel);
                             if (!ao.OnlyData || children?.Results?.Entities?.Count > 0)
                             {
                                 allchildren.Add(children);
+                            }
+                        }
+                    }
+                    foreach (var rel in mmrels)
+                    {
+                        if (worker.CancellationPending)
+                        {
+                            args.Cancel = true;
+                            break;
+                        }
+                        current++;
+                        var entity2name = rel.Entity1LogicalName != entity.Metadata.LogicalName ? rel.Entity1LogicalName : rel.Entity2LogicalName;
+                        if (cmbEntities.Items
+                            .Cast<EntityMetadataProxy>()
+                            .FirstOrDefault(ent => ent.Metadata.LogicalName == entity2name) is EntityMetadataProxy childentity)
+                        {
+                            worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\nM:M {rel.SchemaName}");
+                            var associated = LoadRelatedMM(parentrecord, childentity, entity, rel);
+                            if (!ao.OnlyData || associated?.Results?.Entities?.Count > 0)
+                            {
+                                allchildren.Add(associated);
                             }
                         }
                     }
@@ -766,6 +790,36 @@ namespace Rappen.XTB.RRA
                 var qry = new QueryByAttribute(childmeta.Metadata.LogicalName);
                 qry.ColumnSet = new ColumnSet(GetQuickFindQueryColumns(childmeta));
                 qry.AddAttributeValue(lookup, parent.Id);
+                qry.AddOrder(childmeta.Metadata.PrimaryNameAttribute, OrderType.Ascending);
+                var children = Service.RetrieveMultiple(qry);
+                var result = new QueryInfo
+                {
+                    ParentEntity = parent,
+                    AttributesSignature = string.Join("\n", qry.ColumnSet.Columns),
+                    EntityInfo = childmeta,
+                    Query = qry,
+                    Results = children,
+                    Relationship = rel
+                };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                //ShowErrorNotification($"{childmeta} error: {ex}", null);
+                return null;
+            }
+        }
+
+        private QueryInfo LoadRelatedMM(Entity parent, EntityMetadataProxy childmeta, EntityMetadataProxy parententity, ManyToManyRelationshipMetadata rel)
+        {
+            var entity1attr = rel.Entity1LogicalName == parententity.Metadata.LogicalName ? rel.Entity1IntersectAttribute : rel.Entity2IntersectAttribute;
+            var entity2attr = rel.Entity1LogicalName != parententity.Metadata.LogicalName ? rel.Entity1IntersectAttribute : rel.Entity2IntersectAttribute;
+            try
+            {
+                var qry = new QueryExpression(childmeta.Metadata.LogicalName);
+                qry.ColumnSet = new ColumnSet(GetQuickFindQueryColumns(childmeta));
+                qry.AddLink(rel.IntersectEntityName, childmeta.Metadata.PrimaryIdAttribute, entity2attr)
+                    .LinkCriteria = new FilterExpression() { Conditions = { new ConditionExpression(entity1attr, ConditionOperator.Equal, parent.Id) } };
                 qry.AddOrder(childmeta.Metadata.PrimaryNameAttribute, OrderType.Ascending);
                 var children = Service.RetrieveMultiple(qry);
                 var result = new QueryInfo
@@ -957,6 +1011,7 @@ namespace Rappen.XTB.RRA
         {
             chkShowHidden.Checked = ao.Hidden;
             chkShowOnlyData.Checked = ao.OnlyData;
+            chkShowMM.Checked = ao.M2M;
             chkBehAssAll.Checked = ao.AssignTypes.Contains(CascadeType.Cascade);
             chkBehAssAct.Checked = ao.AssignTypes.Contains(CascadeType.Active);
             chkBehAssUser.Checked = ao.AssignTypes.Contains(CascadeType.UserOwned);
