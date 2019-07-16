@@ -147,6 +147,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="MetaNodeInfo.cs" />
     <Compile Include="QueryInfo.cs" />
     <Compile Include="QuickFindUtils.cs" />
     <Compile Include="RelatedRecordsControl.cs">

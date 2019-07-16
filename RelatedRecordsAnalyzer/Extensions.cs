@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
+using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Rappen.XTB.RRA
 {
@@ -23,6 +25,24 @@ namespace Rappen.XTB.RRA
                     target.Entities.Add(entity);
                 }
             }
+        }
+
+        public static TreeNode SetForeColor(this TreeNode node, Color color)
+        {
+            node.ForeColor = color;
+            return node;
+        }
+
+        public static TreeNode SetBackColor(this TreeNode node, Color color)
+        {
+            node.BackColor = color;
+            return node;
+        }
+
+        public static TreeNode SetFont(this TreeNode node, Font font)
+        {
+            node.NodeFont = font;
+            return node;
         }
     }
 }

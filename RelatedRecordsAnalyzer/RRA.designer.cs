@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RRA));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -80,6 +80,8 @@
             this.menuChildrenSelectAsParent = new System.Windows.Forms.ToolStripMenuItem();
             this.menuChildrenReloadChildren = new System.Windows.Forms.ToolStripMenuItem();
             this.typeTimer = new System.Windows.Forms.Timer(this.components);
+            this.tabMeta = new System.Windows.Forms.TabPage();
+            this.tvMeta = new System.Windows.Forms.TreeView();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -101,6 +103,7 @@
             this.tabControl1.SuspendLayout();
             this.tabTree.SuspendLayout();
             this.menuChildren.SuspendLayout();
+            this.tabMeta.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -199,8 +202,8 @@
             this.gvRecords.AllowUserToDeleteRows = false;
             this.gvRecords.AllowUserToOrderColumns = true;
             this.gvRecords.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.gvRecords.BackgroundColor = System.Drawing.SystemColors.Window;
             this.gvRecords.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -628,6 +631,7 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabTree);
+            this.tabControl1.Controls.Add(this.tabMeta);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -642,7 +646,7 @@
             this.tabTree.Name = "tabTree";
             this.tabTree.Size = new System.Drawing.Size(589, 331);
             this.tabTree.TabIndex = 0;
-            this.tabTree.Text = "Hierarchy";
+            this.tabTree.Text = "Data Hierarchy";
             this.tabTree.UseVisualStyleBackColor = true;
             // 
             // tvChildren
@@ -653,7 +657,7 @@
             this.tvChildren.Name = "tvChildren";
             this.tvChildren.Size = new System.Drawing.Size(589, 331);
             this.tvChildren.TabIndex = 0;
-            this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvChildren_BeforeExpand);
+            this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeview_BeforeExpand);
             // 
             // menuChildren
             // 
@@ -699,6 +703,25 @@
             this.typeTimer.Interval = 500;
             this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
             // 
+            // tabMeta
+            // 
+            this.tabMeta.Controls.Add(this.tvMeta);
+            this.tabMeta.Location = new System.Drawing.Point(4, 22);
+            this.tabMeta.Name = "tabMeta";
+            this.tabMeta.Size = new System.Drawing.Size(589, 331);
+            this.tabMeta.TabIndex = 1;
+            this.tabMeta.Text = "Metadata";
+            this.tabMeta.UseVisualStyleBackColor = true;
+            // 
+            // tvMeta
+            // 
+            this.tvMeta.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvMeta.Location = new System.Drawing.Point(0, 0);
+            this.tvMeta.Name = "tvMeta";
+            this.tvMeta.Size = new System.Drawing.Size(589, 331);
+            this.tvMeta.TabIndex = 0;
+            this.tvMeta.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeview_BeforeExpand);
+            // 
             // RRA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -739,6 +762,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabTree.ResumeLayout(false);
             this.menuChildren.ResumeLayout(false);
+            this.tabMeta.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -794,5 +818,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuChildrenOpenInBrowser;
         private System.Windows.Forms.ToolStripMenuItem menuChildrenSelectAsParent;
         private System.Windows.Forms.ToolStripMenuItem menuChildrenReloadChildren;
+        private System.Windows.Forms.TabPage tabMeta;
+        private System.Windows.Forms.TreeView tvMeta;
     }
 }

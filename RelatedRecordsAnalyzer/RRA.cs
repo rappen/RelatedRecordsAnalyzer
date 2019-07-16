@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Windows.Forms;
@@ -245,13 +246,19 @@ namespace Rappen.XTB.RRA
 
         private void tsbAnalyze_Click(object sender, EventArgs e)
         {
+            tvMeta.Nodes.Clear();
             tvChildren.Nodes.Clear();
-            foreach (var page in tabControl1.TabPages.Cast<TabPage>().Where(t => t != tabTree))
+            foreach (var page in tabControl1.TabPages.Cast<TabPage>().Where(t => t != tabTree && t != tabMeta))
             {
                 tabControl1.TabPages.Remove(page);
             }
             var record = gvRecords.SelectedRowRecords.Entities[0];
             var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
+
+            var metaroot = AddMetadataNode(null, entity, null);
+            AddMetadataChildren(metaroot);
+            metaroot.Expand();
+
             AddChildEntitiesToTree(new QueryInfo
             {
                 EntityInfo = entity,
@@ -277,11 +284,18 @@ namespace Rappen.XTB.RRA
             ShowAboutDialog();
         }
 
-        private void tvChildren_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+        private void treeview_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
-            if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Name == "dummy" && e.Node.Tag is ValueTuple<QueryInfo, Entity> nodeinfo)
+            if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Name == "dummy")
             {
-                GetRelatedChildren(nodeinfo.Item2, nodeinfo.Item1.EntityInfo);
+                if (e.Node.Tag is ValueTuple<QueryInfo, Entity> nodeinfo)
+                {
+                    GetRelatedChildren(nodeinfo.Item2, nodeinfo.Item1.EntityInfo);
+                }
+                else if (e.Node.Tag is MetaNodeInfo)
+                {
+                    AddMetadataChildren(e.Node);
+                }
             }
         }
 
@@ -301,7 +315,7 @@ namespace Rappen.XTB.RRA
 
         #region Private Methods
 
-        private static TreeNode GetEntityNode(QueryInfo child, TreeView tv)
+        private static TreeNode AddEntityNode(QueryInfo child, TreeView tv)
         {
             if (child.ParentEntity == null)
             {
@@ -311,7 +325,7 @@ namespace Rappen.XTB.RRA
             {
                 Tag = child
             };
-            var parentnode = GetParentNode(child.ParentEntity, tv.Nodes);
+            var parentnode = GetNodeByRecord(child.ParentEntity, tv.Nodes);
             if (parentnode == null)
             {
                 tv.Nodes.Add(node);
@@ -323,26 +337,100 @@ namespace Rappen.XTB.RRA
             return node;
         }
 
-        private static TreeNode GetParentNode(Entity parententity, TreeNodeCollection nodes)
+        private void AddMetadataChildren(TreeNode node)
         {
-            if (parententity == null)
+            if (!(node.Tag is MetaNodeInfo nodeinfo))
+            {
+                return;
+            }
+            var ao = GetAnalysisOptions(nodeinfo.Entity);
+
+            if (nodeinfo.Relationship is OneToManyRelationshipMetadata rel1m)
+            {
+                node.Nodes.Add($"Relationship: {rel1m.SchemaName}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"  Assign:   {rel1m.CascadeConfiguration.Assign?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"  Share:    {rel1m.CascadeConfiguration.Share?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"  Unshare:  {rel1m.CascadeConfiguration.Unshare?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"  Reparent: {rel1m.CascadeConfiguration.Reparent?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"  Delete:   {rel1m.CascadeConfiguration.Delete?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+            }
+
+            var rels1M = nodeinfo.Entity.Metadata.OneToManyRelationships
+                .Where(r => ao.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
+                .Where(r => CheckRelationshipBehavior(r, ao))
+                .OrderBy(r => r.SchemaName)
+                .OrderBy(r => r.AssociatedMenuConfiguration?.Label?.UserLocalizedLabel?.Label)
+                .OrderBy(r => r.AssociatedMenuConfiguration?.Order)
+                .ToList();
+            foreach (var rel1M in rels1M)
+            {
+                if (!(GetEntityMetadataProxy(rel1M.ReferencingEntity) is EntityMetadataProxy childmeta))
+                {
+                    continue;
+                }
+                var childnode = AddMetadataNode(node, childmeta, rel1M);
+            }
+            RemoveDummyNode(node);
+        }
+
+        private TreeNode AddMetadataNode(TreeNode node, EntityMetadataProxy childmeta, OneToManyRelationshipMetadata rel1m)
+        {
+            var nodeinfo = new MetaNodeInfo { Entity = childmeta, Relationship = rel1m };
+            var childnode = new TreeNode(nodeinfo.ToString());
+            if (GetParentNodeByMeta(childmeta, node) == null)
+            {
+                childnode.Tag = nodeinfo;
+                childnode.Nodes.Add("dummy", "Loading...");
+            }
+            else
+            {
+                childnode.ForeColor = Color.Gray;
+            }
+            if (node != null)
+            {
+                node.Nodes.Add(childnode);
+            }
+            else
+            {
+                tvMeta.Nodes.Add(childnode);
+            }
+            return childnode;
+        }
+
+        private static TreeNode GetNodeByRecord(Entity record, TreeNodeCollection nodes)
+        {
+            if (record == null)
             {
                 return null;
             }
             foreach (TreeNode node in nodes)
             {
                 if (node.Tag is ValueTuple<QueryInfo, Entity> nodeinfo &&
-                    nodeinfo.Item2.LogicalName == parententity.LogicalName &&
-                    nodeinfo.Item2.Id.Equals(parententity.Id))
+                    nodeinfo.Item2.LogicalName == record.LogicalName &&
+                    nodeinfo.Item2.Id.Equals(record.Id))
                 {
                     return node;
                 }
-                else if (GetParentNode(parententity, node.Nodes) is TreeNode parent)
+                else if (GetNodeByRecord(record, node.Nodes) is TreeNode recordnode)
                 {
-                    return parent;
+                    return recordnode;
                 }
             }
             return null;
+        }
+
+        private static TreeNode GetParentNodeByMeta(EntityMetadataProxy meta, TreeNode parent)
+        {
+            if (meta == null || parent == null)
+            {
+                return null;
+            }
+            if (parent.Tag is MetaNodeInfo nodeinfo &&
+                nodeinfo.Entity.Metadata.LogicalName == meta.Metadata.LogicalName)
+            {
+                return parent;
+            }
+            return GetParentNodeByMeta(meta, parent.Parent);
         }
 
         private static void GetQuickFind(EntityMetadataProxy entity, IOrganizationService service)
@@ -388,7 +476,7 @@ namespace Rappen.XTB.RRA
         private void AddChildEntitiesToTree(QueryInfo child)
         {
             tvChildren.BeginUpdate();
-            var entitynode = GetEntityNode(child, tvChildren);
+            var entitynode = AddEntityNode(child, tvChildren);
             foreach (var record in child.Results.Entities.OrderBy(r => r.Name(child.EntityInfo)))
             {
                 var recordnode = new TreeNode(record.Name(child.EntityInfo))
@@ -410,7 +498,7 @@ namespace Rappen.XTB.RRA
             tvChildren.EndUpdate();
         }
 
-        private bool CheckRelationshipBehavior(OneToManyRelationshipMetadata relation, AnalysisOptions ao)
+        private static bool CheckRelationshipBehavior(OneToManyRelationshipMetadata relation, AnalysisOptions ao)
         {
             return (ao.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Assign)
                  || ao.AssignTypes.Contains((CascadeType)relation.CascadeConfiguration.Reparent))
@@ -478,6 +566,13 @@ namespace Rappen.XTB.RRA
             if (chkBehDelRem.Checked) ao.DeleteTypes.Add(CascadeType.RemoveLink);
             if (chkBehDelRest.Checked) ao.DeleteTypes.Add(CascadeType.Restrict);
             return ao;
+        }
+
+        private EntityMetadataProxy GetEntityMetadataProxy(string entityname)
+        {
+            return cmbEntities.Items
+                .Cast<EntityMetadataProxy>()
+                .FirstOrDefault(ent => ent.Metadata.LogicalName == entityname) as EntityMetadataProxy;
         }
 
         private string GetEntityReferenceUrl(EntityReference entref)
@@ -598,9 +693,7 @@ namespace Rappen.XTB.RRA
                             break;
                         }
                         current++;
-                        if (cmbEntities.Items
-                            .Cast<EntityMetadataProxy>()
-                            .FirstOrDefault(ent => ent.Metadata.LogicalName == rel.ReferencingEntity) is EntityMetadataProxy childentity)
+                        if (GetEntityMetadataProxy(rel.ReferencingEntity) is EntityMetadataProxy childentity)
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n1:M {rel.SchemaName}");
                             var children = LoadRelatedChildren(parentrecord, childentity, entity, rel);
@@ -619,9 +712,7 @@ namespace Rappen.XTB.RRA
                         }
                         current++;
                         var entity2name = rel.Entity1LogicalName != entity.Metadata.LogicalName ? rel.Entity1LogicalName : rel.Entity2LogicalName;
-                        if (cmbEntities.Items
-                            .Cast<EntityMetadataProxy>()
-                            .FirstOrDefault(ent => ent.Metadata.LogicalName == entity2name) is EntityMetadataProxy childentity)
+                        if (GetEntityMetadataProxy(entity2name) is EntityMetadataProxy childentity)
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\nM:M {rel.SchemaName}");
                             var associated = LoadRelatedMM(parentrecord, childentity, entity, rel);
@@ -913,7 +1004,12 @@ namespace Rappen.XTB.RRA
 
         private void RemoveDummyNode(Entity parentrecord)
         {
-            var parentnode = GetParentNode(parentrecord, tvChildren.Nodes);
+            var parentnode = GetNodeByRecord(parentrecord, tvChildren.Nodes);
+            RemoveDummyNode(parentnode);
+        }
+
+        private static void RemoveDummyNode(TreeNode parentnode)
+        {
             if (parentnode?.Nodes?.Count > 0 && parentnode.Nodes[0].Name == "dummy")
             {
                 parentnode.Nodes.RemoveAt(0);
