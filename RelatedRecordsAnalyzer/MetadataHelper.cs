@@ -13,11 +13,11 @@ namespace Rappen.XTB.RRA
 
         public static String[] attributeProperties = { "DisplayName", "Description", "AttributeType", "IsManaged", "IsCustomizable", "IsCustomAttribute", "IsValidForCreate", "IsPrimaryName", "SchemaName", "MaxLength" };
         public static String[] entityDetails = { "Attributes" };
-        public static String[] entityProperties = { "LogicalName", "DisplayName", "DisplayCollectionName", "PrimaryIdAttribute", "PrimaryNameAttribute", "ObjectTypeCode", "IsManaged", "IsCustomizable", "IsCustomEntity", "IsIntersect", "IsValidForAdvancedFind", "OneToManyRelationships", "ManyToManyRelationships" };
+        public static String[] entityProperties = { "LogicalName", "DisplayName", "DisplayCollectionName", "PrimaryIdAttribute", "PrimaryNameAttribute", "ObjectTypeCode", "IsManaged", "IsCustomizable", "IsCustomEntity", "IsIntersect", "IsActivity", "IsBPFEntity", "IsValidForAdvancedFind", "IsPrivate", "OneToManyRelationships", "ManyToManyRelationships" };
 
         #endregion Public Fields
 
-            #region Private Fields
+        #region Private Fields
 
         private static Dictionary<string, EntityMetadata> entities = new Dictionary<string, EntityMetadata>();
 

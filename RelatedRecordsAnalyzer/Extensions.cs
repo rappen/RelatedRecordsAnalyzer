@@ -27,6 +27,12 @@ namespace Rappen.XTB.RRA
             }
         }
 
+        public static TreeNode SetMetadataStyle(this TreeNode node)
+        {
+            node.SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+            return node;
+        }
+
         public static TreeNode SetForeColor(this TreeNode node, Color color)
         {
             node.ForeColor = color;

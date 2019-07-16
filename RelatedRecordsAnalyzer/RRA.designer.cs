@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RRA));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -83,6 +83,11 @@
             this.tabMeta = new System.Windows.Forms.TabPage();
             this.tvMeta = new System.Windows.Forms.TreeView();
             this.typeTimer = new System.Windows.Forms.Timer(this.components);
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.chkEntPrivate = new System.Windows.Forms.CheckBox();
+            this.chkEntBPF = new System.Windows.Forms.CheckBox();
+            this.chkEntNotAdvFind = new System.Windows.Forms.CheckBox();
+            this.chkEntActivity = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -105,6 +110,7 @@
             this.tabTree.SuspendLayout();
             this.menuChildren.SuspendLayout();
             this.tabMeta.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -119,7 +125,7 @@
             this.tslByJonas});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(932, 31);
+            this.toolStripMenu.Size = new System.Drawing.Size(1192, 31);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -192,8 +198,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(932, 517);
-            this.splitContainer1.SplitterDistance = 327;
+            this.splitContainer1.Size = new System.Drawing.Size(1192, 517);
+            this.splitContainer1.SplitterDistance = 341;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 5;
             // 
@@ -203,7 +209,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 79);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(327, 359);
+            this.groupBox2.Size = new System.Drawing.Size(341, 359);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Records";
@@ -214,8 +220,8 @@
             this.gvRecords.AllowUserToDeleteRows = false;
             this.gvRecords.AllowUserToOrderColumns = true;
             this.gvRecords.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gvRecords.BackgroundColor = System.Drawing.SystemColors.Window;
             this.gvRecords.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -231,7 +237,7 @@
             this.gvRecords.ShowIdColumn = false;
             this.gvRecords.ShowIndexColumn = false;
             this.gvRecords.ShowLocalTimes = true;
-            this.gvRecords.Size = new System.Drawing.Size(321, 340);
+            this.gvRecords.Size = new System.Drawing.Size(335, 340);
             this.gvRecords.TabIndex = 0;
             this.gvRecords.RecordDoubleClick += new xrmtb.XrmToolBox.Controls.CRMRecordEventHandler(this.RecordDoubleClick);
             this.gvRecords.SelectionChanged += new System.EventHandler(this.crmGridView1_SelectionChanged);
@@ -245,7 +251,7 @@
             this.gbSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbSearch.Location = new System.Drawing.Point(0, 0);
             this.gbSearch.Name = "gbSearch";
-            this.gbSearch.Size = new System.Drawing.Size(327, 79);
+            this.gbSearch.Size = new System.Drawing.Size(341, 79);
             this.gbSearch.TabIndex = 0;
             this.gbSearch.TabStop = false;
             this.gbSearch.Text = "Find record";
@@ -256,7 +262,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(78, 44);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(243, 20);
+            this.txtSearch.Size = new System.Drawing.Size(257, 20);
             this.txtSearch.TabIndex = 3;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
@@ -287,7 +293,7 @@
             this.cmbEntities.FormattingEnabled = true;
             this.cmbEntities.Location = new System.Drawing.Point(78, 17);
             this.cmbEntities.Name = "cmbEntities";
-            this.cmbEntities.Size = new System.Drawing.Size(243, 21);
+            this.cmbEntities.Size = new System.Drawing.Size(257, 21);
             this.cmbEntities.Sorted = true;
             this.cmbEntities.TabIndex = 0;
             this.cmbEntities.SelectedIndexChanged += new System.EventHandler(this.cmbEntities_SelectedIndexChanged);
@@ -301,7 +307,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox4.Location = new System.Drawing.Point(0, 438);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(327, 79);
+            this.groupBox4.Size = new System.Drawing.Size(341, 79);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Selected record";
@@ -314,7 +320,7 @@
             this.txtRecordId.Location = new System.Drawing.Point(78, 44);
             this.txtRecordId.Name = "txtRecordId";
             this.txtRecordId.ReadOnly = true;
-            this.txtRecordId.Size = new System.Drawing.Size(243, 20);
+            this.txtRecordId.Size = new System.Drawing.Size(257, 20);
             this.txtRecordId.TabIndex = 3;
             // 
             // txtRecordName
@@ -325,7 +331,7 @@
             this.txtRecordName.Location = new System.Drawing.Point(78, 17);
             this.txtRecordName.Name = "txtRecordName";
             this.txtRecordName.ReadOnly = true;
-            this.txtRecordName.Size = new System.Drawing.Size(243, 20);
+            this.txtRecordName.Size = new System.Drawing.Size(257, 20);
             this.txtRecordName.TabIndex = 2;
             // 
             // label4
@@ -361,7 +367,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer2.Size = new System.Drawing.Size(597, 517);
+            this.splitContainer2.Size = new System.Drawing.Size(843, 517);
             this.splitContainer2.SplitterDistance = 156;
             this.splitContainer2.TabIndex = 3;
             // 
@@ -371,11 +377,12 @@
             this.groupBox3.Controls.Add(this.groupBox6);
             this.groupBox3.Controls.Add(this.groupBox5);
             this.groupBox3.Controls.Add(this.groupBox1);
+            this.groupBox3.Controls.Add(this.groupBox8);
             this.groupBox3.Controls.Add(this.lblOptionHint);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(597, 156);
+            this.groupBox3.Size = new System.Drawing.Size(843, 156);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Analysis Options";
@@ -386,10 +393,10 @@
             this.groupBox7.Controls.Add(this.chkBehDelRem);
             this.groupBox7.Controls.Add(this.chkBehDelAll);
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox7.Location = new System.Drawing.Point(426, 16);
+            this.groupBox7.Location = new System.Drawing.Point(591, 16);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(147, 112);
-            this.groupBox7.TabIndex = 12;
+            this.groupBox7.TabIndex = 5;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Delete";
             // 
@@ -442,10 +449,10 @@
             this.groupBox6.Controls.Add(this.chkBehShrAct);
             this.groupBox6.Controls.Add(this.chkBehShrAll);
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox6.Location = new System.Drawing.Point(279, 16);
+            this.groupBox6.Location = new System.Drawing.Point(444, 16);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(147, 112);
-            this.groupBox6.TabIndex = 11;
+            this.groupBox6.TabIndex = 4;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Share/Unshare";
             // 
@@ -512,10 +519,10 @@
             this.groupBox5.Controls.Add(this.chkBehAssAct);
             this.groupBox5.Controls.Add(this.chkBehAssAll);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox5.Location = new System.Drawing.Point(132, 16);
+            this.groupBox5.Location = new System.Drawing.Point(297, 16);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(147, 112);
-            this.groupBox5.TabIndex = 10;
+            this.groupBox5.TabIndex = 3;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Assign/Reparent";
             // 
@@ -581,12 +588,12 @@
             this.groupBox1.Controls.Add(this.chkShowOnlyData);
             this.groupBox1.Controls.Add(this.chkShowMM);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox1.Location = new System.Drawing.Point(3, 16);
+            this.groupBox1.Location = new System.Drawing.Point(150, 16);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(129, 112);
-            this.groupBox1.TabIndex = 9;
+            this.groupBox1.Size = new System.Drawing.Size(147, 112);
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Types";
+            this.groupBox1.Text = "Relatioships";
             // 
             // chkShowHidden
             // 
@@ -624,10 +631,10 @@
             this.chkShowMM.AutoSize = true;
             this.chkShowMM.Location = new System.Drawing.Point(13, 65);
             this.chkShowMM.Name = "chkShowMM";
-            this.chkShowMM.Size = new System.Drawing.Size(85, 17);
+            this.chkShowMM.Size = new System.Drawing.Size(108, 17);
             this.chkShowMM.TabIndex = 3;
             this.chkShowMM.Tag = "Include Many-to-Many relationships in the analysis.";
-            this.chkShowMM.Text = "Include M:M";
+            this.chkShowMM.Text = "M:M-relationships";
             this.chkShowMM.UseVisualStyleBackColor = true;
             this.chkShowMM.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkShowMM.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
@@ -637,8 +644,8 @@
             this.lblOptionHint.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblOptionHint.Location = new System.Drawing.Point(3, 128);
             this.lblOptionHint.Name = "lblOptionHint";
-            this.lblOptionHint.Size = new System.Drawing.Size(591, 25);
-            this.lblOptionHint.TabIndex = 4;
+            this.lblOptionHint.Size = new System.Drawing.Size(837, 25);
+            this.lblOptionHint.TabIndex = 10;
             // 
             // tabControl1
             // 
@@ -648,7 +655,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(597, 357);
+            this.tabControl1.Size = new System.Drawing.Size(843, 357);
             this.tabControl1.TabIndex = 2;
             // 
             // tabTree
@@ -656,7 +663,7 @@
             this.tabTree.Controls.Add(this.tvChildren);
             this.tabTree.Location = new System.Drawing.Point(4, 22);
             this.tabTree.Name = "tabTree";
-            this.tabTree.Size = new System.Drawing.Size(589, 331);
+            this.tabTree.Size = new System.Drawing.Size(835, 331);
             this.tabTree.TabIndex = 0;
             this.tabTree.Text = "Data Hierarchy";
             this.tabTree.UseVisualStyleBackColor = true;
@@ -667,7 +674,7 @@
             this.tvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvChildren.Location = new System.Drawing.Point(0, 0);
             this.tvChildren.Name = "tvChildren";
-            this.tvChildren.Size = new System.Drawing.Size(589, 331);
+            this.tvChildren.Size = new System.Drawing.Size(835, 331);
             this.tvChildren.TabIndex = 0;
             this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeview_BeforeExpand);
             // 
@@ -734,6 +741,74 @@
             this.typeTimer.Interval = 500;
             this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
             // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.chkEntPrivate);
+            this.groupBox8.Controls.Add(this.chkEntBPF);
+            this.groupBox8.Controls.Add(this.chkEntNotAdvFind);
+            this.groupBox8.Controls.Add(this.chkEntActivity);
+            this.groupBox8.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox8.Location = new System.Drawing.Point(3, 16);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(147, 112);
+            this.groupBox8.TabIndex = 1;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Entity types";
+            // 
+            // chkEntPrivate
+            // 
+            this.chkEntPrivate.AutoSize = true;
+            this.chkEntPrivate.Location = new System.Drawing.Point(13, 88);
+            this.chkEntPrivate.Name = "chkEntPrivate";
+            this.chkEntPrivate.Size = new System.Drawing.Size(59, 17);
+            this.chkEntPrivate.TabIndex = 3;
+            this.chkEntPrivate.Tag = "Include related entities marked as Private in the analysis";
+            this.chkEntPrivate.Text = "Private";
+            this.chkEntPrivate.UseVisualStyleBackColor = true;
+            this.chkEntPrivate.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntPrivate.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkEntBPF
+            // 
+            this.chkEntBPF.AutoSize = true;
+            this.chkEntBPF.Location = new System.Drawing.Point(13, 65);
+            this.chkEntBPF.Name = "chkEntBPF";
+            this.chkEntBPF.Size = new System.Drawing.Size(83, 17);
+            this.chkEntBPF.TabIndex = 2;
+            this.chkEntBPF.Tag = "Include related BPF entities in the analysis";
+            this.chkEntBPF.Text = "BPF Entities";
+            this.chkEntBPF.UseVisualStyleBackColor = true;
+            this.chkEntBPF.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntBPF.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkEntNotAdvFind
+            // 
+            this.chkEntNotAdvFind.AutoSize = true;
+            this.chkEntNotAdvFind.Location = new System.Drawing.Point(13, 42);
+            this.chkEntNotAdvFind.Name = "chkEntNotAdvFind";
+            this.chkEntNotAdvFind.Size = new System.Drawing.Size(128, 17);
+            this.chkEntNotAdvFind.TabIndex = 1;
+            this.chkEntNotAdvFind.Tag = "Include related entities that are not enabled for Advanced Find in the analysis";
+            this.chkEntNotAdvFind.Text = "Not valid for Adv.Find";
+            this.chkEntNotAdvFind.UseVisualStyleBackColor = true;
+            this.chkEntNotAdvFind.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntNotAdvFind.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkEntActivity
+            // 
+            this.chkEntActivity.AutoSize = true;
+            this.chkEntActivity.Checked = true;
+            this.chkEntActivity.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEntActivity.Location = new System.Drawing.Point(13, 19);
+            this.chkEntActivity.Name = "chkEntActivity";
+            this.chkEntActivity.Size = new System.Drawing.Size(96, 17);
+            this.chkEntActivity.TabIndex = 0;
+            this.chkEntActivity.Tag = "Include related activity entities in the analysis";
+            this.chkEntActivity.Text = "Activity entities";
+            this.chkEntActivity.UseVisualStyleBackColor = true;
+            this.chkEntActivity.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntActivity.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
             // RRA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -743,7 +818,7 @@
             this.Controls.Add(this.toolStripMenu);
             this.Name = "RRA";
             this.PluginIcon = ((System.Drawing.Icon)(resources.GetObject("$this.PluginIcon")));
-            this.Size = new System.Drawing.Size(932, 548);
+            this.Size = new System.Drawing.Size(1192, 548);
             this.TabIcon = ((System.Drawing.Image)(resources.GetObject("$this.TabIcon")));
             this.Load += new System.EventHandler(this.RRA_Load);
             this.toolStripMenu.ResumeLayout(false);
@@ -775,6 +850,8 @@
             this.tabTree.ResumeLayout(false);
             this.menuChildren.ResumeLayout(false);
             this.tabMeta.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -833,5 +910,10 @@
         private System.Windows.Forms.TabPage tabMeta;
         private System.Windows.Forms.TreeView tvMeta;
         private System.Windows.Forms.ToolStripButton tsbAnalyzeMetadata;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.CheckBox chkEntPrivate;
+        private System.Windows.Forms.CheckBox chkEntBPF;
+        private System.Windows.Forms.CheckBox chkEntNotAdvFind;
+        private System.Windows.Forms.CheckBox chkEntActivity;
     }
 }

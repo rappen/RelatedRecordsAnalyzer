@@ -319,6 +319,7 @@ namespace Rappen.XTB.RRA
             }
             else
             {
+                tabControl1.SelectTab(tabTree);
                 AddChildEntitiesToTree(new QueryInfo
                 {
                     EntityInfo = entity,
@@ -360,27 +361,37 @@ namespace Rappen.XTB.RRA
 
             if (nodeinfo.Relationship is OneToManyRelationshipMetadata rel1m)
             {
-                node.Nodes.Add($"Relationship: {rel1m.SchemaName}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"Assign:   {rel1m.CascadeConfiguration.Assign?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"Share:    {rel1m.CascadeConfiguration.Share?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"Unshare:  {rel1m.CascadeConfiguration.Unshare?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"Reparent: {rel1m.CascadeConfiguration.Reparent?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"Delete:   {rel1m.CascadeConfiguration.Delete?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"Relation: {rel1m.SchemaName}").SetMetadataStyle();
+                node.Nodes.Add($"Assign:   {rel1m.CascadeConfiguration.Assign?.ToString()}").SetMetadataStyle();
+                node.Nodes.Add($"Share:    {rel1m.CascadeConfiguration.Share?.ToString()}").SetMetadataStyle();
+                node.Nodes.Add($"Unshare:  {rel1m.CascadeConfiguration.Unshare?.ToString()}").SetMetadataStyle();
+                node.Nodes.Add($"Reparent: {rel1m.CascadeConfiguration.Reparent?.ToString()}").SetMetadataStyle();
+                node.Nodes.Add($"Delete:   {rel1m.CascadeConfiguration.Delete?.ToString()}").SetMetadataStyle();
+            }
+            if (nodeinfo.Relationship is ManyToManyRelationshipMetadata relmm)
+            {
+                node.Nodes.Add($"Relation:    {relmm.SchemaName}").SetMetadataStyle();
+                node.Nodes.Add($"Entity 1:    {relmm.Entity1LogicalName}").SetMetadataStyle();
+                node.Nodes.Add($"Attribute 1: {relmm.Entity1IntersectAttribute}").SetMetadataStyle();
+                node.Nodes.Add($"Entity 2:    {relmm.Entity2LogicalName}").SetMetadataStyle();
+                node.Nodes.Add($"Attribute 2: {relmm.Entity2IntersectAttribute}").SetMetadataStyle();
             }
 
             var rels1M = nodeinfo.Entity.Metadata.OneToManyRelationships
                 .Where(r => ao.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
                 .Where(r => CheckRelationshipBehavior(r, ao))
+                .Where(r => GetEntityMetadataProxy(r.ReferencingEntity, ao) is EntityMetadataProxy)
                 .OrderBy(r => r.SchemaName)
                 .OrderBy(r => r.AssociatedMenuConfiguration?.Label?.UserLocalizedLabel?.Label)
                 .OrderBy(r => r.AssociatedMenuConfiguration?.Order)
                 .ToList();
             var mmrels = ao.Parent.Metadata.ManyToManyRelationships
                 .Where(r => ao.M2M)
+                .Where(r => GetEntityMetadataProxy(GetMMOtherEntityName(nodeinfo.Entity, r), ao) is EntityMetadataProxy)
                 .OrderBy(r => r.SchemaName);
             foreach (var rel1M in rels1M)
             {
-                if (!(GetEntityMetadataProxy(rel1M.ReferencingEntity) is EntityMetadataProxy childmeta))
+                if (!(GetEntityMetadataProxy(rel1M.ReferencingEntity, ao) is EntityMetadataProxy childmeta))
                 {
                     continue;
                 }
@@ -388,8 +399,7 @@ namespace Rappen.XTB.RRA
             }
             foreach (var rel in mmrels)
             {
-                var entity2name = rel.Entity1LogicalName != nodeinfo.Entity.Metadata.LogicalName ? rel.Entity1LogicalName : rel.Entity2LogicalName;
-                if (!(GetEntityMetadataProxy(entity2name) is EntityMetadataProxy assocmeta))
+                if (!(GetEntityMetadataProxy(GetMMOtherEntityName(nodeinfo.Entity, rel), ao) is EntityMetadataProxy assocmeta))
                 {
                     continue;
                 }
@@ -575,6 +585,10 @@ namespace Rappen.XTB.RRA
         {
             var ao = new AnalysisOptions(entity)
             {
+                IsActivity = chkEntActivity.Checked,
+                IsNotValid4AF = chkEntNotAdvFind.Checked,
+                IsBPF = chkEntBPF.Checked,
+                IsPrivate = chkEntPrivate.Checked,
                 Hidden = chkShowHidden.Checked,
                 OnlyData = chkShowOnlyData.Checked,
                 M2M = chkShowMM.Checked
@@ -593,11 +607,28 @@ namespace Rappen.XTB.RRA
             return ao;
         }
 
-        private EntityMetadataProxy GetEntityMetadataProxy(string entityname)
+        private EntityMetadataProxy GetEntityMetadataProxy(string entityname, AnalysisOptions ao)
         {
-            return cmbEntities.Items
+            var result = cmbEntities.Items
                 .Cast<EntityMetadataProxy>()
                 .FirstOrDefault(ent => ent.Metadata.LogicalName == entityname) as EntityMetadataProxy;
+            if (!ao.IsActivity && (result?.Metadata?.IsActivity.Value ?? false))
+            {
+                return null;
+            }
+            if (!ao.IsNotValid4AF && !(result?.Metadata?.IsValidForAdvancedFind.Value ?? false))
+            {
+                return null;
+            }
+            if (!ao.IsBPF && (result?.Metadata?.IsBPFEntity.Value ?? false))
+            {
+                return null;
+            }
+            if (!ao.IsPrivate && (result?.Metadata?.IsPrivate.Value ?? false))
+            {
+                return null;
+            }
+            return result;
         }
 
         private string GetEntityReferenceUrl(EntityReference entref)
@@ -706,9 +737,11 @@ namespace Rappen.XTB.RRA
                     var rels = ao.Parent.Metadata.OneToManyRelationships
                         .Where(r => ao.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
                         .Where(r => CheckRelationshipBehavior(r, ao))
+                        .Where(r => GetEntityMetadataProxy(r.ReferencingEntity, ao) is EntityMetadataProxy)
                         .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
                     var mmrels = ao.Parent.Metadata.ManyToManyRelationships
-                        .Where(r => ao.M2M);
+                        .Where(r => ao.M2M)
+                        .Where(r => GetEntityMetadataProxy(GetMMOtherEntityName(entity, r), ao) is EntityMetadataProxy);
                     var current = 0;
                     var total = rels.Count() + mmrels.Count();
                     foreach (var rel in rels)
@@ -719,14 +752,15 @@ namespace Rappen.XTB.RRA
                             break;
                         }
                         current++;
-                        if (GetEntityMetadataProxy(rel.ReferencingEntity) is EntityMetadataProxy childentity)
+                        if (GetEntityMetadataProxy(rel.ReferencingEntity, ao) is EntityMetadataProxy childentity)
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\n1:M {rel.SchemaName}");
                             var children = LoadRelatedChildren(parentrecord, childentity, entity, rel);
-                            if (!ao.OnlyData || children?.Results?.Entities?.Count > 0)
+                            if (ao.OnlyData && children?.Results?.Entities?.Count == 0)
                             {
-                                allchildren.Add(children);
+                                continue;
                             }
+                            allchildren.Add(children);
                         }
                     }
                     foreach (var rel in mmrels)
@@ -737,8 +771,7 @@ namespace Rappen.XTB.RRA
                             break;
                         }
                         current++;
-                        var entity2name = rel.Entity1LogicalName != entity.Metadata.LogicalName ? rel.Entity1LogicalName : rel.Entity2LogicalName;
-                        if (GetEntityMetadataProxy(entity2name) is EntityMetadataProxy childentity)
+                        if (GetEntityMetadataProxy(GetMMOtherEntityName(entity, rel), ao) is EntityMetadataProxy childentity)
                         {
                             worker.ReportProgress(current * 100 / total, $"Loading {current}/{total}\r\nM:M {rel.SchemaName}");
                             var associated = LoadRelatedMM(parentrecord, childentity, entity, rel);
@@ -748,7 +781,7 @@ namespace Rappen.XTB.RRA
                             }
                         }
                     }
-                    args.Result = allchildren;
+                    args.Result = allchildren.Where(c => c != null).ToList();
                 },
                 ProgressChanged = (args) =>
                 {
@@ -771,6 +804,11 @@ namespace Rappen.XTB.RRA
                     SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
                 }
             });
+        }
+
+        private static string GetMMOtherEntityName(EntityMetadataProxy entity, ManyToManyRelationshipMetadata rel)
+        {
+            return rel.Entity1LogicalName != entity.Metadata.LogicalName ? rel.Entity1LogicalName : rel.Entity2LogicalName;
         }
 
         private QueryExpression GetUrlQuery(string url)
@@ -1134,6 +1172,10 @@ namespace Rappen.XTB.RRA
 
         private void SetAnalysisOptions(AnalysisOptions ao)
         {
+            chkEntActivity.Checked = ao.IsActivity;
+            chkEntNotAdvFind.Checked = ao.IsNotValid4AF;
+            chkEntBPF.Checked = ao.IsBPF;
+            chkEntPrivate.Checked = ao.IsPrivate;
             chkShowHidden.Checked = ao.Hidden;
             chkShowOnlyData.Checked = ao.OnlyData;
             chkShowMM.Checked = ao.M2M;

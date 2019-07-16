@@ -6,6 +6,10 @@ namespace Rappen.XTB.RRA
     public class AnalysisOptions
     {
         internal EntityMetadataProxy Parent;
+        public bool IsActivity { get; set; } = true;
+        public bool IsNotValid4AF { get; set; } = false;
+        public bool IsBPF { get; set; } = false;
+        public bool IsPrivate { get; set; } = false;
         public bool Hidden { get; set; } = true;
         public bool OnlyData { get; set; } = true;
         public bool M2M { get; set; } = true;
