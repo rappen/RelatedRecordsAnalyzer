@@ -23,9 +23,14 @@
     </description>
     <summary>Analyze relationships and related data on Microsoft Dynamics 365/CRM.</summary>
     <releaseNotes>
-First public release
+Latest version:
+
+#2 A specific view for the relationship metadata is now available!
+#5 Many-to-Many relationships can now be included in the analysis!
+#6 Added additional options to filter relationships be referenced entity type.
+Rebranded for 2019 design.
     </releaseNotes>
-    <copyright>Copyright 2018 Jonas Rapp</copyright>
+    <copyright>Copyright 2018-2019 Jonas Rapp</copyright>
     <tags>XrmToolBox Plugins RelatedRecordsAnalyzer</tags>
     <dependencies>
       <dependency id="XrmToolBox" version="1.2018.6.25" />
