@@ -133,6 +133,7 @@ namespace Rappen.XTB.RRA
         private void cmbEntities_SelectedIndexChanged(object sender, EventArgs e)
         {
             FindRecords(txtSearch.Text);
+            tsbAnalyzeMetadata.Enabled = cmbEntities.SelectedItem is EntityMetadataProxy;
         }
 
         private void crmGridView1_SelectionChanged(object sender, EventArgs e)
@@ -246,25 +247,7 @@ namespace Rappen.XTB.RRA
 
         private void tsbAnalyze_Click(object sender, EventArgs e)
         {
-            tvMeta.Nodes.Clear();
-            tvChildren.Nodes.Clear();
-            foreach (var page in tabControl1.TabPages.Cast<TabPage>().Where(t => t != tabTree && t != tabMeta))
-            {
-                tabControl1.TabPages.Remove(page);
-            }
-            var record = gvRecords.SelectedRowRecords.Entities[0];
-            var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
-
-            var metaroot = AddMetadataNode(null, entity, null);
-            AddMetadataChildren(metaroot);
-            metaroot.Expand();
-
-            AddChildEntitiesToTree(new QueryInfo
-            {
-                EntityInfo = entity,
-                Results = new EntityCollection(new List<Entity> { record })
-            });
-            GetRelatedChildren(record, entity);
+            Analyze(sender == tsbAnalyzeMetadata);
         }
 
         private void tsbCancel_Click(object sender, EventArgs e)
@@ -315,6 +298,36 @@ namespace Rappen.XTB.RRA
 
         #region Private Methods
 
+        private void Analyze(bool metaonly)
+        {
+            tvMeta.Nodes.Clear();
+            tvChildren.Nodes.Clear();
+            foreach (var page in tabControl1.TabPages.Cast<TabPage>().Where(t => t != tabTree && t != tabMeta))
+            {
+                tabControl1.TabPages.Remove(page);
+            }
+            var record = gvRecords.SelectedRowRecords.Entities[0];
+            var entity = cmbEntities.Items.Cast<EntityMetadataProxy>().FirstOrDefault(ent => ent.Metadata.LogicalName == record.LogicalName);
+
+            var metaroot = AddMetadataNode(null, entity, null);
+            AddMetadataChildren(metaroot);
+            metaroot.Expand();
+
+            if (metaonly)
+            {
+                tabControl1.SelectTab(tabMeta);
+            }
+            else
+            {
+                AddChildEntitiesToTree(new QueryInfo
+                {
+                    EntityInfo = entity,
+                    Results = new EntityCollection(new List<Entity> { record })
+                });
+                GetRelatedChildren(record, entity);
+            }
+        }
+
         private static TreeNode AddEntityNode(QueryInfo child, TreeView tv)
         {
             if (child.ParentEntity == null)
@@ -348,11 +361,11 @@ namespace Rappen.XTB.RRA
             if (nodeinfo.Relationship is OneToManyRelationshipMetadata rel1m)
             {
                 node.Nodes.Add($"Relationship: {rel1m.SchemaName}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"  Assign:   {rel1m.CascadeConfiguration.Assign?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"  Share:    {rel1m.CascadeConfiguration.Share?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"  Unshare:  {rel1m.CascadeConfiguration.Unshare?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"  Reparent: {rel1m.CascadeConfiguration.Reparent?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
-                node.Nodes.Add($"  Delete:   {rel1m.CascadeConfiguration.Delete?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"Assign:   {rel1m.CascadeConfiguration.Assign?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"Share:    {rel1m.CascadeConfiguration.Share?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"Unshare:  {rel1m.CascadeConfiguration.Unshare?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"Reparent: {rel1m.CascadeConfiguration.Reparent?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
+                node.Nodes.Add($"Delete:   {rel1m.CascadeConfiguration.Delete?.ToString()}").SetForeColor(Color.DarkBlue).SetFont(new Font("Courier New", 8));
             }
 
             var rels1M = nodeinfo.Entity.Metadata.OneToManyRelationships
@@ -362,18 +375,30 @@ namespace Rappen.XTB.RRA
                 .OrderBy(r => r.AssociatedMenuConfiguration?.Label?.UserLocalizedLabel?.Label)
                 .OrderBy(r => r.AssociatedMenuConfiguration?.Order)
                 .ToList();
+            var mmrels = ao.Parent.Metadata.ManyToManyRelationships
+                .Where(r => ao.M2M)
+                .OrderBy(r => r.SchemaName);
             foreach (var rel1M in rels1M)
             {
                 if (!(GetEntityMetadataProxy(rel1M.ReferencingEntity) is EntityMetadataProxy childmeta))
                 {
                     continue;
                 }
-                var childnode = AddMetadataNode(node, childmeta, rel1M);
+                AddMetadataNode(node, childmeta, rel1M);
+            }
+            foreach (var rel in mmrels)
+            {
+                var entity2name = rel.Entity1LogicalName != nodeinfo.Entity.Metadata.LogicalName ? rel.Entity1LogicalName : rel.Entity2LogicalName;
+                if (!(GetEntityMetadataProxy(entity2name) is EntityMetadataProxy assocmeta))
+                {
+                    continue;
+                }
+                AddMetadataNode(node, assocmeta, rel);
             }
             RemoveDummyNode(node);
         }
 
-        private TreeNode AddMetadataNode(TreeNode node, EntityMetadataProxy childmeta, OneToManyRelationshipMetadata rel1m)
+        private TreeNode AddMetadataNode(TreeNode node, EntityMetadataProxy childmeta, RelationshipMetadataBase rel1m)
         {
             var nodeinfo = new MetaNodeInfo { Entity = childmeta, Relationship = rel1m };
             var childnode = new TreeNode(nodeinfo.ToString());
@@ -659,6 +684,7 @@ namespace Rappen.XTB.RRA
         {
             ai.WriteEvent("Analyze");
             tsbAnalyze.Enabled = false;
+            tsbAnalyzeMetadata.Enabled = false;
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
             tvChildren.Enabled = false;
@@ -739,6 +765,7 @@ namespace Rappen.XTB.RRA
                     RemoveDummyNode(parentrecord);
                     gvRecords.Enabled = true;
                     tsbAnalyze.Enabled = true;
+                    tsbAnalyzeMetadata.Enabled = true;
                     tvChildren.Enabled = true;
                     tvChildren.Cursor = Cursors.Default;
                     SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
@@ -1019,6 +1046,7 @@ namespace Rappen.XTB.RRA
         private void RenderChildren(List<QueryInfo> allchildren)
         {
             tsbAnalyze.Enabled = false;
+            tsbAnalyzeMetadata.Enabled = false;
             tsbCancel.Enabled = true;
             gvRecords.Enabled = false;
             WorkAsync(new WorkAsyncInfo
@@ -1060,6 +1088,7 @@ namespace Rappen.XTB.RRA
                     tsbCancel.Enabled = false;
                     gvRecords.Enabled = true;
                     tsbAnalyze.Enabled = true;
+                    tsbAnalyzeMetadata.Enabled = true;
                     SendMessageToStatusBar(this, new StatusBarMessageEventArgs(null, string.Empty));
                 }
             });

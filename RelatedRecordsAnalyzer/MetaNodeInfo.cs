@@ -27,6 +27,10 @@ namespace Rappen.XTB.RRA
                     }
                     result += $" ({rel1m.ReferencingAttribute})";
                 }
+                else if (Relationship is ManyToManyRelationshipMetadata relmm)
+                {
+                    result = $"M:M {result} ({relmm.IntersectEntityName})";
+                }
                 return result;
             }
         }

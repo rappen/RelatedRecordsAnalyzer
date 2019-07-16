@@ -34,6 +34,7 @@
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbAnalyzeMetadata = new System.Windows.Forms.ToolStripButton();
             this.tsbAnalyze = new System.Windows.Forms.ToolStripButton();
             this.tsbCancel = new System.Windows.Forms.ToolStripButton();
             this.tslByJonas = new System.Windows.Forms.ToolStripLabel();
@@ -79,9 +80,9 @@
             this.menuChildrenOpenInBrowser = new System.Windows.Forms.ToolStripMenuItem();
             this.menuChildrenSelectAsParent = new System.Windows.Forms.ToolStripMenuItem();
             this.menuChildrenReloadChildren = new System.Windows.Forms.ToolStripMenuItem();
-            this.typeTimer = new System.Windows.Forms.Timer(this.components);
             this.tabMeta = new System.Windows.Forms.TabPage();
             this.tvMeta = new System.Windows.Forms.TreeView();
+            this.typeTimer = new System.Windows.Forms.Timer(this.components);
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -112,6 +113,7 @@
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbClose,
             this.tssSeparator1,
+            this.tsbAnalyzeMetadata,
             this.tsbAnalyze,
             this.tsbCancel,
             this.tslByJonas});
@@ -133,6 +135,16 @@
             // 
             this.tssSeparator1.Name = "tssSeparator1";
             this.tssSeparator1.Size = new System.Drawing.Size(6, 31);
+            // 
+            // tsbAnalyzeMetadata
+            // 
+            this.tsbAnalyzeMetadata.Enabled = false;
+            this.tsbAnalyzeMetadata.Image = ((System.Drawing.Image)(resources.GetObject("tsbAnalyzeMetadata.Image")));
+            this.tsbAnalyzeMetadata.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbAnalyzeMetadata.Name = "tsbAnalyzeMetadata";
+            this.tsbAnalyzeMetadata.Size = new System.Drawing.Size(129, 28);
+            this.tsbAnalyzeMetadata.Text = "Analyze Metadata";
+            this.tsbAnalyzeMetadata.Click += new System.EventHandler(this.tsbAnalyze_Click);
             // 
             // tsbAnalyze
             // 
@@ -698,11 +710,6 @@
             this.menuChildrenReloadChildren.Text = "Reload children";
             this.menuChildrenReloadChildren.Click += new System.EventHandler(this.menuChildrenReloadChildren_Click);
             // 
-            // typeTimer
-            // 
-            this.typeTimer.Interval = 500;
-            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
-            // 
             // tabMeta
             // 
             this.tabMeta.Controls.Add(this.tvMeta);
@@ -721,6 +728,11 @@
             this.tvMeta.Size = new System.Drawing.Size(589, 331);
             this.tvMeta.TabIndex = 0;
             this.tvMeta.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeview_BeforeExpand);
+            // 
+            // typeTimer
+            // 
+            this.typeTimer.Interval = 500;
+            this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
             // 
             // RRA
             // 
@@ -820,5 +832,6 @@
         private System.Windows.Forms.ToolStripMenuItem menuChildrenReloadChildren;
         private System.Windows.Forms.TabPage tabMeta;
         private System.Windows.Forms.TreeView tvMeta;
+        private System.Windows.Forms.ToolStripButton tsbAnalyzeMetadata;
     }
 }
