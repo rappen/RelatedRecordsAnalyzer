@@ -17,7 +17,9 @@ namespace Rappen.XTB.RRA
         public List<CascadeType> ShareTypes { get; set; } = new List<CascadeType>();
         public List<CascadeType> DeleteTypes { get; set; } = new List<CascadeType>();
 
-        public AnalysisOptions() { }
+        public AnalysisOptions()
+        {
+        }
 
         public AnalysisOptions(EntityMetadataProxy parent)
         {

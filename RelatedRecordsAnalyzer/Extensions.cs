@@ -20,7 +20,7 @@ namespace Rappen.XTB.RRA
             }
             foreach (var entity in source.Entities)
             {
-                if (!target.Entities.Any(e=> e.Id == entity.Id))
+                if (!target.Entities.Any(e => e.Id == entity.Id))
                 {
                     target.Entities.Add(entity);
                 }

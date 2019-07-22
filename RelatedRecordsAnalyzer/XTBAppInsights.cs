@@ -15,7 +15,7 @@
  *    {
  *        if (!string.IsNullOrEmpty(result)) { LogError("Failed to write to Application Insights:\n{0}", result); }
  *    }
- *    
+ *
  *               Enjoy responsibly.
  * **********************************************************/
 
@@ -25,7 +25,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
-using System.Text;
 
 public class AppInsights
 {
@@ -143,6 +142,7 @@ public static class Extensions
 }
 
 #region DataContracts
+
 [DataContract]
 public class AiBaseData
 {
@@ -234,4 +234,5 @@ public class AiTags
     [DataMember(Name = "ai.device.type")]
     public string DeviceType { get; set; }
 }
+
 #endregion DataContracts

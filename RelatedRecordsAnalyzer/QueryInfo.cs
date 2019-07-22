@@ -30,6 +30,7 @@ namespace Rappen.XTB.RRA
                         case AssociatedMenuBehavior.DoNotDisplay:
                             result += " (invisible)";
                             break;
+
                         case AssociatedMenuBehavior.UseLabel:
                             result = rel1m.AssociatedMenuConfiguration.Label.UserLocalizedLabel.Label;
                             break;
