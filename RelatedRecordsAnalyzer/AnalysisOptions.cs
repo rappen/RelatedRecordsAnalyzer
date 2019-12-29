@@ -13,6 +13,10 @@ namespace Rappen.XTB.RRA
         public bool Hidden { get; set; } = true;
         public bool OnlyData { get; set; } = true;
         public bool M2M { get; set; } = true;
+        public bool UserOwned { get; set; } = true;
+        public bool UserCreated { get; set; } = true;
+        public bool UserModified { get; set; } = true;
+        public bool UserOnBehalf { get; set; } = true;
         public List<CascadeType> AssignTypes { get; set; } = new List<CascadeType>();
         public List<CascadeType> ShareTypes { get; set; } = new List<CascadeType>();
         public List<CascadeType> DeleteTypes { get; set; } = new List<CascadeType>();

@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RRA));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -54,6 +54,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.chkBehDelNone = new System.Windows.Forms.CheckBox();
             this.chkBehDelRest = new System.Windows.Forms.CheckBox();
             this.chkBehDelRem = new System.Windows.Forms.CheckBox();
             this.chkBehDelAll = new System.Windows.Forms.CheckBox();
@@ -67,10 +68,20 @@
             this.chkBehAssUser = new System.Windows.Forms.CheckBox();
             this.chkBehAssAct = new System.Windows.Forms.CheckBox();
             this.chkBehAssAll = new System.Windows.Forms.CheckBox();
+            this.gbUser = new System.Windows.Forms.GroupBox();
+            this.chkUserOnBehalf = new System.Windows.Forms.CheckBox();
+            this.chkUserModified = new System.Windows.Forms.CheckBox();
+            this.chkUserCreated = new System.Windows.Forms.CheckBox();
+            this.chkUserOwned = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkShowHidden = new System.Windows.Forms.CheckBox();
             this.chkShowOnlyData = new System.Windows.Forms.CheckBox();
             this.chkShowMM = new System.Windows.Forms.CheckBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.chkEntPrivate = new System.Windows.Forms.CheckBox();
+            this.chkEntBPF = new System.Windows.Forms.CheckBox();
+            this.chkEntNotAdvFind = new System.Windows.Forms.CheckBox();
+            this.chkEntActivity = new System.Windows.Forms.CheckBox();
             this.lblOptionHint = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabTree = new System.Windows.Forms.TabPage();
@@ -83,11 +94,6 @@
             this.tabMeta = new System.Windows.Forms.TabPage();
             this.tvMeta = new System.Windows.Forms.TreeView();
             this.typeTimer = new System.Windows.Forms.Timer(this.components);
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.chkEntPrivate = new System.Windows.Forms.CheckBox();
-            this.chkEntBPF = new System.Windows.Forms.CheckBox();
-            this.chkEntNotAdvFind = new System.Windows.Forms.CheckBox();
-            this.chkEntActivity = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -105,12 +111,13 @@
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.gbUser.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabTree.SuspendLayout();
             this.menuChildren.SuspendLayout();
             this.tabMeta.SuspendLayout();
-            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -220,8 +227,8 @@
             this.gvRecords.AllowUserToDeleteRows = false;
             this.gvRecords.AllowUserToOrderColumns = true;
             this.gvRecords.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.gvRecords.BackgroundColor = System.Drawing.SystemColors.Window;
             this.gvRecords.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -376,6 +383,7 @@
             this.groupBox3.Controls.Add(this.groupBox7);
             this.groupBox3.Controls.Add(this.groupBox6);
             this.groupBox3.Controls.Add(this.groupBox5);
+            this.groupBox3.Controls.Add(this.gbUser);
             this.groupBox3.Controls.Add(this.groupBox1);
             this.groupBox3.Controls.Add(this.groupBox8);
             this.groupBox3.Controls.Add(this.lblOptionHint);
@@ -389,16 +397,29 @@
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.chkBehDelNone);
             this.groupBox7.Controls.Add(this.chkBehDelRest);
             this.groupBox7.Controls.Add(this.chkBehDelRem);
             this.groupBox7.Controls.Add(this.chkBehDelAll);
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox7.Location = new System.Drawing.Point(591, 16);
+            this.groupBox7.Location = new System.Drawing.Point(738, 16);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(147, 112);
-            this.groupBox7.TabIndex = 5;
+            this.groupBox7.TabIndex = 6;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Delete";
+            // 
+            // chkBehDelNone
+            // 
+            this.chkBehDelNone.AutoSize = true;
+            this.chkBehDelNone.Checked = true;
+            this.chkBehDelNone.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBehDelNone.Location = new System.Drawing.Point(13, 88);
+            this.chkBehDelNone.Name = "chkBehDelNone";
+            this.chkBehDelNone.Size = new System.Drawing.Size(97, 17);
+            this.chkBehDelNone.TabIndex = 4;
+            this.chkBehDelNone.Text = "Cascade None";
+            this.chkBehDelNone.UseVisualStyleBackColor = true;
             // 
             // chkBehDelRest
             // 
@@ -449,10 +470,10 @@
             this.groupBox6.Controls.Add(this.chkBehShrAct);
             this.groupBox6.Controls.Add(this.chkBehShrAll);
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox6.Location = new System.Drawing.Point(444, 16);
+            this.groupBox6.Location = new System.Drawing.Point(591, 16);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(147, 112);
-            this.groupBox6.TabIndex = 4;
+            this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Share/Unshare";
             // 
@@ -519,10 +540,10 @@
             this.groupBox5.Controls.Add(this.chkBehAssAct);
             this.groupBox5.Controls.Add(this.chkBehAssAll);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox5.Location = new System.Drawing.Point(297, 16);
+            this.groupBox5.Location = new System.Drawing.Point(444, 16);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(147, 112);
-            this.groupBox5.TabIndex = 3;
+            this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Assign/Reparent";
             // 
@@ -582,6 +603,67 @@
             this.chkBehAssAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehAssAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
+            // gbUser
+            // 
+            this.gbUser.Controls.Add(this.chkUserOnBehalf);
+            this.gbUser.Controls.Add(this.chkUserModified);
+            this.gbUser.Controls.Add(this.chkUserCreated);
+            this.gbUser.Controls.Add(this.chkUserOwned);
+            this.gbUser.Dock = System.Windows.Forms.DockStyle.Left;
+            this.gbUser.Location = new System.Drawing.Point(297, 16);
+            this.gbUser.Name = "gbUser";
+            this.gbUser.Size = new System.Drawing.Size(147, 112);
+            this.gbUser.TabIndex = 3;
+            this.gbUser.TabStop = false;
+            this.gbUser.Text = "User relationships";
+            this.gbUser.Visible = false;
+            // 
+            // chkUserOnBehalf
+            // 
+            this.chkUserOnBehalf.AutoSize = true;
+            this.chkUserOnBehalf.Location = new System.Drawing.Point(13, 88);
+            this.chkUserOnBehalf.Name = "chkUserOnBehalf";
+            this.chkUserOnBehalf.Size = new System.Drawing.Size(93, 17);
+            this.chkUserOnBehalf.TabIndex = 4;
+            this.chkUserOnBehalf.Text = "...on behalf by";
+            this.chkUserOnBehalf.UseVisualStyleBackColor = true;
+            // 
+            // chkUserModified
+            // 
+            this.chkUserModified.AutoSize = true;
+            this.chkUserModified.Checked = true;
+            this.chkUserModified.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUserModified.Location = new System.Drawing.Point(13, 65);
+            this.chkUserModified.Name = "chkUserModified";
+            this.chkUserModified.Size = new System.Drawing.Size(80, 17);
+            this.chkUserModified.TabIndex = 2;
+            this.chkUserModified.Text = "Modified by";
+            this.chkUserModified.UseVisualStyleBackColor = true;
+            // 
+            // chkUserCreated
+            // 
+            this.chkUserCreated.AutoSize = true;
+            this.chkUserCreated.Checked = true;
+            this.chkUserCreated.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUserCreated.Location = new System.Drawing.Point(13, 42);
+            this.chkUserCreated.Name = "chkUserCreated";
+            this.chkUserCreated.Size = new System.Drawing.Size(77, 17);
+            this.chkUserCreated.TabIndex = 1;
+            this.chkUserCreated.Text = "Created by";
+            this.chkUserCreated.UseVisualStyleBackColor = true;
+            // 
+            // chkUserOwned
+            // 
+            this.chkUserOwned.AutoSize = true;
+            this.chkUserOwned.Checked = true;
+            this.chkUserOwned.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUserOwned.Location = new System.Drawing.Point(13, 19);
+            this.chkUserOwned.Name = "chkUserOwned";
+            this.chkUserOwned.Size = new System.Drawing.Size(74, 17);
+            this.chkUserOwned.TabIndex = 0;
+            this.chkUserOwned.Text = "Owned by";
+            this.chkUserOwned.UseVisualStyleBackColor = true;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.chkShowHidden);
@@ -638,6 +720,74 @@
             this.chkShowMM.UseVisualStyleBackColor = true;
             this.chkShowMM.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkShowMM.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.chkEntPrivate);
+            this.groupBox8.Controls.Add(this.chkEntBPF);
+            this.groupBox8.Controls.Add(this.chkEntNotAdvFind);
+            this.groupBox8.Controls.Add(this.chkEntActivity);
+            this.groupBox8.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox8.Location = new System.Drawing.Point(3, 16);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(147, 112);
+            this.groupBox8.TabIndex = 1;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Entity types";
+            // 
+            // chkEntPrivate
+            // 
+            this.chkEntPrivate.AutoSize = true;
+            this.chkEntPrivate.Location = new System.Drawing.Point(13, 88);
+            this.chkEntPrivate.Name = "chkEntPrivate";
+            this.chkEntPrivate.Size = new System.Drawing.Size(59, 17);
+            this.chkEntPrivate.TabIndex = 3;
+            this.chkEntPrivate.Tag = "Include related entities marked as Private in the analysis";
+            this.chkEntPrivate.Text = "Private";
+            this.chkEntPrivate.UseVisualStyleBackColor = true;
+            this.chkEntPrivate.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntPrivate.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkEntBPF
+            // 
+            this.chkEntBPF.AutoSize = true;
+            this.chkEntBPF.Location = new System.Drawing.Point(13, 65);
+            this.chkEntBPF.Name = "chkEntBPF";
+            this.chkEntBPF.Size = new System.Drawing.Size(83, 17);
+            this.chkEntBPF.TabIndex = 2;
+            this.chkEntBPF.Tag = "Include related BPF entities in the analysis";
+            this.chkEntBPF.Text = "BPF Entities";
+            this.chkEntBPF.UseVisualStyleBackColor = true;
+            this.chkEntBPF.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntBPF.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkEntNotAdvFind
+            // 
+            this.chkEntNotAdvFind.AutoSize = true;
+            this.chkEntNotAdvFind.Location = new System.Drawing.Point(13, 42);
+            this.chkEntNotAdvFind.Name = "chkEntNotAdvFind";
+            this.chkEntNotAdvFind.Size = new System.Drawing.Size(128, 17);
+            this.chkEntNotAdvFind.TabIndex = 1;
+            this.chkEntNotAdvFind.Tag = "Include related entities that are not enabled for Advanced Find in the analysis";
+            this.chkEntNotAdvFind.Text = "Not valid for Adv.Find";
+            this.chkEntNotAdvFind.UseVisualStyleBackColor = true;
+            this.chkEntNotAdvFind.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntNotAdvFind.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
+            // 
+            // chkEntActivity
+            // 
+            this.chkEntActivity.AutoSize = true;
+            this.chkEntActivity.Checked = true;
+            this.chkEntActivity.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEntActivity.Location = new System.Drawing.Point(13, 19);
+            this.chkEntActivity.Name = "chkEntActivity";
+            this.chkEntActivity.Size = new System.Drawing.Size(96, 17);
+            this.chkEntActivity.TabIndex = 0;
+            this.chkEntActivity.Tag = "Include related activity entities in the analysis";
+            this.chkEntActivity.Text = "Activity entities";
+            this.chkEntActivity.UseVisualStyleBackColor = true;
+            this.chkEntActivity.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
+            this.chkEntActivity.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
             // lblOptionHint
             // 
@@ -722,7 +872,7 @@
             this.tabMeta.Controls.Add(this.tvMeta);
             this.tabMeta.Location = new System.Drawing.Point(4, 22);
             this.tabMeta.Name = "tabMeta";
-            this.tabMeta.Size = new System.Drawing.Size(589, 331);
+            this.tabMeta.Size = new System.Drawing.Size(835, 331);
             this.tabMeta.TabIndex = 1;
             this.tabMeta.Text = "Metadata";
             this.tabMeta.UseVisualStyleBackColor = true;
@@ -732,7 +882,7 @@
             this.tvMeta.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvMeta.Location = new System.Drawing.Point(0, 0);
             this.tvMeta.Name = "tvMeta";
-            this.tvMeta.Size = new System.Drawing.Size(589, 331);
+            this.tvMeta.Size = new System.Drawing.Size(835, 331);
             this.tvMeta.TabIndex = 0;
             this.tvMeta.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeview_BeforeExpand);
             // 
@@ -740,74 +890,6 @@
             // 
             this.typeTimer.Interval = 500;
             this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add(this.chkEntPrivate);
-            this.groupBox8.Controls.Add(this.chkEntBPF);
-            this.groupBox8.Controls.Add(this.chkEntNotAdvFind);
-            this.groupBox8.Controls.Add(this.chkEntActivity);
-            this.groupBox8.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox8.Location = new System.Drawing.Point(3, 16);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(147, 112);
-            this.groupBox8.TabIndex = 1;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Entity types";
-            // 
-            // chkEntPrivate
-            // 
-            this.chkEntPrivate.AutoSize = true;
-            this.chkEntPrivate.Location = new System.Drawing.Point(13, 88);
-            this.chkEntPrivate.Name = "chkEntPrivate";
-            this.chkEntPrivate.Size = new System.Drawing.Size(59, 17);
-            this.chkEntPrivate.TabIndex = 3;
-            this.chkEntPrivate.Tag = "Include related entities marked as Private in the analysis";
-            this.chkEntPrivate.Text = "Private";
-            this.chkEntPrivate.UseVisualStyleBackColor = true;
-            this.chkEntPrivate.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkEntPrivate.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // chkEntBPF
-            // 
-            this.chkEntBPF.AutoSize = true;
-            this.chkEntBPF.Location = new System.Drawing.Point(13, 65);
-            this.chkEntBPF.Name = "chkEntBPF";
-            this.chkEntBPF.Size = new System.Drawing.Size(83, 17);
-            this.chkEntBPF.TabIndex = 2;
-            this.chkEntBPF.Tag = "Include related BPF entities in the analysis";
-            this.chkEntBPF.Text = "BPF Entities";
-            this.chkEntBPF.UseVisualStyleBackColor = true;
-            this.chkEntBPF.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkEntBPF.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // chkEntNotAdvFind
-            // 
-            this.chkEntNotAdvFind.AutoSize = true;
-            this.chkEntNotAdvFind.Location = new System.Drawing.Point(13, 42);
-            this.chkEntNotAdvFind.Name = "chkEntNotAdvFind";
-            this.chkEntNotAdvFind.Size = new System.Drawing.Size(128, 17);
-            this.chkEntNotAdvFind.TabIndex = 1;
-            this.chkEntNotAdvFind.Tag = "Include related entities that are not enabled for Advanced Find in the analysis";
-            this.chkEntNotAdvFind.Text = "Not valid for Adv.Find";
-            this.chkEntNotAdvFind.UseVisualStyleBackColor = true;
-            this.chkEntNotAdvFind.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkEntNotAdvFind.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
-            // chkEntActivity
-            // 
-            this.chkEntActivity.AutoSize = true;
-            this.chkEntActivity.Checked = true;
-            this.chkEntActivity.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEntActivity.Location = new System.Drawing.Point(13, 19);
-            this.chkEntActivity.Name = "chkEntActivity";
-            this.chkEntActivity.Size = new System.Drawing.Size(96, 17);
-            this.chkEntActivity.TabIndex = 0;
-            this.chkEntActivity.Tag = "Include related activity entities in the analysis";
-            this.chkEntActivity.Text = "Activity entities";
-            this.chkEntActivity.UseVisualStyleBackColor = true;
-            this.chkEntActivity.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
-            this.chkEntActivity.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
             // 
             // RRA
             // 
@@ -844,14 +926,16 @@
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.gbUser.ResumeLayout(false);
+            this.gbUser.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabTree.ResumeLayout(false);
             this.menuChildren.ResumeLayout(false);
             this.tabMeta.ResumeLayout(false);
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -915,5 +999,11 @@
         private System.Windows.Forms.CheckBox chkEntBPF;
         private System.Windows.Forms.CheckBox chkEntNotAdvFind;
         private System.Windows.Forms.CheckBox chkEntActivity;
+        private System.Windows.Forms.CheckBox chkBehDelNone;
+        private System.Windows.Forms.GroupBox gbUser;
+        private System.Windows.Forms.CheckBox chkUserOnBehalf;
+        private System.Windows.Forms.CheckBox chkUserModified;
+        private System.Windows.Forms.CheckBox chkUserCreated;
+        private System.Windows.Forms.CheckBox chkUserOwned;
     }
 }

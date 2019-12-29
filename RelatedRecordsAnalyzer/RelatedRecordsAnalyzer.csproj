@@ -181,6 +181,7 @@
     <Compile Include="About.designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Const.cs" />
     <Compile Include="EntityMetadataProxy.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MetadataHelper.cs" />

@@ -125,7 +125,9 @@ namespace Rappen.XTB.RRA
         private void cmbEntities_SelectedIndexChanged(object sender, EventArgs e)
         {
             FindRecords(txtSearch.Text);
-            tsbAnalyzeMetadata.Enabled = cmbEntities.SelectedItem is EntityMetadataProxy;
+            var entity = cmbEntities.SelectedItem as EntityMetadataProxy;
+            tsbAnalyzeMetadata.Enabled = entity != null;
+            gbUser.Visible = entity?.Metadata?.LogicalName == User.EntityName;
         }
 
         private void crmGridView1_SelectionChanged(object sender, EventArgs e)
@@ -334,6 +336,31 @@ namespace Rappen.XTB.RRA
                 && ao.DeleteTypes.Contains((CascadeType)relation.CascadeConfiguration.Delete);
         }
 
+        private bool CheckRelationshipType(OneToManyRelationshipMetadata relation, AnalysisOptions ao)
+        {
+            if (relation.ReferencedEntity != User.EntityName)
+            {
+                return true;
+            }
+            if (relation.ReferencingAttribute.Equals("owninguser") && !ao.UserOwned)
+            {
+                return false;
+            }
+            if (relation.ReferencingAttribute.Equals("createdby") && !ao.UserCreated)
+            {
+                return false;
+            }
+            if (relation.ReferencingAttribute.Equals("modifiedby") && !ao.UserModified)
+            {
+                return false;
+            }
+            if (relation.ReferencingAttribute.EndsWith("onbehalfby") && !ao.UserOnBehalf)
+            {
+                return false;
+            }
+            return true;
+        }
+
         private static string GetMMOtherEntityName(EntityMetadataProxy entity, ManyToManyRelationshipMetadata rel)
         {
             return rel.Entity1LogicalName != entity.Metadata.LogicalName ? rel.Entity1LogicalName : rel.Entity2LogicalName;
@@ -483,6 +510,7 @@ namespace Rappen.XTB.RRA
             var rels1M = nodeinfo.Entity.Metadata.OneToManyRelationships
                 .Where(r => ao.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
                 .Where(r => CheckRelationshipBehavior(r, ao))
+                .Where(r => CheckRelationshipType(r, ao))
                 .Where(r => GetEntityMetadataProxy(r.ReferencingEntity, ao) is EntityMetadataProxy)
                 .OrderBy(r => r.SchemaName)
                 .OrderBy(r => r.AssociatedMenuConfiguration?.Label?.UserLocalizedLabel?.Label)
@@ -615,7 +643,11 @@ namespace Rappen.XTB.RRA
                 IsPrivate = chkEntPrivate.Checked,
                 Hidden = chkShowHidden.Checked,
                 OnlyData = chkShowOnlyData.Checked,
-                M2M = chkShowMM.Checked
+                M2M = chkShowMM.Checked,
+                UserOwned = chkUserOwned.Checked,
+                UserCreated = chkUserCreated.Checked,
+                UserModified = chkUserModified.Checked,
+                UserOnBehalf = chkUserOnBehalf.Checked
             };
             if (chkBehAssAll.Checked) ao.AssignTypes.Add(CascadeType.Cascade);
             if (chkBehAssAct.Checked) ao.AssignTypes.Add(CascadeType.Active);
@@ -628,6 +660,7 @@ namespace Rappen.XTB.RRA
             if (chkBehDelAll.Checked) ao.DeleteTypes.Add(CascadeType.Cascade);
             if (chkBehDelRem.Checked) ao.DeleteTypes.Add(CascadeType.RemoveLink);
             if (chkBehDelRest.Checked) ao.DeleteTypes.Add(CascadeType.Restrict);
+            if (chkBehDelNone.Checked) ao.DeleteTypes.Add(CascadeType.NoCascade);
             return ao;
         }
 
@@ -761,6 +794,7 @@ namespace Rappen.XTB.RRA
                     var rels = ao.Parent.Metadata.OneToManyRelationships
                         .Where(r => ao.Hidden || r.AssociatedMenuConfiguration.Behavior != AssociatedMenuBehavior.DoNotDisplay)
                         .Where(r => CheckRelationshipBehavior(r, ao))
+                        .Where(r => CheckRelationshipType(r, ao))
                         .Where(r => GetEntityMetadataProxy(r.ReferencingEntity, ao) is EntityMetadataProxy)
                         .OrderBy(r => r.AssociatedMenuConfiguration?.Order);
                     var mmrels = ao.Parent.Metadata.ManyToManyRelationships
@@ -1179,6 +1213,10 @@ namespace Rappen.XTB.RRA
             chkShowHidden.Checked = ao.Hidden;
             chkShowOnlyData.Checked = ao.OnlyData;
             chkShowMM.Checked = ao.M2M;
+            chkUserOwned.Checked = ao.UserOwned;
+            chkUserCreated.Checked = ao.UserCreated;
+            chkUserModified.Checked = ao.UserModified;
+            chkUserOnBehalf.Checked = ao.UserOnBehalf;
             chkBehAssAll.Checked = ao.AssignTypes.Contains(CascadeType.Cascade);
             chkBehAssAct.Checked = ao.AssignTypes.Contains(CascadeType.Active);
             chkBehAssUser.Checked = ao.AssignTypes.Contains(CascadeType.UserOwned);
@@ -1190,6 +1228,7 @@ namespace Rappen.XTB.RRA
             chkBehDelAll.Checked = ao.DeleteTypes.Contains(CascadeType.Cascade);
             chkBehDelRem.Checked = ao.DeleteTypes.Contains(CascadeType.RemoveLink);
             chkBehDelRest.Checked = ao.DeleteTypes.Contains(CascadeType.Restrict);
+            chkBehDelNone.Checked = ao.DeleteTypes.Contains(CascadeType.NoCascade);
         }
 
         private void SetRecordAsParent(Entity selectedentity)
