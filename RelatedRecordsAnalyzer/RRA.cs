@@ -336,27 +336,30 @@ namespace Rappen.XTB.RRA
                 && ao.DeleteTypes.Contains((CascadeType)relation.CascadeConfiguration.Delete);
         }
 
-        private bool CheckRelationshipType(OneToManyRelationshipMetadata relation, AnalysisOptions ao)
+        private static bool CheckRelationshipType(OneToManyRelationshipMetadata relation, AnalysisOptions ao)
         {
-            if (relation.ReferencedEntity != User.EntityName)
-            {
-                return true;
-            }
-            if (relation.ReferencingAttribute.Equals("owninguser") && !ao.UserOwned)
+            if (relation.ReferencingAttribute.Equals("regardingobjectid") && !ao.Regarding)
             {
                 return false;
             }
-            if (relation.ReferencingAttribute.Equals("createdby") && !ao.UserCreated)
+            if (relation.ReferencedEntity.Equals(User.EntityName))
             {
-                return false;
-            }
-            if (relation.ReferencingAttribute.Equals("modifiedby") && !ao.UserModified)
-            {
-                return false;
-            }
-            if (relation.ReferencingAttribute.EndsWith("onbehalfby") && !ao.UserOnBehalf)
-            {
-                return false;
+                if (relation.ReferencingAttribute.Equals("owninguser") && !ao.UserOwned)
+                {
+                    return false;
+                }
+                if (relation.ReferencingAttribute.Equals("createdby") && !ao.UserCreated)
+                {
+                    return false;
+                }
+                if (relation.ReferencingAttribute.Equals("modifiedby") && !ao.UserModified)
+                {
+                    return false;
+                }
+                if (relation.ReferencingAttribute.EndsWith("onbehalfby") && !ao.UserOnBehalf)
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -643,6 +646,7 @@ namespace Rappen.XTB.RRA
                 IsPrivate = chkEntPrivate.Checked,
                 Hidden = chkShowHidden.Checked,
                 OnlyData = chkShowOnlyData.Checked,
+                Regarding = chkShowRegarding.Checked,
                 M2M = chkShowMM.Checked,
                 UserOwned = chkUserOwned.Checked,
                 UserCreated = chkUserCreated.Checked,
@@ -1212,6 +1216,7 @@ namespace Rappen.XTB.RRA
             chkEntPrivate.Checked = ao.IsPrivate;
             chkShowHidden.Checked = ao.Hidden;
             chkShowOnlyData.Checked = ao.OnlyData;
+            chkShowRegarding.Checked = ao.Regarding;
             chkShowMM.Checked = ao.M2M;
             chkUserOwned.Checked = ao.UserOwned;
             chkUserCreated.Checked = ao.UserCreated;

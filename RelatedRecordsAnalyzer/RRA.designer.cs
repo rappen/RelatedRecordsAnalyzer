@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RRA));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -94,6 +94,7 @@
             this.tabMeta = new System.Windows.Forms.TabPage();
             this.tvMeta = new System.Windows.Forms.TreeView();
             this.typeTimer = new System.Windows.Forms.Timer(this.components);
+            this.chkShowRegarding = new System.Windows.Forms.CheckBox();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -227,8 +228,8 @@
             this.gvRecords.AllowUserToDeleteRows = false;
             this.gvRecords.AllowUserToOrderColumns = true;
             this.gvRecords.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gvRecords.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gvRecords.BackgroundColor = System.Drawing.SystemColors.Window;
             this.gvRecords.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.gvRecords.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -666,6 +667,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkShowRegarding);
             this.groupBox1.Controls.Add(this.chkShowHidden);
             this.groupBox1.Controls.Add(this.chkShowOnlyData);
             this.groupBox1.Controls.Add(this.chkShowMM);
@@ -711,10 +713,10 @@
             // chkShowMM
             // 
             this.chkShowMM.AutoSize = true;
-            this.chkShowMM.Location = new System.Drawing.Point(13, 65);
+            this.chkShowMM.Location = new System.Drawing.Point(13, 88);
             this.chkShowMM.Name = "chkShowMM";
             this.chkShowMM.Size = new System.Drawing.Size(108, 17);
-            this.chkShowMM.TabIndex = 3;
+            this.chkShowMM.TabIndex = 4;
             this.chkShowMM.Tag = "Include Many-to-Many relationships in the analysis.";
             this.chkShowMM.Text = "M:M-relationships";
             this.chkShowMM.UseVisualStyleBackColor = true;
@@ -891,6 +893,19 @@
             this.typeTimer.Interval = 500;
             this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
             // 
+            // chkShowRegarding
+            // 
+            this.chkShowRegarding.AutoSize = true;
+            this.chkShowRegarding.Checked = true;
+            this.chkShowRegarding.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowRegarding.Location = new System.Drawing.Point(13, 65);
+            this.chkShowRegarding.Name = "chkShowRegarding";
+            this.chkShowRegarding.Size = new System.Drawing.Size(75, 17);
+            this.chkShowRegarding.TabIndex = 3;
+            this.chkShowRegarding.Tag = "Include Many-to-Many relationships in the analysis.";
+            this.chkShowRegarding.Text = "Regarding";
+            this.chkShowRegarding.UseVisualStyleBackColor = true;
+            // 
             // RRA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1005,5 +1020,6 @@
         private System.Windows.Forms.CheckBox chkUserModified;
         private System.Windows.Forms.CheckBox chkUserCreated;
         private System.Windows.Forms.CheckBox chkUserOwned;
+        private System.Windows.Forms.CheckBox chkShowRegarding;
     }
 }
