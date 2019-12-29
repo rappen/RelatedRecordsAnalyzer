@@ -25,6 +25,15 @@
     <releaseNotes>
 Latest version:
 
+#8 Any tool in XrmToolBox can now send a record to RRA for analysis!
+#7 Now correctly shows relationships from User entity
+#9 Added option Cascade None for Delete behavior
+#10 Added options for OwnedBy, CreatedBy, ModifiedBy and *OnBehalfBy from User entity
+#11 Added option to exclude Regarding relationships
+
+
+Version 1.2019.7.1:
+
 #2 A specific view for the relationship metadata is now available!
 #5 Many-to-Many relationships can now be included in the analysis!
 #6 Added additional options to filter relationships be referenced entity type.
@@ -33,7 +42,7 @@ Rebranded for 2019 design.
     <copyright>Copyright 2018-2019 Jonas Rapp</copyright>
     <tags>XrmToolBox Plugins RelatedRecordsAnalyzer</tags>
     <dependencies>
-      <dependency id="XrmToolBox" version="1.2018.6.25" />
+      <dependency id="XrmToolBox" version="1.2019.11.35" />
     </dependencies>
   </metadata>
   <files>
