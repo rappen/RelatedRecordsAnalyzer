@@ -18,17 +18,17 @@ using XrmToolBox.Extensibility.Interfaces;
 
 namespace Rappen.XTB.RRA
 {
-    public partial class RRA : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IPayPalPlugin, IAboutPlugin
+    public partial class RRA : PluginControlBase, IStatusBarMessenger, IGitHubPlugin, IPayPalPlugin, IAboutPlugin, IMessageBusHost
     {
         #region Private Fields
 
         internal AppInsights ai;
         private const string aiEndpoint = "https://dc.services.visualstudio.com/v2/track";
-
         //private const string aiKey = "cc7cb081-b489-421d-bb61-2ee53495c336";    // jonas@rappen.net tenant, TestAI
         private const string aiKey = "eed73022-2444-45fd-928b-5eebd8fa46a6";    // jonas@rappen.net tenant, XrmToolBox
-
         //private const string aiKey = "b6a4ec7c-ab43-4780-97cd-021e99506337";   // jonas@jonasrapp.net, XrmToolBoxInsights
+
+        private Entity loadEntity;
 
         #endregion Private Fields
 
@@ -49,6 +49,7 @@ namespace Rappen.XTB.RRA
 
         //private Settings mySettings;
         public event EventHandler<StatusBarMessageEventArgs> SendMessageToStatusBar;
+        public event EventHandler<MessageBusEventArgs> OnOutgoingMessage;
 
         #endregion Public Events
 
@@ -1117,6 +1118,10 @@ namespace Rappen.XTB.RRA
         {
             cmbEntities.Items.Clear();
             cmbEntities.Items.AddRange(entities);
+            if (loadEntity != null)
+            {
+                SetRecordAsParent(loadEntity);
+            }
         }
 
         private void RenderChildren(List<QueryInfo> allchildren)
@@ -1242,8 +1247,10 @@ namespace Rappen.XTB.RRA
                     .Cast<EntityMetadataProxy>()
                     .FirstOrDefault(e => e.Metadata.LogicalName == selectedentity.LogicalName) is EntityMetadataProxy entity))
             {
+                loadEntity = selectedentity;
                 return;
             }
+            loadEntity = null;
             txtSearch.Text = selectedentity.Id.ToString();
             typeTimer.Enabled = false;
             if (cmbEntities.SelectedItem == entity)
@@ -1259,6 +1266,23 @@ namespace Rappen.XTB.RRA
         private void SetStatus(string status)
         {
             SendMessageToStatusBar(this, new StatusBarMessageEventArgs(status));
+        }
+
+        public void OnIncomingMessage(MessageBusEventArgs message)
+        {
+            if (message.TargetArgument is Entity entity)
+            {
+                SetRecordAsParent(entity);
+            }
+            else if (message.TargetArgument is string entitystr && entitystr.Contains(":") && Guid.TryParse(entitystr.Split(':')[1], out Guid id))
+            {
+                var entityname = entitystr.Split(':')[0];
+                SetRecordAsParent(new Entity(entityname, id));
+            }
+            else
+            {
+                MessageBox.Show("Related Records Analyzer must be called with an argument of type Entity or a string with format 'entityname:recordid'.", "RRA Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         #endregion Private Methods
