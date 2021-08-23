@@ -2,12 +2,12 @@
 {
     partial class RRA
     {
-        /// <summary> 
+        /// <summary>
         /// Variable nécessaire au concepteur.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Nettoyage des ressources utilisées.
         /// </summary>
         /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
@@ -22,8 +22,8 @@
 
         #region Code généré par le Concepteur de composants
 
-        /// <summary> 
-        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas 
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
         /// le contenu de cette méthode avec l'éditeur de code.
         /// </summary>
         private void InitializeComponent()
@@ -120,9 +120,9 @@
             this.menuChildren.SuspendLayout();
             this.tabMeta.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // toolStripMenu
-            // 
+            //
             this.toolStripMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbClose,
@@ -136,22 +136,22 @@
             this.toolStripMenu.Size = new System.Drawing.Size(1192, 31);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
-            // 
+            //
             // tsbClose
-            // 
+            //
             this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
             this.tsbClose.Name = "tsbClose";
             this.tsbClose.Size = new System.Drawing.Size(64, 28);
             this.tsbClose.Text = "Close";
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
-            // 
+            //
             // tssSeparator1
-            // 
+            //
             this.tssSeparator1.Name = "tssSeparator1";
             this.tssSeparator1.Size = new System.Drawing.Size(6, 31);
-            // 
+            //
             // tsbAnalyzeMetadata
-            // 
+            //
             this.tsbAnalyzeMetadata.Enabled = false;
             this.tsbAnalyzeMetadata.Image = ((System.Drawing.Image)(resources.GetObject("tsbAnalyzeMetadata.Image")));
             this.tsbAnalyzeMetadata.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -159,9 +159,9 @@
             this.tsbAnalyzeMetadata.Size = new System.Drawing.Size(129, 28);
             this.tsbAnalyzeMetadata.Text = "Analyze Metadata";
             this.tsbAnalyzeMetadata.Click += new System.EventHandler(this.tsbAnalyze_Click);
-            // 
+            //
             // tsbAnalyze
-            // 
+            //
             this.tsbAnalyze.Enabled = false;
             this.tsbAnalyze.Image = ((System.Drawing.Image)(resources.GetObject("tsbAnalyze.Image")));
             this.tsbAnalyze.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -169,9 +169,9 @@
             this.tsbAnalyze.Size = new System.Drawing.Size(127, 28);
             this.tsbAnalyze.Text = "Analyze Relations";
             this.tsbAnalyze.Click += new System.EventHandler(this.tsbAnalyze_Click);
-            // 
+            //
             // tsbCancel
-            // 
+            //
             this.tsbCancel.Enabled = false;
             this.tsbCancel.Image = ((System.Drawing.Image)(resources.GetObject("tsbCancel.Image")));
             this.tsbCancel.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -179,9 +179,9 @@
             this.tsbCancel.Size = new System.Drawing.Size(71, 28);
             this.tsbCancel.Text = "Cancel";
             this.tsbCancel.Click += new System.EventHandler(this.tsbCancel_Click);
-            // 
+            //
             // tslByJonas
-            // 
+            //
             this.tslByJonas.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.tslByJonas.Image = ((System.Drawing.Image)(resources.GetObject("tslByJonas.Image")));
             this.tslByJonas.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
@@ -190,29 +190,29 @@
             this.tslByJonas.Size = new System.Drawing.Size(106, 28);
             this.tslByJonas.Text = "by Jonas Rapp";
             this.tslByJonas.Click += new System.EventHandler(this.tslByJonas_Click);
-            // 
+            //
             // splitContainer1
-            // 
+            //
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 31);
             this.splitContainer1.Name = "splitContainer1";
-            // 
+            //
             // splitContainer1.Panel1
-            // 
+            //
             this.splitContainer1.Panel1.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel1.Controls.Add(this.gbSearch);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox4);
-            // 
+            //
             // splitContainer1.Panel2
-            // 
+            //
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(1192, 517);
             this.splitContainer1.SplitterDistance = 341;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 5;
-            // 
+            //
             // groupBox2
-            // 
+            //
             this.groupBox2.Controls.Add(this.gvRecords);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 79);
@@ -221,9 +221,9 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Records";
-            // 
+            //
             // gvRecords
-            // 
+            //
             this.gvRecords.AllowUserToAddRows = false;
             this.gvRecords.AllowUserToDeleteRows = false;
             this.gvRecords.AllowUserToOrderColumns = true;
@@ -249,9 +249,9 @@
             this.gvRecords.TabIndex = 0;
             this.gvRecords.RecordDoubleClick += new xrmtb.XrmToolBox.Controls.CRMRecordEventHandler(this.RecordDoubleClick);
             this.gvRecords.SelectionChanged += new System.EventHandler(this.crmGridView1_SelectionChanged);
-            // 
+            //
             // gbSearch
-            // 
+            //
             this.gbSearch.Controls.Add(this.txtSearch);
             this.gbSearch.Controls.Add(this.label2);
             this.gbSearch.Controls.Add(this.label1);
@@ -263,38 +263,38 @@
             this.gbSearch.TabIndex = 0;
             this.gbSearch.TabStop = false;
             this.gbSearch.Text = "Find record";
-            // 
+            //
             // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.Location = new System.Drawing.Point(78, 44);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(257, 20);
             this.txtSearch.TabIndex = 3;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
+            //
             // label2
-            // 
+            //
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(7, 47);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(65, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Url / Search";
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(7, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(33, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Entity";
-            // 
+            //
             // cmbEntities
-            // 
-            this.cmbEntities.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.cmbEntities.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbEntities.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cmbEntities.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
@@ -305,9 +305,9 @@
             this.cmbEntities.Sorted = true;
             this.cmbEntities.TabIndex = 0;
             this.cmbEntities.SelectedIndexChanged += new System.EventHandler(this.cmbEntities_SelectedIndexChanged);
-            // 
+            //
             // groupBox4
-            // 
+            //
             this.groupBox4.Controls.Add(this.txtRecordId);
             this.groupBox4.Controls.Add(this.txtRecordName);
             this.groupBox4.Controls.Add(this.label4);
@@ -319,10 +319,10 @@
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Selected record";
-            // 
+            //
             // txtRecordId
-            // 
-            this.txtRecordId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.txtRecordId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRecordId.BackColor = System.Drawing.SystemColors.Window;
             this.txtRecordId.Location = new System.Drawing.Point(78, 44);
@@ -330,10 +330,10 @@
             this.txtRecordId.ReadOnly = true;
             this.txtRecordId.Size = new System.Drawing.Size(257, 20);
             this.txtRecordId.TabIndex = 3;
-            // 
+            //
             // txtRecordName
-            // 
-            this.txtRecordName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.txtRecordName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRecordName.BackColor = System.Drawing.SystemColors.Window;
             this.txtRecordName.Location = new System.Drawing.Point(78, 17);
@@ -341,46 +341,46 @@
             this.txtRecordName.ReadOnly = true;
             this.txtRecordName.Size = new System.Drawing.Size(257, 20);
             this.txtRecordName.TabIndex = 2;
-            // 
+            //
             // label4
-            // 
+            //
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(7, 47);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(16, 13);
             this.label4.TabIndex = 1;
             this.label4.Text = "Id";
-            // 
+            //
             // label3
-            // 
+            //
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(7, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 13);
             this.label3.TabIndex = 0;
             this.label3.Text = "Name";
-            // 
+            //
             // splitContainer2
-            // 
+            //
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
+            //
             // splitContainer2.Panel1
-            // 
+            //
             this.splitContainer2.Panel1.Controls.Add(this.groupBox3);
-            // 
+            //
             // splitContainer2.Panel2
-            // 
+            //
             this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
             this.splitContainer2.Size = new System.Drawing.Size(843, 517);
             this.splitContainer2.SplitterDistance = 156;
             this.splitContainer2.TabIndex = 3;
-            // 
+            //
             // groupBox3
-            // 
+            //
             this.groupBox3.Controls.Add(this.groupBox7);
             this.groupBox3.Controls.Add(this.groupBox6);
             this.groupBox3.Controls.Add(this.groupBox5);
@@ -395,9 +395,9 @@
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Analysis Options";
-            // 
+            //
             // groupBox7
-            // 
+            //
             this.groupBox7.Controls.Add(this.chkBehDelNone);
             this.groupBox7.Controls.Add(this.chkBehDelRest);
             this.groupBox7.Controls.Add(this.chkBehDelRem);
@@ -409,9 +409,9 @@
             this.groupBox7.TabIndex = 6;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Delete";
-            // 
+            //
             // chkBehDelNone
-            // 
+            //
             this.chkBehDelNone.AutoSize = true;
             this.chkBehDelNone.Checked = true;
             this.chkBehDelNone.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -421,9 +421,9 @@
             this.chkBehDelNone.TabIndex = 4;
             this.chkBehDelNone.Text = "Cascade None";
             this.chkBehDelNone.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkBehDelRest
-            // 
+            //
             this.chkBehDelRest.AutoSize = true;
             this.chkBehDelRest.Checked = true;
             this.chkBehDelRest.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -435,9 +435,9 @@
             this.chkBehDelRest.UseVisualStyleBackColor = true;
             this.chkBehDelRest.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehDelRest.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehDelRem
-            // 
+            //
             this.chkBehDelRem.AutoSize = true;
             this.chkBehDelRem.Checked = true;
             this.chkBehDelRem.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -449,9 +449,9 @@
             this.chkBehDelRem.UseVisualStyleBackColor = true;
             this.chkBehDelRem.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehDelRem.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehDelAll
-            // 
+            //
             this.chkBehDelAll.AutoSize = true;
             this.chkBehDelAll.Checked = true;
             this.chkBehDelAll.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -463,9 +463,9 @@
             this.chkBehDelAll.UseVisualStyleBackColor = true;
             this.chkBehDelAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehDelAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // groupBox6
-            // 
+            //
             this.groupBox6.Controls.Add(this.chkBehShrNone);
             this.groupBox6.Controls.Add(this.chkBehShrUser);
             this.groupBox6.Controls.Add(this.chkBehShrAct);
@@ -477,9 +477,9 @@
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Share/Unshare";
-            // 
+            //
             // chkBehShrNone
-            // 
+            //
             this.chkBehShrNone.AutoSize = true;
             this.chkBehShrNone.Checked = true;
             this.chkBehShrNone.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -491,9 +491,9 @@
             this.chkBehShrNone.UseVisualStyleBackColor = true;
             this.chkBehShrNone.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehShrNone.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehShrUser
-            // 
+            //
             this.chkBehShrUser.AutoSize = true;
             this.chkBehShrUser.Checked = true;
             this.chkBehShrUser.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -505,9 +505,9 @@
             this.chkBehShrUser.UseVisualStyleBackColor = true;
             this.chkBehShrUser.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehShrUser.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehShrAct
-            // 
+            //
             this.chkBehShrAct.AutoSize = true;
             this.chkBehShrAct.Checked = true;
             this.chkBehShrAct.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -519,9 +519,9 @@
             this.chkBehShrAct.UseVisualStyleBackColor = true;
             this.chkBehShrAct.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehShrAct.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehShrAll
-            // 
+            //
             this.chkBehShrAll.AutoSize = true;
             this.chkBehShrAll.Checked = true;
             this.chkBehShrAll.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -533,9 +533,9 @@
             this.chkBehShrAll.UseVisualStyleBackColor = true;
             this.chkBehShrAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehShrAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // groupBox5
-            // 
+            //
             this.groupBox5.Controls.Add(this.chkBehAssNone);
             this.groupBox5.Controls.Add(this.chkBehAssUser);
             this.groupBox5.Controls.Add(this.chkBehAssAct);
@@ -547,9 +547,9 @@
             this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Assign/Reparent";
-            // 
+            //
             // chkBehAssNone
-            // 
+            //
             this.chkBehAssNone.AutoSize = true;
             this.chkBehAssNone.Checked = true;
             this.chkBehAssNone.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -561,9 +561,9 @@
             this.chkBehAssNone.UseVisualStyleBackColor = true;
             this.chkBehAssNone.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehAssNone.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehAssUser
-            // 
+            //
             this.chkBehAssUser.AutoSize = true;
             this.chkBehAssUser.Checked = true;
             this.chkBehAssUser.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -575,9 +575,9 @@
             this.chkBehAssUser.UseVisualStyleBackColor = true;
             this.chkBehAssUser.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehAssUser.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehAssAct
-            // 
+            //
             this.chkBehAssAct.AutoSize = true;
             this.chkBehAssAct.Checked = true;
             this.chkBehAssAct.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -589,9 +589,9 @@
             this.chkBehAssAct.UseVisualStyleBackColor = true;
             this.chkBehAssAct.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehAssAct.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkBehAssAll
-            // 
+            //
             this.chkBehAssAll.AutoSize = true;
             this.chkBehAssAll.Checked = true;
             this.chkBehAssAll.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -603,9 +603,9 @@
             this.chkBehAssAll.UseVisualStyleBackColor = true;
             this.chkBehAssAll.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkBehAssAll.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // gbUser
-            // 
+            //
             this.gbUser.Controls.Add(this.chkUserOnBehalf);
             this.gbUser.Controls.Add(this.chkUserModified);
             this.gbUser.Controls.Add(this.chkUserCreated);
@@ -618,9 +618,9 @@
             this.gbUser.TabStop = false;
             this.gbUser.Text = "User relationships";
             this.gbUser.Visible = false;
-            // 
+            //
             // chkUserOnBehalf
-            // 
+            //
             this.chkUserOnBehalf.AutoSize = true;
             this.chkUserOnBehalf.Location = new System.Drawing.Point(13, 88);
             this.chkUserOnBehalf.Name = "chkUserOnBehalf";
@@ -628,9 +628,9 @@
             this.chkUserOnBehalf.TabIndex = 4;
             this.chkUserOnBehalf.Text = "...on behalf by";
             this.chkUserOnBehalf.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkUserModified
-            // 
+            //
             this.chkUserModified.AutoSize = true;
             this.chkUserModified.Checked = true;
             this.chkUserModified.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -640,9 +640,9 @@
             this.chkUserModified.TabIndex = 2;
             this.chkUserModified.Text = "Modified by";
             this.chkUserModified.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkUserCreated
-            // 
+            //
             this.chkUserCreated.AutoSize = true;
             this.chkUserCreated.Checked = true;
             this.chkUserCreated.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -652,9 +652,9 @@
             this.chkUserCreated.TabIndex = 1;
             this.chkUserCreated.Text = "Created by";
             this.chkUserCreated.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkUserOwned
-            // 
+            //
             this.chkUserOwned.AutoSize = true;
             this.chkUserOwned.Checked = true;
             this.chkUserOwned.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -664,9 +664,9 @@
             this.chkUserOwned.TabIndex = 0;
             this.chkUserOwned.Text = "Owned by";
             this.chkUserOwned.UseVisualStyleBackColor = true;
-            // 
+            //
             // groupBox1
-            // 
+            //
             this.groupBox1.Controls.Add(this.chkShowRegarding);
             this.groupBox1.Controls.Add(this.chkShowHidden);
             this.groupBox1.Controls.Add(this.chkShowOnlyData);
@@ -677,10 +677,10 @@
             this.groupBox1.Size = new System.Drawing.Size(147, 112);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Relatioships";
-            // 
+            this.groupBox1.Text = "Relationships";
+            //
             // chkShowHidden
-            // 
+            //
             this.chkShowHidden.AutoSize = true;
             this.chkShowHidden.Checked = true;
             this.chkShowHidden.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -694,9 +694,9 @@
             this.chkShowHidden.UseVisualStyleBackColor = true;
             this.chkShowHidden.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkShowHidden.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkShowOnlyData
-            // 
+            //
             this.chkShowOnlyData.AutoSize = true;
             this.chkShowOnlyData.Checked = true;
             this.chkShowOnlyData.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -709,9 +709,9 @@
             this.chkShowOnlyData.UseVisualStyleBackColor = true;
             this.chkShowOnlyData.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkShowOnlyData.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkShowMM
-            // 
+            //
             this.chkShowMM.AutoSize = true;
             this.chkShowMM.Location = new System.Drawing.Point(13, 88);
             this.chkShowMM.Name = "chkShowMM";
@@ -722,9 +722,9 @@
             this.chkShowMM.UseVisualStyleBackColor = true;
             this.chkShowMM.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkShowMM.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // groupBox8
-            // 
+            //
             this.groupBox8.Controls.Add(this.chkEntPrivate);
             this.groupBox8.Controls.Add(this.chkEntBPF);
             this.groupBox8.Controls.Add(this.chkEntNotAdvFind);
@@ -736,9 +736,9 @@
             this.groupBox8.TabIndex = 1;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Entity types";
-            // 
+            //
             // chkEntPrivate
-            // 
+            //
             this.chkEntPrivate.AutoSize = true;
             this.chkEntPrivate.Location = new System.Drawing.Point(13, 88);
             this.chkEntPrivate.Name = "chkEntPrivate";
@@ -749,9 +749,9 @@
             this.chkEntPrivate.UseVisualStyleBackColor = true;
             this.chkEntPrivate.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkEntPrivate.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkEntBPF
-            // 
+            //
             this.chkEntBPF.AutoSize = true;
             this.chkEntBPF.Location = new System.Drawing.Point(13, 65);
             this.chkEntBPF.Name = "chkEntBPF";
@@ -762,9 +762,9 @@
             this.chkEntBPF.UseVisualStyleBackColor = true;
             this.chkEntBPF.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkEntBPF.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkEntNotAdvFind
-            // 
+            //
             this.chkEntNotAdvFind.AutoSize = true;
             this.chkEntNotAdvFind.Location = new System.Drawing.Point(13, 42);
             this.chkEntNotAdvFind.Name = "chkEntNotAdvFind";
@@ -775,9 +775,9 @@
             this.chkEntNotAdvFind.UseVisualStyleBackColor = true;
             this.chkEntNotAdvFind.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkEntNotAdvFind.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // chkEntActivity
-            // 
+            //
             this.chkEntActivity.AutoSize = true;
             this.chkEntActivity.Checked = true;
             this.chkEntActivity.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -790,17 +790,17 @@
             this.chkEntActivity.UseVisualStyleBackColor = true;
             this.chkEntActivity.MouseEnter += new System.EventHandler(this.OptionMouseEnter);
             this.chkEntActivity.MouseLeave += new System.EventHandler(this.OptionMouseLeave);
-            // 
+            //
             // lblOptionHint
-            // 
+            //
             this.lblOptionHint.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblOptionHint.Location = new System.Drawing.Point(3, 128);
             this.lblOptionHint.Name = "lblOptionHint";
             this.lblOptionHint.Size = new System.Drawing.Size(837, 25);
             this.lblOptionHint.TabIndex = 10;
-            // 
+            //
             // tabControl1
-            // 
+            //
             this.tabControl1.Controls.Add(this.tabTree);
             this.tabControl1.Controls.Add(this.tabMeta);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -809,9 +809,9 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(843, 357);
             this.tabControl1.TabIndex = 2;
-            // 
+            //
             // tabTree
-            // 
+            //
             this.tabTree.Controls.Add(this.tvChildren);
             this.tabTree.Location = new System.Drawing.Point(4, 22);
             this.tabTree.Name = "tabTree";
@@ -819,9 +819,9 @@
             this.tabTree.TabIndex = 0;
             this.tabTree.Text = "Data Hierarchy";
             this.tabTree.UseVisualStyleBackColor = true;
-            // 
+            //
             // tvChildren
-            // 
+            //
             this.tvChildren.ContextMenuStrip = this.menuChildren;
             this.tvChildren.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvChildren.Location = new System.Drawing.Point(0, 0);
@@ -829,9 +829,9 @@
             this.tvChildren.Size = new System.Drawing.Size(835, 331);
             this.tvChildren.TabIndex = 0;
             this.tvChildren.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeview_BeforeExpand);
-            // 
+            //
             // menuChildren
-            // 
+            //
             this.menuChildren.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuChildrenViewDetails,
             this.menuChildrenOpenInBrowser,
@@ -840,37 +840,37 @@
             this.menuChildren.Name = "menuChildren";
             this.menuChildren.Size = new System.Drawing.Size(194, 92);
             this.menuChildren.Opening += new System.ComponentModel.CancelEventHandler(this.menuChildren_Opening);
-            // 
+            //
             // menuChildrenViewDetails
-            // 
+            //
             this.menuChildrenViewDetails.Name = "menuChildrenViewDetails";
             this.menuChildrenViewDetails.Size = new System.Drawing.Size(193, 22);
             this.menuChildrenViewDetails.Text = "View details";
             this.menuChildrenViewDetails.Click += new System.EventHandler(this.menuChildrenViewDetails_Click);
-            // 
+            //
             // menuChildrenOpenInBrowser
-            // 
+            //
             this.menuChildrenOpenInBrowser.Name = "menuChildrenOpenInBrowser";
             this.menuChildrenOpenInBrowser.Size = new System.Drawing.Size(193, 22);
             this.menuChildrenOpenInBrowser.Text = "Open in browser";
             this.menuChildrenOpenInBrowser.Click += new System.EventHandler(this.menuChildrenOpenInBrowser_Click);
-            // 
+            //
             // menuChildrenSelectAsParent
-            // 
+            //
             this.menuChildrenSelectAsParent.Name = "menuChildrenSelectAsParent";
             this.menuChildrenSelectAsParent.Size = new System.Drawing.Size(193, 22);
             this.menuChildrenSelectAsParent.Text = "Select as parent record";
             this.menuChildrenSelectAsParent.Click += new System.EventHandler(this.menuChildrenSelectAsParent_Click);
-            // 
+            //
             // menuChildrenReloadChildren
-            // 
+            //
             this.menuChildrenReloadChildren.Name = "menuChildrenReloadChildren";
             this.menuChildrenReloadChildren.Size = new System.Drawing.Size(193, 22);
             this.menuChildrenReloadChildren.Text = "Reload children";
             this.menuChildrenReloadChildren.Click += new System.EventHandler(this.menuChildrenReloadChildren_Click);
-            // 
+            //
             // tabMeta
-            // 
+            //
             this.tabMeta.Controls.Add(this.tvMeta);
             this.tabMeta.Location = new System.Drawing.Point(4, 22);
             this.tabMeta.Name = "tabMeta";
@@ -878,23 +878,23 @@
             this.tabMeta.TabIndex = 1;
             this.tabMeta.Text = "Metadata";
             this.tabMeta.UseVisualStyleBackColor = true;
-            // 
+            //
             // tvMeta
-            // 
+            //
             this.tvMeta.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvMeta.Location = new System.Drawing.Point(0, 0);
             this.tvMeta.Name = "tvMeta";
             this.tvMeta.Size = new System.Drawing.Size(835, 331);
             this.tvMeta.TabIndex = 0;
             this.tvMeta.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeview_BeforeExpand);
-            // 
+            //
             // typeTimer
-            // 
+            //
             this.typeTimer.Interval = 500;
             this.typeTimer.Tick += new System.EventHandler(this.typeTimer_Tick);
-            // 
+            //
             // chkShowRegarding
-            // 
+            //
             this.chkShowRegarding.AutoSize = true;
             this.chkShowRegarding.Checked = true;
             this.chkShowRegarding.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -905,9 +905,9 @@
             this.chkShowRegarding.Tag = "Include Many-to-Many relationships in the analysis.";
             this.chkShowRegarding.Text = "Regarding";
             this.chkShowRegarding.UseVisualStyleBackColor = true;
-            // 
+            //
             // RRA
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
